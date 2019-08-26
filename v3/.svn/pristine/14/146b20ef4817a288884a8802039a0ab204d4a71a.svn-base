@@ -1,0 +1,62 @@
+<?php
+
+namespace app\order\validate;
+
+class Order extends Base
+{
+    public function getBuyGoodsList($data){
+        $rule = [
+            'user_id' => 'require|integer',
+            'shop_id' => 'integer',
+            'channel' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'shop_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function getTotal($data){
+        $rule = [
+            'user_id' => 'require|integer',
+            'address_id' => 'integer',
+            'delivery_id' => 'integer',
+            'shop_id' => 'integer',
+            'channel' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'address_id' => '参数错误',
+            'delivery_id'     => '参数错误',
+            'shop_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function createOrder($data){
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+            'address_id' => 'require|integer|>:0',
+            'delivery_id' => 'require|integer|>:0',
+            'shop_id' => 'integer|>=:0',
+            'channel' => 'integer',
+            'coupon_ids' => 'array',
+            'remark' => 'max:50',
+            'point' => 'float',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'address_id' => '参数错误',
+            'delivery_id'     => '参数错误',
+            'shop_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+}

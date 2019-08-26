@@ -1,0 +1,69 @@
+const id = getUrlParam('id')
+// layui
+layui.use(['table'], function (){
+  const table = layui.table
+
+  // 配送匹配数据表格
+  table.render({
+    elem: '#areaDataTable',
+    height: 'auto',
+    url: '/system/delivery_area/index?id=' + id,
+    limit: 20,
+    toolbar: '#toolbarTpl',
+    defaultToolbar: false,
+    headers: {
+      ctrl: SHOP_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:80},
+      {field: 'area_name', title: '区域名称', width:150},
+      {field: 'delivery_region', title: '配送地区', templet: function (d){
+        return json2join(d.delivery_region, 'name', '，')
+      }},
+      {field: 'ctrl', title: '操作', width:150, toolbar: '#ctrlTpl'}
+    ]]
+  })
+
+  //监听表格工具栏事件
+  table.on('toolbar(areaDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    if (layEvent === 'add') {
+      layer.open({
+        title: '添加配送区域',
+        type: 2,
+        area: ['800px', '620px'],
+        content: '/system/delivery_area/detail?delivery_id=' + id
+      })
+    } else if (layEvent === 'back') {
+      window.history.go(-1)
+    }
+  })
+
+  //监听行工具事件
+  table.on('tool(areaDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    if (layEvent === 'edit') {
+      layer.open({
+        title: '设置配送区域',
+        type: 2,
+        area: ['800px', '620px'],
+        content: '/system/delivery_area/detail?delivery_id=' + id + '&id=' + data.id
+      })
+    } else if (layEvent === 'del') {
+      layer.confirm('删除后不能恢复', {icon: 3, title: '删除确认'}, function (index) {
+        request.setHost('shop_data').post('/system/delivery_area/delete', {ids: data.id}, function(json) {
+          layer.msg(json.msg, {
+            time: 1000
+          },function () {
+            window.location.reload()
+          })
+        })
+      })
+    }
+  })
+
+})

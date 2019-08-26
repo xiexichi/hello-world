@@ -1,0 +1,151 @@
+<?php
+namespace app\order\controller;
+
+use think\Exception;
+
+class OrderReturn extends Base
+{
+    public function indexBefore(){
+        if( !$param = $this->validate->index(input()) ) {
+            return errorJson(020201, $this->validate->getError());
+        }
+        $where = [];
+        if( isset($param['type']) && isset($this->model::$map_return_type[$param['type']]) ){
+            $where['return_type'] = $param['type'];
+        }
+        $this->model->where($where);
+    }
+
+    //创建退换货单
+    public function createOrderReturn(){
+        $code = 000001;
+        if( !$param = $this->validate->createOrderReturn(input('post.')) ) {
+            return errorJson($code, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $order_goods_id = $param['order_goods_id'];
+        $return_reason_id = $param['return_reason_id'];
+        $return_type = $param['return_type'];
+        $return_num = $param['return_num'];
+        $description = $param['description'];
+        $img_list = $param['img_list'];
+        $this->model->startTrans();
+        try{
+            //获取订单信息
+            $orderModel = new \app\order\model\Order();
+            $orderGoodsModel = new \app\order\model\OrderGoods();
+            $order_goods_info = $orderGoodsModel->field('og.*,
+            o.verify as order_verify,
+            o.shipping_status,
+            o.finished_status,
+            o.finished_time,
+            o.order_status,
+            o.create_time
+            ')
+                ->alias('og')
+                ->join($orderModel->getTable().' o','o.order_id = og.order_id')
+                ->where(['og.id'=>$order_goods_id,'o.user_id'=>$user_id])->find();
+            if( empty($order_goods_info) ){
+                $code = 000010;
+                throw new Exception('商品订单信息获取失败');
+            }
+            if( $order_goods_info['order_status'] != 0 || $order_goods_info['order_verify'] == 0 ){
+                $code = 000011;
+                throw new Exception('当前订单状态不可申请退换');
+            }
+            //创建退换单
+            if( empty($this->model::$map_return_type[$return_type]) ){
+                $code = 000011;
+                throw new Exception('申请类型不存在');
+            }
+            if( $order_goods_info['shipping_status'] == 0 && $return_type == $this->model::RETURN_TYPE_REFUND ){
+                $code = 000011;
+                throw new Exception('当前订单状态不能申请退货');
+            }
+            //检查是否符合申请时间段内
+            //获取已申请的列表
+            $num = $this->model->getGoodsRefundNum($order_goods_id);
+            //数量检查
+            $num = bcadd($num,$return_num,0);
+            if( $num > $order_goods_info['num'] ){
+                $code = 000012;
+                throw new Exception('超出可申请数量');
+            }
+            //获取退换类型
+            $orderReturnReasonModel = new \app\order\model\OrderReturnReason();
+            $reason_info = $orderReturnReasonModel->where('id',$return_reason_id)->find();
+            if( empty($reason_info) ){
+                $code = 000013;
+                throw new Exception('问题类型不存在');
+            }
+            $t = date('Y-m-d H:i:s');
+            $insertData['user_id'] = $user_id;
+            $insertData['order_id'] = $order_goods_info['order_id'];
+            $insertData['order_return_sn'] = $this->model::$map_return_type[$return_type]['code'].$orderModel->createSn();
+            $insertData['order_goods_id'] = $order_goods_info['id'];
+            $insertData['return_num'] = $return_num;
+            $insertData['return_content'] = trim($description);
+            $insertData['return_images'] = json_encode($img_list);
+            $insertData['return_type'] = $return_type;
+            $insertData['return_reason_id'] = $return_reason_id;
+            $insertData['create_time'] = $t;
+            $insertData['update_time'] = $insertData['create_time'];
+            if( !$return_id = $this->model->insertGetId($insertData) ){
+                $code = 000014;
+                throw new Exception('网络错误');
+            }
+            //更新订单状态
+            $updateData['status'] = $this->model::$map_return_type[$return_type]['status_start'];
+            $updateData['update_time'] = $t;
+            if( !$orderGoodsModel->where('id',$order_goods_id)->update($updateData) ){
+                $code = 000015;
+                throw new Exception('订单状态更新失败');
+            }
+            //订单日志记录
+            $orderLogModel = new \app\order\model\OrderLog();
+            if( !$orderLogModel->markLog($user_id,$order_goods_info['id'],'用户申请'.$order_goods_info['erp_code'].$this->model::$map_return_type[$return_type]['desc']) ){
+                $code = 000016;
+                throw new Exception('下单记录失败');
+            }
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($code, $e->getMessage());
+        }
+        return successJson($return_id,'申请成功');
+    }
+
+    //退换商家审核
+    public function returnVerify(){
+        if( !$param = $this->validate->returnVerify(input('post.')) ) {
+            return errorJson(000001, $this->validate->getError());
+        }
+        $where['id'] = $param['return_id'];
+        //获取退换订单信息
+        $returnInfo = $this->model->where($where)->find();
+        if( empty($returnInfo) ){
+            return errorJson(000010,'退换单信息不存在');
+        }
+        $updateData = [];
+        $updateData['verify'] = 1;
+        $updateData['update_time'] = 1;
+        if( !$this->model->where($where)->update($updateData) ){
+            return errorJson(000010,'网络错误，审核失败');
+        }
+        actionLogs('审核退换货：'.$param['order_id'].'已收货',$this->model);
+        return successJson('success');
+    }
+
+    //用户寄回商品
+    public function sand_goods_back(){
+        if( !$param = $this->validate->sand_goods_back(input('post.')) ) {
+            return errorJson(000001, $this->validate->getError());
+        }
+        //物流公司名
+        //物流单号
+        //备注信息
+        return successJson('success');
+    }
+
+
+}

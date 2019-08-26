@@ -1,0 +1,57 @@
+<script type="text/javascript">
+
+console.info('reasdasd')
+
+// 库存预选操作常量
+const PURCHASE = 'purchase';
+const RETURN = 'return';
+const ADJUST = 'adjust';
+const DIFFER = 'differ';
+const TRANSFER = 'transfer';
+
+
+// 选择保存到云端的标签
+var preSelectTag;
+
+// 库存预选对象
+const preSelectCtrl = {}
+
+/**
+ * [add 添加方法]
+ * @param {[type]} type   [库存预选类型]
+ * @param {[type]} $input [input]
+ */
+preSelectCtrl.add = function (type, $input){
+	console.info(type, $input.val());
+
+	let data = {};
+
+	// 组合保存数据
+	data['quantity'] = $input.val();
+	data['stock_id'] = $input.attr('stock_id');
+
+	// 判断是否开启
+	if (preSelectTag) {
+		console.info('开启云端保存');
+		// 店铺预选标记id
+		data['shop_depot_pre_select_id'] = preSelectTag['id'];
+
+		request.post('/depot/shop_depot_pre_select_item/add', data, function(res){
+			console.info(res);
+		})
+	}
+
+	console.info(data);
+
+	// 1.检测本地储存中是否有对应类型的，库存预选数据
+	if (localStorage.getItem(type)) {
+		// 没有则创建
+		data = JSON.parse(localStorage.getItem(type));
+	}
+
+	
+}
+
+
+
+</script>

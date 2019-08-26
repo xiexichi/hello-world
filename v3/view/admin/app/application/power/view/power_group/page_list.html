@@ -1,0 +1,173 @@
+<style type="text/css">
+    .editModule:hover,.editController:hover{
+        cursor: pointer;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div>
+                <button class="layui-btn layui-btn-sm" id="addModule">添加模块</button>
+                <button class="layui-btn layui-btn-sm" id="addController">添加控制器</button>
+                <button class="layui-btn layui-btn-sm" id="addAction">添加方法</button>
+                <button class="layui-btn layui-btn-sm" id="addGroup">添加权限组</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="access_view"></div>
+<style type="text/css">
+    #access_view{padding: 10px;}
+    .ctrl_div{padding: 0 20px 20px 20px;background-color: #fff;}
+    .ctrl_div .layui-row{background-color: #f2f2f2}
+    fieldset{background-color: #fff;}
+</style>
+<script id="access_tpl" type="text/html">
+    {{# layui.each(d, function(index1,item1){  }}
+    <fieldset class="layui-elem-field site-demo-button" style="margin-top: 20px;">
+        <legend data-id="{{ item1.id }}" class="editModule">{{ item1.title }}</legend>
+        <div class="ctrl_div">
+            <div class="layui-row layui-col-space10">
+
+                {{# layui.each(item1.children, function(index2,item2){ }}
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div data-id="{{ item2.id }}" class="layui-card-header editController">{{ item2.title }}</div>
+                        <div class="layui-card-body">
+                            {{# layui.each(item2.children, function(index3,item3){ }}
+                            <button data-id="{{ item3.id }}" class="layui-btn layui-btn-sm editGroup" style="margin:5px 0;">{{ item3.title }}</button>
+                            {{# }) }}
+                        </div>
+                    </div>
+                </div>
+                {{# }) }}
+
+            </div>
+        </div>
+    </fieldset>
+    {{# }); }}
+</script>
+
+<script>
+        var $ = layui.jquery;
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        var element = layui.element;
+        var laytpl = layui.laytpl;
+        function loadTpl(){
+            // 获取分类信息
+            request.setHost(CENTER_DATA).get('/power/power_group/getGroupTree',{}, function(res){
+                console.log(res);
+                if( res.code == 0 ){
+                    var getTpl = access_tpl.innerHTML,view = document.getElementById('access_view');
+                    laytpl(getTpl).render(res.data, function(html){
+                      view.innerHTML = html;
+                    });
+                }
+            });
+        }
+    layui.use(['layer', 'table','laytpl'], function(){
+
+        loadTpl();
+
+        //绑定事件
+        $(document).on('click', '#addModule', function(data) {
+            layer.open({
+                title:'添加模块',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','60%'],
+                content:"/power/power_module/page_add.html",
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        }).on('click', '#addController', function(data) {
+            layer.open({
+                title:'添加控制器',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','60%'],
+                content:"/power/power_controller/page_add.html",
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        }).on('click', '#addAction', function(data) {
+            layer.open({
+                title:'添加方法',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','60%'],
+                content:"/power/power_action/page_add.html",
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        }).on('click', '#addGroup', function(data) {
+            layer.open({
+                title:'添加权限组',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','70%'],
+                content:"/power/power_group/page_add.html",
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        }).on('click', '.editModule',function(data){
+            var moduleID = $(this).data('id');
+            layer.open({
+                title:'编辑模块',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','60%'],
+                content:"/power/power_module/page_edit.html?id="+moduleID,
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        }).on('click', '.editController',function(data){
+            var controllerID = $(this).data('id');
+            layer.open({
+                title:'编辑控制器',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','60%'],
+                content:"/power/power_controller/page_edit.html?id="+controllerID,
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        }).on('click', '.editGroup',function(data){
+            var groupID = $(this).data('id');
+            layer.open({
+                title:'编辑方法组',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','80%'],
+                content:"/power/power_group/page_edit.html?id="+groupID,
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        });
+
+
+
+    });
+
+    function callback(){
+        loadTpl()
+        layer.closeAll();
+    }
+
+</script>

@@ -1,0 +1,224 @@
+<?php
+
+namespace app\goods\model;
+
+class GoodsItem extends Base
+{
+    protected $name = 'goods_item';
+
+    /**
+     * 创建商品sku
+     * @param $goods_id     主商品id
+     * @param $goodsInfo    商品表单参数
+     * @return bool
+     */
+    public function createGoodsSku($goods_id,$goodsInfo){
+        $t = date('Y-m-d H:i:s');
+        //默认创建一个sku
+//        $item_insertData = [
+//            'goods_id'          => $goods_id,
+//            'erp_code'          => $goodsInfo['erp_code'],
+//            'sku_sn'            => $goodsInfo['erp_code'],
+//            'item_price'        => bcadd($goodsInfo['sell_price'],0,2),
+//            'item_code'         => $goodsInfo['goods_code'],
+//            'create_time'       => $t,
+//            'update_time'       => $t
+//        ];
+//        if( !$item = $this->insert($item_insertData) ){
+//            return false;
+//        }
+        if( empty($goodsInfo['sku_param']) ) {//是否必须设置sku业务决定
+            return true;
+        }
+        $skuParam = $goodsInfo['sku_param'];
+        //配置添加参数
+        $item_insertData = [];
+        $item_prop_insertData = [];
+        foreach( $skuParam as $key => $val){
+            $item_insertData = [
+                'goods_id'          => $goods_id,
+                'erp_code'          => empty($val['erp_code']) ? $goodsInfo['erp_code'].','.$val['pv_erp_code'] : trim($val['erp_code']),
+                'sku_sn'            => empty($val['sku_sn']) ? $goodsInfo['erp_code'].' '.$val['pv_erp_code'] : trim($val['erp_code']),
+                'item_price'        =>  empty($val['price']) ? bcadd($goodsInfo['sell_price'],0,2) : bcadd($val['price'],0,2),
+                'item_code'         => trim($val['item_code']),
+                'item_img'          => trim($val['item_image']),
+                'description'       => trim($val['remark']),
+                'sales_status'      => isset($val['sales_status']) ? intval($val['sales_status']) : 0,
+                'is_deleted'        => $val['is_deleted'],
+                'create_time'       => $t,
+                'update_time'       => $t
+            ];
+            if( !$item = $this->insertGetId($item_insertData) ){
+                return false;
+            }
+            if( !$this->setGoodsPriceLog($goods_id,$item,0,$item_insertData['item_price'],'创建商品sku售价',$t) ){
+                return false;
+            }
+            //处理商品属性
+            $item_prop_insertData = [];//初始化参数
+            $itemPropValModel = new \app\goods\model\GoodsItemPropVal();
+            foreach( $val['pv_id'] as $k => $v ){
+                $item_prop_insertData[] = [
+                    'goods_id'          => $goods_id,
+                    'goods_item_id'     => $item,
+                    'goods_prop_val_id' => $v
+                ];
+            }
+            if( !$itemPropValModel->insertAll($item_prop_insertData) ){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 创建商品sku
+     * @param $goods_id     主商品id
+     * @param $goodsInfo    商品表单参数
+     * @return bool
+     */
+    public function updateGoodsSku($goods_id,$goodsInfo){
+        $t = date('Y-m-d H:i:s');
+        if( empty($goodsInfo['sku_param']) ){//是否必须设置sku业务决定
+            return true;
+        }
+        //获取原sku列表
+        $sku_all = $this->where('goods_id',$goods_id)->select();
+        $sku_list = [];
+        foreach( $sku_all as $k => $sku ){
+            $sku_list[$sku['id']] = $sku;
+        }
+        $skuParam = $goodsInfo['sku_param'];
+        foreach( $skuParam as $key => $val ){
+            if( !empty($val['item_id']) ){//已存在的sku 更新
+                $val['description'] = $val['remark'];
+                $val['item_price'] = bcadd((empty($val['price']) ? $goodsInfo['sell_price'] : $val['price']),0,2);
+                $val['item_img'] = $val['item_image'];
+                if( empty($val['erp_code']) ){
+                    $val['erp_code'] = $goodsInfo['erp_code'].','.$val['pv_erp_code'];
+                }
+                $where['id'] = $val['item_id'];
+                if( !empty($sku_list[$val['item_id']]) ){
+                    //获取原数据
+                    $_info = $sku_list[$val['item_id']]->toArray();
+                }
+                $updateData = [];
+                foreach( $_info as $k => $v ){
+                    if( isset($val[$k]) && $val[$k] != $v ){
+                        $updateData[$k] = $val[$k];
+                    }
+                }
+                if( !empty($updateData) ){
+                    $updateData['update_time'] = $t;
+                    $updateData['is_invalid'] = 0;
+                    if( !$this->where($where)->update($updateData) ){
+                        return false;
+                    }
+                    if( isset($updateData['item_price']) ){
+                        if( !$this->setGoodsPriceLog($goods_id,$_info['id'],$_info['item_price'],$updateData['item_price'],'更改商品sku售价',$t) ){
+                            return false;
+                        }
+                    }
+                }
+                //移除已处理参数项
+                unset($skuParam[$key]);
+                //移除已处理的原sku
+                unset($sku_list[$val['item_id']]);
+            }
+        }
+        //处理弃置的sku
+        if( !empty($sku_list) ){
+            $_updateData = [];
+            $_updateData['sales_status'] = 0;
+            $_updateData['is_invalid'] = 1;
+            $_updateData['is_deleted'] = 1;
+            $set_id = '';
+            foreach( $sku_list as $item_id => $v ){
+                $set_id .= $item_id.',';
+            }
+            $set_id = trim($set_id,',');
+            $where['id'] = ['in',$set_id];
+            $this->where($where)->update($_updateData);
+        }
+        $goodsInfo['sku_param'] = $skuParam;
+        if(!empty($goodsInfo['sku_param'])){
+            if( !$this->createGoodsSku($goods_id,$goodsInfo) ){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 获取商品sku列表
+     * @param $goods_id     主商品id
+     * @return mixed
+     */
+    public function getGoodsItems($goods_id,$where=[]){
+        /*圣母利亚的子民*/
+        $goodsItemPropValModel = new \app\goods\model\GoodsItemPropVal();
+        $goodsPropModel = new \app\goods\model\GoodsProp();
+        $goodsPropValModel = new \app\goods\model\GoodsPropVal();
+
+        $sql_where['i.goods_id'] = $goods_id;
+        if( !empty($where) ){
+            foreach( $where as $k => $v ){
+                $sql_where["i.{$k}"] = $v;
+            }
+        }
+        //构造子查询
+        $subQuery = $goodsItemPropValModel->alias('ipv')
+            ->field('group_concat(pv.id ORDER BY p.sort DESC) as pv_name')
+            ->join($goodsPropValModel->getTable().' pv','pv.id = ipv.goods_prop_val_id')
+            ->join($goodsPropModel->getTable().' p','p.id = pv.goods_prop_id')
+            ->where('ipv.goods_item_id = i.id')
+            ->group('ipv.goods_item_id')
+            ->buildSql();
+        //构造主查询
+        $list = $this->alias('i')
+            ->field(['i.*',$subQuery.' as pv_id'])
+            ->where($sql_where)
+            ->select();
+        //sql 语句
+//        $pv_sql = "SELECT group_concat(pv.id ORDER BY p.sort DESC) FROM {$goodsItemPropValModel->getTable()} AS ipv";
+//        $pv_sql .= " INNER JOIN {$goodsPropValModel->getTable()} AS pv ON pv.id = ipv.goods_prop_val_id";
+//        $pv_sql .= " LEFT JOIN {$goodsPropModel->getTable()} AS p ON p.id = pv.goods_prop_id";
+//        $pv_sql .= " WHERE ipv.goods_item_id = i.id GROUP BY ipv.goods_item_id";
+//        /*----------华丽的分割线-------*/
+//        $sql = "SELECT i.*,({$pv_sql}) as pv_id";
+//        $sql .= " FROM {$this->getTable()} AS i";
+//        $sql .= " WHERE i.goods_id = {$goods_id}".$where_sql;
+//        $list = $this->query($sql);
+        return $list;
+    }
+
+    /**
+     * 获取goods_item 详细信息
+     * @param $item_id      sku的item_id
+     */
+    public function getItemInfo($item_id){
+        if( empty($item_id) ){
+            return [];
+        }
+        /*圣母利亚的子民*/
+        $goodsModel = new \app\goods\model\Goods();
+        $goodsItemPropValModel = new \app\goods\model\GoodsItemPropVal();
+        $goodsPropModel = new \app\goods\model\GoodsProp();
+        $goodsPropValModel = new \app\goods\model\GoodsPropVal();
+        //构造子查询
+        $subQuery = $goodsItemPropValModel->alias('ipv')
+            ->field('group_concat(pv.pv_name ORDER BY p.sort DESC) as pv_name')
+            ->join($goodsPropValModel->getTable().' pv','pv.id = ipv.goods_prop_val_id')
+            ->join($goodsPropModel->getTable().' p','p.id = pv.goods_prop_id')
+            ->where('ipv.goods_item_id = i.id')
+            ->group('ipv.goods_item_id')
+            ->buildSql();
+        //构造主查询
+        $info = $this->alias('i')
+            ->field(['g.goods_name','g.ship_free','g.weight','i.*',$subQuery.' as pv_name'])
+            ->join($goodsModel->getTable().' g','g.id = i.goods_id')
+            ->where('i.id',$item_id)
+            ->find();
+        return $info;
+    }
+}

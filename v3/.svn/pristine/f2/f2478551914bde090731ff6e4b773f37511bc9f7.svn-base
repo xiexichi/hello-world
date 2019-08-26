@@ -1,0 +1,20 @@
+<?php
+/**
+ * 生成二唯码
+ */
+namespace app\picshow\model;
+
+use think\Db;
+use app\common\model\CommonModel;
+
+class Qrcode extends CommonModel
+{
+	// 自动时间
+	protected $autoWriteTimestamp = 'datetime';
+
+	// 一对一关联应用表
+	public function appThird()
+  {
+		return $this->hasOne('app\apps\model\AppThird', 'id', 'third_app_id');
+  }
+}

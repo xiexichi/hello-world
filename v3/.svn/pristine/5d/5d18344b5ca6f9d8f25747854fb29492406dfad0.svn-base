@@ -1,0 +1,260 @@
+<?php
+
+/**
+ * excel
+ */
+class Excel {
+
+    // protected $CI;
+    protected $header;
+	protected $PHPExcel;
+	protected $alphabet = array('','A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+    // 记录当前行数
+    protected $row = 1;
+
+	public function __construct() 
+	{
+
+        vendor('phpExcel.PHPExcel');
+
+        // Create new PHPExcel object
+        $this->PHPExcel = new \PHPExcel();
+    }
+
+    /**
+     * 导出普通表格
+     * @param 表格正文数据
+     * @param 表格头数据
+     * @param 文件名称变量
+     */
+    public function index($data, $header, $filename)
+    {
+        // 设置标题
+        $this->_setHeader($header);
+        // 设置内容
+        $this->_setBody($data);
+        // 导出        
+        $this->downloadXlsx($this->_getFilename($filename));
+    }
+
+    /**
+     * 导出合并表格
+     * @param 表格正文数据
+     * @param 表格头数据
+     * @param 文件名称变量
+     */
+    public function merge($data, $header, $filename)
+    {
+        // 设置标题
+        $this->_setHeader($header);
+        // 设置内容
+        $this->_setMergeBody($data);
+        // 导出
+        $this->downloadXlsx($this->_getFilename($filename));
+    }
+
+    /**
+     * 自定义模式，多数据模式
+     * @param 表格集合数据 [['header'=>array(), 'data' => array(), 'bodyType' => 'merge'],[]]  
+     * bodyType: 正文类型，不填的话为普通单行模式，如果为merge，表示合并模式
+     * @param 文件名称变量
+     */
+    public function custom($datas, $filename)
+    {
+        foreach ($datas as $key => $value) {
+            // 设置标题
+            $this->_setHeader($value['header']);
+            // 设置内容
+            if ( isset($value['bodyType']) && $value['bodyType'] == 'merge')
+                $this->_setMergeBody($value['data']);
+            else
+                $this->_setBody($value['data']);
+        }
+        // 导出
+        $this->downloadXlsx($this->_getFilename($filename));
+    }
+
+    /**
+     * 设置行头
+     */
+    private function _setHeader($header = array())
+    {
+        // 开始行数
+        if ($this->row > 1) $this->row++;
+        // 设置当前的sheet
+        $this->PHPExcel->setActiveSheetIndex(0);
+
+        $col = 1;
+        foreach ($header as $key => $value) {
+            $this->PHPExcel->getActiveSheet()->setCellValue($this->autoGetCell($col, $this->row), $value['title']);
+        }
+        // 冻结窗格
+        // $this->PHPExcel->getActiveSheet()->freezePane('A2');
+        // 第一行加粗
+        $this->PHPExcel->getActiveSheet()->getStyle("A{$this->row}:Z{$this->row}")->getFont()->setBold(true);
+        // 行头数据，设置内容时使用
+        $this->header = $header;
+        // 下一行
+        $this->row++;
+    }
+
+    /**
+     * 设置内容，普通形式
+     */
+    private function _setBody($data = array())
+    {
+        foreach ($data as $key => $value) {
+            // 设置body
+            $col = 1;
+            foreach ($this->header as $k => $v) {
+                // 第几列
+                $i = $this->alphabet[$col];
+                // 宽度
+                $width = set_init($v['width'], 20);
+                // 列值
+                $colValue = isset($value[$k]) ? $value[$k] : '';
+
+                // 商品项目
+                $this->PHPExcel->getActiveSheet()->setCellValue("{$i}{$this->row}", $colValue);
+                // 设置字体
+                $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$this->row}")->getFont()->setName('宋体');
+                // 设置宽度
+                $this->PHPExcel->getActiveSheet()->getColumnDimension($i)->setWidth($width);
+                // 左对齐
+                $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$this->row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_JUSTIFY);
+               // 垂直居中
+               $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$this->row}")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+               
+                // 下一列
+                $col++;
+            }
+            // 下一行
+            $this->row++;
+        }
+    }
+
+    /**
+     * 设置内容，合并形式
+     * 主要是有项目的，比如订单列表，有订单项目，退换货单，有项目
+     * @param 数据
+     * @param 项目字段名称
+     * 例子
+     [
+        0=> [
+            id = 1,
+            items => [xxx]
+        ]
+     ]
+     */
+    private function _setMergeBody($data, $item = 'items')
+    {
+        foreach ($data as $key => $value) {
+            // 合并后的最底行数
+            $itemsCount =  ! empty($value[$item]) ? count($value[$item]) : 1;
+            $rowBottom = $this->row + $itemsCount - 1;
+        
+            // 设置body
+            $col = 1;
+            foreach ($this->header as $k => $v) {
+                // 第几列
+                $i = $this->alphabet[$col];
+                // 宽度
+                $width = $v['width'];
+                // 列值
+                $colValue = isset($value[$k]) ? $value[$k] : '';
+
+                // 根据是否为合并格来分类型
+                if (empty($v['merge'])) {
+
+                    // 商品项目
+                    $_row = $this->row;
+                    if ( ! empty($value[$item])) {
+                        foreach ($value[$item] as $_k => $_v) {
+                            // 合并的列值
+                            $_colValue = isset($_v[$k]) ? $_v[$k] : '';
+
+                            $this->PHPExcel->getActiveSheet()->setCellValue("{$i}{$_row}", $_colValue);
+                            // 设置字体
+                            $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$_row}")->getFont()->setName('宋体');
+                            // 设置宽度
+                            $this->PHPExcel->getActiveSheet()->getColumnDimension($i)->setWidth($width);
+                            // 左对齐
+                            $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$_row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_JUSTIFY);
+                            // 垂直居中
+                            $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$this->row}")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                            $_row++;
+                        }
+                    }
+                }else {
+
+                    $this->PHPExcel->getActiveSheet()->setCellValue("{$i}{$this->row}", $colValue);
+                    // 合并
+                    $this->PHPExcel->getActiveSheet()->mergeCells("{$i}{$this->row}:{$i}{$rowBottom}");
+                    // 垂直居中
+                    $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$this->row}:{$i}{$rowBottom}")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                    // 左对齐
+                    $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$this->row}:{$i}{$rowBottom}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_JUSTIFY);
+                    // 设置字体
+                    $this->PHPExcel->getActiveSheet()->getStyle("{$i}{$this->row}:{$i}{$rowBottom}")->getFont()->setName('宋体');
+                    // 设置宽度
+                    $this->PHPExcel->getActiveSheet()->getColumnDimension($i)->setWidth($width);
+                }
+
+                ++$col;
+            }
+            // 下一个订单开始的行数
+            $this->row = $rowBottom + 1;
+        }
+    }
+
+    /**
+     * 取出单元格
+     * @param int 从哪一列开始
+     * @param int 从哪一行开始
+     */
+    public function autoGetCell(&$col, $row = 1)
+    {	
+    	$word = $this->alphabet[$col];
+    	$word .= $row;
+    	$col++;
+    	return $word;
+    }
+
+    // 下载成xlsx
+    public function downloadXlsx($filename)
+    {
+    	// Redirect output to a client’s web browser (Excel2007)
+    	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    	header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
+    	header('Cache-Control: max-age=0');
+    	// If you're serving to IE 9, then the following may be needed
+    	header('Cache-Control: max-age=1');
+
+    	// If you're serving to IE over SSL, then the following may be needed
+    	header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+    	header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+    	header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+    	header ('Pragma: public'); // HTTP/1.0
+
+        $objWriter = PHPExcel_IOFactory::createWriter($this->PHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+    }
+
+    private function _getFilename($filename)
+    {
+        $filename .= '-';
+        if ( ! empty($data['start_date'])) {
+            $filename .= $data['start_date'];
+            if ( ! empty($data['end_date'])) {
+                if ($data['start_date'] != $data['end_date']) 
+                    $filename .= '_'.$data['end_date'];
+            }else {
+                $filename .= '_'.date('Y-m-d');
+            }
+        }else {
+            $filename .= date('Y-m-d');
+        }
+        return $filename;
+    }
+
+}

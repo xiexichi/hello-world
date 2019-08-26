@@ -1,0 +1,63 @@
+<?php
+/**
+ * 商品分类
+ */
+namespace app\goods\controller;
+use think\Db;
+
+class Category extends Base
+{
+
+    //获取所有分类
+    public function getCateAll(){
+        if( !$checkDate = $this->validate->getCateAll(input()) ){
+            return errorJson(200201, $this->validate->getError());
+        }
+        $list = $this->model->getCateAll($checkDate);
+        return successJson($list);
+    }
+
+    public function checkRepeatCateName(){
+        $param = input('post.','');
+        if( empty($param['cate_name']) ){
+            return errorJson(200201, '参数错误');
+        }
+        if( isset($param['id']) ){
+            $where['id'] = ['<>',$param['id']];
+        }
+        $where['cate_name'] = ['=',$param['cate_name']];
+        return successJson(!$this->model->checkRepeatCateName($where));
+    }
+
+    //获取单个分类信息
+    public function getCateInfo(){
+        if( !$checkDate = $this->validate->getCateInfo(input('post.')) ){
+            return errorJson(10001, $this->validate->getError());
+        }
+        $info = $this->model->getCateInfo($checkDate['id']);
+        return successJson($info);
+    }
+
+    //获取单个分类的子分类
+    public function getGoodsCateChild()
+    {
+        $param = input('post.');
+        if (!$checkDate = $this->validate->getGoodsCateList($param)) {
+            return errorJson(10001, $this->validate->getError());
+        }
+        $cateInfo = Db::table($this->goodsCateModel->getTable())
+            ->where('id', $checkDate['cate_id'])
+            ->find();
+        if (empty($cateInfo)) {
+            return errorJson(10002, '分类不存在');
+        }
+        $where['pid'] = ['or', $checkDate['cate_id']];
+        $catelist = Db::table($this->goodsCateModel->getTable())
+            ->where('id',$checkDate['cate_id'])
+            ->whereOr('pid',$checkDate['cate_id'])
+            ->select();
+        $list = $this->goodsCateModel->set_tree($catelist);
+        return successJson($list);
+    }
+
+}

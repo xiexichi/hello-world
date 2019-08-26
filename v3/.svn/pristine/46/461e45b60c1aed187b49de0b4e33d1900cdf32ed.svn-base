@@ -1,0 +1,13 @@
+<?php
+
+namespace app\order\model;
+
+class OrderGoods extends Base
+{
+    protected $name = 'order_goods_info';
+
+    //创建商品订单
+    public function createOrderGoods(){
+
+    }
+}

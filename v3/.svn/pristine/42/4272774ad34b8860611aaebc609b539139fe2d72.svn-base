@@ -1,0 +1,22 @@
+<?php
+
+/**
+ *  商品标签
+ */
+
+namespace app\activity\validate;
+
+class CouponUser extends Base
+{
+    public function getUserList($data)
+    {
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+        ];
+        $message = [
+            'user_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+}

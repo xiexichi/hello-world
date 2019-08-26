@@ -1,0 +1,90 @@
+// layui
+layui.use(['table', 'form'], function (){
+  const table = layui.table
+  const form = layui.form
+
+  // 查询参数
+  let url = '/system/delivery/index'
+  const parseUrl = parseParams(query)
+  if(parseUrl){
+    url += '?' + parseUrl
+  }
+  
+  // 运费模板数据表格
+  table.render({
+    elem: '#deliveryDataTable',
+    height: 'auto',
+    url: url,
+    limit: 20,
+    toolbar: '#toolbarTpl',
+    defaultToolbar: false,
+    headers: {
+      ctrl: SHOP_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:80},
+      {field: 'delivery_name', title: '配送标题'},
+      {field: 'delivery_desc', title: '配送说明'},
+      {field: 'is_default', title: '默认', templet: function(d){
+        return d.is_default ==  1 ? '默认模板' : ''
+      }},
+      {field: 'ctrl', title: '操作', width:200, toolbar: '#ctrlTpl'}
+    ]]
+  })
+
+  //监听表格工具栏事件
+  table.on('toolbar(deliveryDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    if (layEvent === 'add') {
+      layer.open({
+        title: '添加运费模板',
+        type: 2,
+        area: ['520px', '620px'],
+        content: '/system/delivery/detail'
+      })
+    }
+  })
+
+  //监听行工具事件
+  table.on('tool(deliveryDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    if (layEvent === 'edit') {
+      layer.open({
+        title: '修改运费模板信息',
+        type: 2,
+        area: ['520px', '620px'],
+        content: '/system/delivery/detail?id=' + data.id
+      })
+    } else if (layEvent == 'del') {
+      layer.confirm('删除后不能恢复', {icon: 3, title: '删除确认'}, function (index) {
+        request.setHost('shop_data').post('/system/delivery/delete', {ids: data.id}, function(json) {
+          layer.msg(json.msg, {
+            time: 1500
+          },function () {
+            window.location.reload()
+          })
+        })
+      })
+    }
+  })
+
+  // 查询店铺列表
+  request.setHost('center_data').get('/merchant/shop/all', function(json) {
+    if (json.code === 0) {
+      const items = json.data
+      for (var j = 0; j < items.length; ++j) {
+        $('#shopId').append('<option value="' + items[j].id + '">' + items[j].name + '</option>')
+      }
+      if (!empty(query.shop_id)) {
+        $('#shopId').val(query.shop_id)
+      }
+      // 重新渲染select
+      form.render('select')
+    }
+  })
+
+})

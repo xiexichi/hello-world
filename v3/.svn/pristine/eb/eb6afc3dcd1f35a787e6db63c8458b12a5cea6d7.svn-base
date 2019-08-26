@@ -1,0 +1,10 @@
+<?php
+
+namespace app\order\model;
+
+class OrderDeliveryPackage extends Base
+{
+    protected $name = 'order_delivery_package';
+
+
+}

@@ -1,0 +1,128 @@
+<!--导航-->
+<ul class="layui-nav" >
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html">全部</a></li>
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html?state=1">上架中</a></li>
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html?state=0">已下架</a></li>
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html?delete=1">已删除</a></li>
+</ul>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="goods" lay-filter="test"></table>
+    </div>
+</div>
+<script>
+    $('.nav_list').eq(0).addClass('layui-this');
+    var param = '/?';
+    var state = getUrlParam('state');
+    if( state != null ){
+        param += 'status='+state;
+        $('.nav_list').removeClass('layui-this');
+        if( state == 1 ){
+            $('.nav_list').eq(1).addClass('layui-this');
+        }else{
+            $('.nav_list').eq(2).addClass('layui-this');
+        }
+    }
+    var _del = getUrlParam('delete');
+    if( _del != null ){
+        $('.nav_list').removeClass('layui-this');
+        param += 'delete='+_del;
+        $('.nav_list').eq(3).addClass('layui-this');
+    }
+    $(document).ready(function(){
+        loadlist();
+    });
+    function loadlist(){
+        var table = layui.table;
+        //执行渲染
+        table.render({
+            elem: '#goods' //
+            ,height: 'auto' //容器高度
+            ,url: '/goods/goods/getGoodsAll'+param
+            ,page: true
+            , toolbar: '<div>' +
+                '<button class="layui-btn layui-btn-sm layui-btn-primary" onclick="add()">添加商品'+
+                '</button>' +
+                '</div>'
+            ,headers: {
+                ctrl: SHOP_DATA
+            }
+            ,cols: [[
+                {field: 'id', title: 'ID', width:80}
+                ,{field: 'goods_name', title: '商品名', width:500}
+                ,{field: 'sku_sn', title: '货号', width:100}
+                ,{field: 'sort', title: '排序', width:100}
+                ,{field: 'update_time', title: '更新时间', width:200}
+                ,{field: 'id', title: '操作', width:200, templet: '#ctrlTpl'}
+            ]]
+        });
+    }
+    function add(){
+        var toUrl = "/goods/goods/add.html";
+        layer.open({
+            title:'添加商品',
+            type:2,
+            shadeClose: true,
+            closeBtn:1,
+            area:['95%','95%'],
+            content:toUrl
+        })
+    }
+    function detail(id){
+        var toUrl = "/goods/goods/detail.html?id="+id;
+        layer.open({
+            title:'商品编辑',
+            type:2,
+            shadeClose: true,
+            closeBtn:1,
+            area:['95%','95%'],
+            content:toUrl
+        })
+    }
+
+    function sales_detail(id){
+        var toUrl = "/goods/goods/sales_detail.html?id="+id;
+        layer.open({
+            title:'商品编辑',
+            type:2,
+            shadeClose: true,
+            closeBtn:1,
+            area:['90%','60%'],
+            content:toUrl
+        })
+    }
+
+    function deleted(id){
+        layer.confirm("是否确认删除！删除后相关商品关联将取消！", {
+            btn: ["确定","取消"] //按钮
+        }, function(){
+            var param = {};
+            param.id = id;
+            request.setHost(SHOP_DATA).post('/goods/goods_tag/deleted',param, function(res){
+                if (res.code == 0) {
+                    // 成功提示
+                    layer.msg(res.msg);
+                    setTimeout(function(){
+                        loadlist();
+                    },1000);
+                } else {
+                    // 错误提示
+                    layer.msg(res.msg);
+                }
+            });
+        });
+        return false;
+    }
+    function callback(){
+        loadlist();
+        layer.closeAll();
+    }
+</script>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+    <a href="javascript:void(0);" onclick="sales_detail({{d.id}})" class="layui-table-link">sku管理</a>
+    <a href="javascript:void(0);" onclick="detail({{d.id}})" class="layui-table-link">编辑</a>
+    <a href="javascript:void(0);" onclick="sales({{d.id}})" class="layui-table-link">{{ d.sales_status ? '下架' : '上架' }}</a>
+    <a href="javascript:void(0);" onclick="deleted({{d.id}})" class="layui-table-link">{{ d.is_deleted ? '恢复' : '删除' }}</a>
+</script>

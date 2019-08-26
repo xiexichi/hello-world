@@ -1,0 +1,59 @@
+<?php
+
+namespace app\goods\controller;
+
+use think\Exception;
+
+class Goods extends Base
+{
+
+    //获取所有标签列表
+    public function getGoodsAll(){
+        if( !$checkData = $this->validate->getGoodsAll(input('get.')) ){
+            return errorJson(200101, $this->validate->getError());
+        }
+        $list = $this->model->getGoodsAll($checkData['page'],$checkData['limit'],true);
+        return successJson($list['list'],'',$list['count']);
+    }
+
+    //创建商品
+    public function createGoods(){
+        //参数检查
+        $param = input('post.',[]);
+        if( empty($param) ){
+            return errorJson(200101, '参数错误');
+        }
+        if( !$goodsInfo = $this->validate->goodsCreateData($param) ){
+            return errorJson(200101, $this->validate->getError());
+        }
+        //创建商品
+        $returnCode = 0;
+        $this->model->startTrans();
+        try{
+            //创建主商品
+            if( !$goods_id = $this->model->createGoods($goodsInfo) ){
+                throw new Exception('主商品创建失败');
+            }
+            //商品规格参数执行参数配置
+            if( !empty($goodsInfo['attr_list']) ){
+                $goodsAttrModel = new \app\goods\model\GoodsAttr();
+                if( $goodsAttrModel->setBind($goods_id,$goodsInfo['attr_list']) === false ){
+                    throw new Exception('网络错误，商品attr处理错误');
+                }
+            }
+            //商品sku配置
+            $goodsInfo['sku_param'] = empty($goodsInfo['sku_param']) ? [] : $goodsInfo['sku_param'];
+            $goodsItemModel = new \app\goods\model\GoodsItem();
+            if( $goodsItemModel->createGoodsSku($goods_id,$goodsInfo) === false ){
+                throw new Exception('网络错误,sku商品处理出错x1');
+            }
+            $returnCode = $goods_id;
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($returnCode, $e->getMessage());
+        }
+        return successJson($returnCode,'商品添加成功');
+    }
+
+}

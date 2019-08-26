@@ -1,0 +1,68 @@
+// layui
+layui.use('table', function (){
+  const table = layui.table
+
+  // 运费模板数据表格
+  table.render({
+    elem: '#myDataTable',
+    height: 'auto',
+    url: '/picshow/qrcode/index',
+    limit: 20,
+    toolbar: '#toolbarTpl',
+    defaultToolbar: false,
+    headers: {
+      ctrl: CENTER_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:60},
+      {field: 'app_third', title: '应用名称', templet: function(d){
+        return d.app_third ? d.app_third.name : '-'
+      }},
+      {field: 'url', title: '二唯码内容'},
+      {field: 'create_time', title: '添加时间', width: 180},
+      {field: 'desc', title: '备注'},
+      {field: 'ctrl', title: '操作', width:180, toolbar: '#ctrlTpl'}
+    ]]
+  })
+
+  //监听表格工具栏事件
+  table.on('toolbar(myDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    if (layEvent === 'add') {
+      layer.open({
+        title: '生成二唯码',
+        type: 2,
+        area: ['500px', '420px'],
+        content: '/picshow/qrcode/detail'
+      })
+    }
+  })
+
+  //监听行工具事件
+  table.on('tool(myDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    if (layEvent === 'edit') {
+      layer.open({
+        title: '修改二唯码记录',
+        type: 2,
+        area: ['500px', '380px'],
+        content: '/picshow/qrcode/detail?id=' + data.id
+      })
+    } else if (layEvent == 'del') {
+      layer.confirm('删除后不能恢复', {icon: 3, title: '删除确认'}, function (index) {
+        request.setHost('center_data').post('/picshow/qrcode/delete', {ids: data.id}, function(json) {
+          layer.msg(json.msg, {
+            time: 1000
+          },function () {
+            window.location.reload()
+          })
+        })
+      })
+    }
+  })
+
+})

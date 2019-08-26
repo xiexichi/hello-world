@@ -1,0 +1,52 @@
+<?php
+
+/**
+ *  商品属性值
+ */
+
+namespace app\goods\validate;
+
+class GoodsPropVal extends Base
+{
+    public function getPropValAll($data){
+        $rule = [
+            'prop_id' => 'require|integer',
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function getPropValInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+    public function add($data){
+        $rule = [
+            'goods_prop_id' => 'require|integer',
+            'pv_name' => 'require|chsDash',
+            'pv_type_val' => 'require',
+            'pv_desc' => 'chsDash',
+            'pv_erp_code' => 'chsDash',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function edit($data){
+        $rule = [
+            'id' => 'require|integer',
+            'goods_prop_id' => 'require|integer',
+            'pv_name' => 'require|chsDash',
+            'pv_type_val' => 'require',
+            'pv_desc' => 'chsDash',
+            'pv_erp_code' => 'chsDash',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+}

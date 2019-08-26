@@ -1,0 +1,215 @@
+// layui
+let detailLayer
+let detailIframe
+layui.use(['table', 'form', 'laydate'], function (){
+  const table = layui.table
+  const form = layui.form
+  const laydate = layui.laydate
+
+  laydate.render({
+    elem: '#start_time',
+    type: 'datetime'
+  })
+  laydate.render({
+    elem: '#end_time',
+    type: 'datetime'
+  })
+
+  // 查询参数
+  let url = '/picshow/index/index'
+  const parseUrl = parseParams(query)
+  if(parseUrl){
+    url += '?' + parseUrl
+  }
+  // 数据表格
+  table.render({
+    elem: '#myDataTable',
+    height: 'auto',
+    url: url,
+    limit: 20,
+    toolbar: '#toolbarTpl',
+    defaultToolbar: false,
+    headers: {
+      ctrl: CENTER_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:60, sort: true},
+      {field: 'sort', title: '<i class="layui-icon layui-icon-edit" style="color:#FFB800"></i>排序', width:90, sort: true, edit: 'number'},
+      {field: 'imgurl', title: '图片', width:130, templet: function(d){
+        return '<img src="' + d.imgurl + '!w200" width="100" />'
+      }},
+      {field: 'title', title: '广告标题'},
+      {field: 'position_id', title: '所属广告位', templet: function(d){
+        return d.position.position_name
+      }},
+      {field: 'module_id', title: '内容模块', templet: function(d){
+        return d.module.module_name
+      }},
+      {field: 'parameter', title: '参数', templet: function(d){
+        return parseParams(d.parameter, false)
+      }},
+      {field: 'start_time', title: '有效时间', width: 180, align:'center', style:'height:70px;', templet: function(d){
+        return d.start_time + '<br>至<br>' + d.end_time
+      }},
+      {field: 'status', title: '状态', align:'center', width: 100, templet: '#statusTpl'},
+      {field: 'desc', title: '备注'},
+      {field: 'ctrl', title: '操作', width:120, toolbar: '#ctrlTpl'}
+    ]]
+  })
+
+  //监听表格工具栏事件
+  table.on('toolbar(myDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    if (layEvent === 'add') {
+      detailLayer = layer.open({
+        title: '添加广告',
+        type: 2,
+        area: ['580px', '620px'],
+        content: '/picshow/index/detail',
+        success: function(layero, index) {
+          // 获取子窗口对像
+          detailIframe = window[layero.find('iframe')[0]['name']]
+        }
+      })
+    }
+  })
+
+  //监听行工具事件
+  table.on('tool(myDataTable)', function (obj) {
+    const loadlayer = layer.load()
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    if (layEvent === 'edit') {
+      detailLayer = layer.open({
+        title: '修改广告',
+        type: 2,
+        area: ['580px', '620px'],
+        content: '/picshow/index/detail?id=' + data.id,
+        success: function(layero, index) {
+          // 获取子窗口对像
+          detailIframe = window[layero.find('iframe')[0]['name']]
+        }
+      })
+      layer.close(loadlayer)
+    } else if (layEvent == 'del') {
+      layer.confirm('删除后不能恢复', {icon: 3, title: '删除确认'}, function (index) {
+        request.setHost('center_data').post('/picshow/index/delete', {ids: data.id}, function(json) {
+          layer.close(loadlayer)
+          layer.msg(json.msg, {
+            time: 1000
+          },function () {
+            window.location.reload()
+          })
+        })
+      })
+    }
+  })
+
+  // 监听切换状态
+  form.on('switch(switch-status)', function (obj) {
+    const json = JSON.parse(decodeURIComponent($(this).data('json')))
+    let status = $(this).data('value')
+    let params = table.clearCacheKey(json)
+    params.status = (status == 1 ? 0 : 1)
+    params.parameter = parseParams(params.parameter, false)
+    $(this).data('value', params.status)
+
+    request.setHost('center_data').post('/picshow/index/edit', params, function (json) {
+      layer.msg(json.msg, {
+        time: 800
+      })
+    })
+  })
+
+  //监听单元格编辑
+  table.on('edit(myDataTable)', function(obj){
+    var value = parseInt(obj.value), //得到修改后的值
+        params = obj.data, //得到所在行所有键值
+        field = obj.field //得到字段
+
+    if (value >= 0) {
+      params[field] = value
+      params.parameter = parseParams(params.parameter, false)
+      request.setHost('center_data').post('/picshow/index/edit', params, function (json) {
+        layer.msg(json.msg, {
+          time: 800
+        })
+      })
+    } else {
+      layer.msg('只能输入数字')
+      return false
+    }
+  })
+
+  // 查询广告位列表
+  request.setHost('center_data').get('/picshow/position/all', function(json) {
+    if (json.code === 0) {
+      const items = json.data
+      for (var j = 0; j < items.length; ++j) {
+        $('#positionId').append('<option value="' + items[j].id + '">' + items[j].position_name + '</option>')
+      }
+      if (!empty(query.position_id)) {
+        $('#positionId').val(query.position_id)
+      }
+      // 重新渲染select
+      form.render('select')
+    }
+  })
+
+  // 查询内容模块列表
+  request.setHost('center_data').get('/picshow/module/all', function(json) {
+    if (json.code === 0) {
+      // $('#moduleId').empty();
+      const items = json.data
+      for (var j = 0; j < items.length; ++j) {
+        $('#moduleId').append('<option value="' + items[j].id + '">' + items[j].module_name + '</option>')
+      }
+      if (!empty(query.module_id)) {
+        $('#moduleId').val(query.module_id)
+      }
+      // 重新渲染select
+      form.render('select')
+    }
+  })
+
+})
+
+
+//打开图片空间
+let photoLayer
+function openPhotoSpace() {
+  const photoSpaceUrl = 'http://photo.25boy.com/?token='+photo_space_token+'&url='+photo_handle_url+'&showconfirm=1'
+  photoLayer = layer.open({
+    type: 2,
+    content: photoSpaceUrl,
+    shadeClose: true,
+    area: ['80%', '90%']
+  })
+}
+
+/**
+ * 选择图片方法
+ * 从handlePhoto.html文件自动发起调用
+ */
+function handlePhoto(content) {
+  if(content == 'close'){
+    // 关闭窗口
+    layer.close(photoLayer)
+  }else{
+    // 业务处理
+    var json = JSON.parse(content);
+    if( json.length == 0 ){
+      layer.msg('请选择图片');
+      return false
+    }
+    if( json.length > 1 ){
+      layer.msg('只能选择一张图片哦');
+      return false
+    }
+    detailIframe.app.setValue('imgurl', json[0].image)
+    layer.close(photoLayer)
+  }
+}

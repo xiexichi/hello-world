@@ -1,0 +1,28 @@
+<?php
+
+namespace app\order\validate;
+
+class Order extends Base
+{
+    public function getBuyGoodsList($data){
+        $rule = [
+            'user_id' => 'require|integer',
+            'shop_id' => 'integer',
+            'channel' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function getTotal($data){
+        $rule = [
+            'user_id' => 'require|integer',
+            'address_id' => 'integer',
+            'delivery_id' => 'integer',
+            'shop_id' => 'integer',
+            'channel' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+}

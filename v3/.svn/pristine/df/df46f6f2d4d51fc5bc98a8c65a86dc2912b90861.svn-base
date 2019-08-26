@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * 店铺库存
+ */
+
+namespace app\depot\model;
+
+
+class ShopDepot extends Base
+{
+
+	public function addBefore(){
+		if (empty($this->data['availavle_quantity'])) {
+			$this->data['availavle_quantity'] = $this->data['quantity'];
+		}
+	}
+
+
+	public function editBefore(){
+		if (empty($this->data['availavle_quantity'])) {
+			$this->data['availavle_quantity'] = $this->data['quantity'];
+		}
+	}
+
+}

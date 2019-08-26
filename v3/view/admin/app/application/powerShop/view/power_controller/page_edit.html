@@ -1,0 +1,245 @@
+<style>
+    .table-box{margin-top:20px;}
+    body{overflow-y: scroll;}
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-tab layui-tab-card">
+        <ul class="layui-tab-title">
+            <li class="layui-this">基本信息</li>
+            <li>内含方法</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form table-box" action="" id="form" lay-filter="form">
+                    <input type="hidden" name="id" value="0">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">显示名称</label>
+                            <div class="layui-input-inline">
+                                <input type="title" name="title" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">代码名称</label>
+                            <div class="layui-input-inline">
+                                <input type="name" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_show" value="1" title="显示" checked="">
+                            <input type="radio" name="is_show" value="2" title="隐藏">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">上级模块</label>
+                        <div class="layui-input-inline">
+                            <select name="module_id" lay-search>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序</label>
+                        <div class="layui-input-inline">
+                            <input type="number" min="0" max="255" name="sort" placeholder="0-255" value="50" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">(排序由大到小排列)</div>
+                    </div>
+
+                    <div class="layui-form-item" style="text-align: right;">
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit lay-filter="formEdit">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            <button id="delBtn" class="layui-btn layui-btn-danger">删除</button>
+                            <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-tab-item">
+                <table class="layui-table" id="actionList" lay-filter="actions"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="ctrlTpl">
+    <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delAction" >删除</button>
+    <button class="layui-btn {{# if(d.is_default==1){ }} layui-btn-disabled {{# } }} layui-btn-sm setDefault" lay-event="setDefault" >默认</button>
+</script>
+
+<script type="text/javascript">
+    var form = layui.form;
+    var table = layui.table;
+    var controllerID = getUrlParam('id');
+    var $ = layui.jquery;
+
+    function loadCate(){
+        // 获取模块列表
+        request.setHost(SHOP_DATA).get('/power/power_module/all',{}, function(res){
+            console.log(res);
+            if( res.code == 0 ){
+                var selectDom = $('select[name=module_id]');
+                selectDom.append('<option value="0">请选择上级模块</option>');
+                for(var i in res.data){
+                    selectDom.append('<option value="'+res.data[i].id+'">'+res.data[i].title+'</option>');
+                }
+                form.render();
+            }
+        });
+    }
+
+
+    $(document).ready(function(){
+        loadCate();
+        layui.use(['form','table'], function(){
+            request.setHost(SHOP_DATA).post('/power/power_controller/one',{'id':controllerID,attachParam:'showActions'}, function(res) {
+                if( res.code == 0 ){
+                    info = res.data;
+                    form.val("form", {
+                        "id": info.id,
+                        "title": info.title,
+                        "name":info.name,
+                        "is_show":String(info.is_show),
+                        "module_id":info.module_id,
+                        "sort":info.sort
+                    });
+                    form.render();
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+
+            table.render({
+                id:actionList
+                ,elem: '#actionList'
+                ,height: 'auto'
+                ,url: '/power/power_action/all'
+                ,where:{type:'son_of_controller',controller_id:controllerID}
+                ,page: false
+                ,headers: {ctrl: SHOP_DATA}
+                ,cols: [[
+                    {field: 'id', title: 'ID', width: "20%"},
+                    {field: 'name', title: '名称', width: "60%",edit:'stock', templet: '<div><input type="text" value="{{ d.name }}" lay-verify="required" placeholder="请输入方法名称" autocomplete="off" class="layui-input" style="border:none;height: 28px;"></div>'},
+                    {field: 'ids', title: '操作', width:"20%",templet: '#ctrlTpl'}
+                ]]
+                ,skin:'line'
+            });
+            table.on('edit(actions)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+                // console.log(obj.value); //得到修改后的值
+                // console.log(obj.field); //当前编辑的字段名
+                // console.log(obj.data); //所在行的所有相关数据  
+                var name = obj.value;
+                var actionID = obj.data.id;
+                if(name == '' || name == ' ' || !name){
+                    return;
+                }
+                //修改方法的名字
+                request.setHost(SHOP_DATA).post('/power/power_action/edit',{id:actionID,name:name}, function(res){
+                    if (res.code == 0) {
+                        // 成功提示
+                        layer.msg(res.msg);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            });
+
+            table.on('tool(actions)', function(obj) {
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+                switch(layEvent){
+                    case 'delAction':
+                        layer.confirm('真的删除行么', function(index){
+                            layer.close(index);//关闭确认框
+                            //向服务端发送删除指令
+                            request.setHost(SHOP_DATA).post('/power/power_action/delete',{ids:data.id}, function(res){
+                                if (res.code == 0) {
+                                    // 成功提示
+                                    layer.msg(res.msg);
+                                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                } else {
+                                    // 错误提示
+                                    layer.msg(res.msg);
+                                }
+                            });
+                        });
+                    break;
+                    case 'setDefault':
+                        layer.confirm('确认将该方法设为当前控制器的默认方法吗?', function(index){
+                            layer.close(index);//关闭确认框
+                            //向服务端发送删除指令
+                            request.setHost(SHOP_DATA).post('/power/power_action/setDefault',{action_id:data.id,controller_id:controllerID}, function(res){
+                                if (res.code == 0) {
+                                    // 成功提示
+                                    layer.msg(res.msg);
+                                    changeDefault(tr);
+                                } else {
+                                    // 错误提示
+                                    layer.msg(res.msg);
+                                }
+                            });
+                        });
+                    break;
+                }
+            });
+
+            function changeDefault(obj){
+                console.log($(obj));
+                $('.setDefault.layui-btn-disabled').removeClass("layui-btn-disabled");
+                $(obj).find('.setDefault').addClass("layui-btn-disabled");
+                form.render();
+            }
+
+            //监听提交
+            form.on('submit(formEdit)', function(data){
+                request.setHost(SHOP_DATA).post('/power/power_controller/edit', data.field, function(res){console.log(res);
+                    if (res.code == 0) {
+                        // 成功提示
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            parent.window.callback();
+                        },1000);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+                return false;
+            });
+
+            $(document).on('click', '#delBtn', function(data) {
+                layer.confirm("是否确认删除！删除后【无法恢复】，且所有子项目都被删除！", {btn: ["确定","取消"] },function(){
+                    request.setHost(SHOP_DATA).post('/power/power_controller/delete',{ids: controllerID}, function(res){
+                        if (res.code == 0) {
+                            // 成功提示
+                            layer.msg('删除成功');
+                            setTimeout(function(){  
+                                parent.window.callback();
+                            },1000);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                });
+                return false;
+            });
+
+        });
+        form.render();
+    });
+
+</script>
+

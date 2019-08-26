@@ -1,0 +1,21 @@
+/* 重写layui 样式 */
+html{background-color: #fff;}
+.layui-layout-admin{
+  .layui-side{
+    &.layui-side-menu{background-color: #f2f6fc !important;}
+    .layui-logo{background-color: #f2f6fc !important; color: #303133;}
+    .layui-nav{
+      .layui-nav-bar{background-color: #909399;}
+      .layui-nav-item{
+        a{color: #606266 !important;}
+        .layui-nav-more{border-color: #C0C4CC transparent transparent}
+      }
+      .layui-nav-itemed{
+        .layui-this a{color: #409EFF !important;}
+        .layui-nav-child{background-color: #f2f6fc !important;}
+        .layui-nav-more{border-color: transparent transparent #C0C4CC;}
+      }
+    }
+  }
+}
+.layadmin-side-shrink .layui-side-menu .layui-nav>.layui-nav-itemed>a{background-color:transparent !important;}

@@ -1,0 +1,80 @@
+{
+  "description": "项目配置文件。",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": false
+  },
+  "compileType": "miniprogram",
+  "libVersion": "",
+  "appid": "wx831875bddbe8a5ea",
+  "projectname": "25BOY v3 移动版",
+  "condition": {
+    "search": {
+      "current": -1,
+      "list": []
+    },
+    "conversation": {
+      "current": -1,
+      "list": []
+    },
+    "game": {
+      "current": -1,
+      "list": []
+    },
+    "miniprogram": {
+      "current": 0,
+      "list": [
+        {
+          "name": "商品列表",
+          "query": "",
+          "id": 0,
+          "pathName": "pages/products/list"
+        },
+        {
+          "name": "商品详情",
+          "query": "id=351",
+          "id": 1,
+          "pathName": "pages/products/index"
+        },
+        {
+          "name": "我的二五",
+          "query": "",
+          "id": 2,
+          "pathName": "pages/users/index"
+        },
+        {
+          "name": "登录",
+          "query": "",
+          "id": 3,
+          "pathName": "pages/public/login"
+        },
+        {
+          "name": "注册",
+          "query": "",
+          "id": 4,
+          "pathName": "pages/public/register"
+        },
+        {
+          "name": "验证",
+          "query": "",
+          "id": 5,
+          "pathName": "pages/public/verify"
+        },
+        {
+          "name": "购物车",
+          "query": "",
+          "id": 6,
+          "pathName": "pages/cart/index"
+        },
+        {
+          "name": "提交订单",
+          "query": "",
+          "id": 7,
+          "pathName": "pages/cart/checkout"
+        }
+      ]
+    }
+  }
+}

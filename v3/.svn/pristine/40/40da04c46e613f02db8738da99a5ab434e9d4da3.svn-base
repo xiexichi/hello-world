@@ -1,0 +1,123 @@
+<style type="text/css">
+    .layui-input-block{margin-left: 150px;}
+    .layui-form-label{width: 120px;}
+</style>
+<div class="layui-fluid">
+    <form class="layui-form table-box" action="" id="form" lay-filter="form">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="submitBtn">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                    </div>
+                </div>
+                <div class="layui-tab layui-tab-card">
+                    <div class="layui-tab-content" >
+                        <div class="layui-tab-item layui-show">
+                            <input type="hidden" name="id">
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">消费积分</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" value="0" lay-verify="required" type="number" name="bonus_integral" placeholder="1元=xx积分" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">消费1元=xx积分</div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">晒图积分</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" value="0" lay-verify="required" type="number" name="picture_integral" placeholder="晒图送多少积分" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">晒图送多少积分</div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">签到积分</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" value="0" lay-verify="required" type="number" name="sign_integral" placeholder="签到送多少积分" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">签到送多少积分</div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">充值积分</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" value="0" lay-verify="required" type="number" name="recharge_integral" placeholder="1元=xx积分" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">充值1元=xx积分</div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">积分兑换比例</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" value="0" lay-verify="required" type="number" name="integral_conversion_ratio" placeholder="1元=xx积分" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">1元=xx积分</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">积分赠送模式</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="integral_mode" value="1" title="充值送积分" checked="">
+                                    <input type="radio" name="integral_mode" value="2" title="消费送积分">
+                                    <input type="radio" name="integral_mode" value="3" title="充值和消费都送积分">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">消费积分描述</label>
+                                <div class="layui-input-block">
+                                    <textarea placeholder="500字内" name="bonus_integral_desc" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        layui.use(['jquery', 'form', 'layer'], function(){
+            var $ = layui.jquery;
+            var form = layui.form;
+            var layer = layui.layer;
+
+            request.setHost(CENTER_DATA).post('/user/user_integral_setting/one',{}, function(res) {
+                if( res.code == 0 ){
+                    form.val("form", {
+                        "id":res.data.id,
+                        "bonus_integral":res.data.bonus_integral,
+                        "picture_integral":res.data.picture_integral,
+                        "sign_integral": res.data.sign_integral,
+                        "recharge_integral": res.data.recharge_integral,
+                        "integral_conversion_ratio":res.data.integral_conversion_ratio,
+                        "integral_mode":String(res.data.integral_mode),
+                        "bonus_integral_desc":res.data.bonus_integral_desc
+                    });
+                    form.render();
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+
+            //监听提交
+            form.on('submit(submitBtn)', function(data){
+                request.setHost(CENTER_DATA).post('/user/user_integral_setting/edit', data.field, function(res){
+                    if (res.code == 0) {
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            location.reload()
+                        },1000);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                });
+                return false;
+            });
+
+            form.render();
+            
+        });
+    });
+
+</script>
+

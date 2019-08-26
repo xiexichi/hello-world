@@ -1,0 +1,164 @@
+// layui
+	var upload_obj = '';
+	var imageBack = document.getElementById('imageBack');
+	var image_input = document.getElementById('article_image_input');
+
+    var form = layui.form;
+    layui.use('form',function () {
+        const id = getUrlParam('id');
+        const form = layui.form;
+        request.setHost(CENTER_DATA).post('/article/article/one/',{'id':id}, function(res) {
+            if( res.code == 0 ){
+                info = res.data;
+                form.val("edit", {
+                    "id": info.id,
+                    "title": info.title, // "name": "value"
+                    "desc": info.desc,
+                    "sort":info.sort,
+                    "image":info.image,
+                    // "uploadImg":info.image,
+                    "content": info.content,
+                })
+                loadCate();
+                uploadImg(info);
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+
+        form.render();
+        form.on('submit(formEdit)', function(data){
+            // console.log(data);
+            var id = data['field'].id;
+            request.setHost(CENTER_DATA).post('/article/article/checkRepeatArticleName',data.field, function(res){
+                if (res.code == 0) {
+                    if( res.data ){
+                        layer.confirm("文章名已存在，是否继续添加", {
+                            btn: ["确定","取消"] //按钮
+                        }, function() {
+                            edit_submit(data.field);
+                        });
+                    }else{
+                        edit_submit(data.field);
+                    }
+                } else {
+                    layer.msg(res.msg);
+                }
+            });
+
+            return false; 
+        });
+    });
+	
+
+		function loadCate(){
+        // 获取分类信息
+	        request.setHost(CENTER_DATA).get('/article/categorys/getCateAll/',{'showType':'tree'}, function(res){
+	            if( res.code == 0 ){
+	                res.data = setTreeList(res.data,'children');
+	                //分层标题处理
+	                res.data = setTreeGrid(res.data);
+	                // $('select[name=categorys_id]').append('<option value="0">为顶级分类</option>');
+	                var selected = '';
+	                for( var l = 0; l < res.data.length; l++ ){
+	                    selected = '';
+	                    if( info.categorys_id == res.data[l].id ){
+	                        selected = 'selected';
+	                    }
+	                    $('select[name=categorys_id]').append('<option value="'+res.data[l].id+'" '+selected+'>'+res.data[l].name+'</option>');
+	                }
+	                form.render();
+	            }
+	        });
+    	}
+
+    	// 提交编辑
+    	function edit_submit(data){
+    		request.setHost(CENTER_DATA).post('/article/article/edit',data,function(res){
+    			if (res.code == 0) {
+    				layer.msg(res.msg);
+	                setTimeout(function(){
+	                    parent.location.reload();
+	                },1500);
+    			}else{
+    				// layer.msg(res.msg);
+    				layer.msg("提交失败");
+    			}
+    		});
+    		return false;
+    	}
+
+		function openUEPhotoSpace(){
+			upload_obj = 'article_content';
+		    layer.open({
+		        type: 2,
+		        title : '选择图片',
+		        content: photoSpaceUrl,
+		        shadeClose: true,
+                moveOut:true,
+		        area: ['80%', '80%'],
+		        success: function(layero){
+		            layer.setTop(layero);
+		        }
+		    })
+		}
+	    function openPhotoSpace(){
+
+	    	upload_obj = 'article_image';
+		    layer.open({
+		        type: 2,
+		        title : '选择图片',
+		        content: photoSpaceUrl,
+		        shadeClose: true,
+                moveOut:true,
+		        area: ['80%', '80%'],
+		        success: function(layero){
+		            layer.setTop(layero);
+		        }
+		    })
+		}
+
+		function handlePhoto(content){
+
+    		if(content == 'close'){
+		        // 关闭窗口
+		        layer.closeAll();
+		    }else{
+		    	var json = JSON.parse(content);
+		    	uploadImgBack(json);
+		        layer.closeAll();
+		    }
+    	}
+
+    	function uploadImgBack(data){
+    		var that = this;
+    		// console.log(that.upload_obj);
+    		if (that.upload_obj == "article_image") {
+				imageBack.src = data[0]['image'];
+				image_input.value = data[0]['image'];
+    		}else if (that.upload_obj == "article_content") {
+    			var src_list = [];
+                for( var i = 0; i < data.length; i++){
+                    src_list.push({
+	                    src:data[i].image,
+	                    width:'100%'
+	                });
+	            }
+	            ue.execCommand( 'insertimage',src_list);
+
+    		}
+    	}
+
+    	function uploadImg(data){ 
+    		// console.log(data);
+    		imageBack.src = data.image;
+    		ue.ready(function(){
+                ue.setContent(data.content);
+            });
+    	}
+
+
+    
+
+
+    

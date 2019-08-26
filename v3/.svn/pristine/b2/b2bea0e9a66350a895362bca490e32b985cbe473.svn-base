@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * 店铺库存变动记录
+ */
+
+namespace app\depot\model;
+
+
+class ShopDepotChange extends Base
+{
+
+	const TYPE_SHOP_PURCHASE = 1;	// 店铺进货
+	const TYPE_SHOP_RETURN = 2;	    // 店铺退货
+
+	const TYPE_SALES_SELL = 3;	    // 销售卖出
+	const TYPE_SALES_RETURN = 4;	// 销售退货
+
+	const TYPE_SHOP_TRANSFER = 5;   // 店铺调货
+	
+	const TYPE_SHOP_RETURN_WITH_HOLD = 6;   // 店铺退货预扣
+
+}

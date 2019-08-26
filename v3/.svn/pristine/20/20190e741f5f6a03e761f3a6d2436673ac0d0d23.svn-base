@@ -1,0 +1,21 @@
+<?php
+
+
+namespace app\depot\validate;
+
+
+class ShopDepotPreSelect extends Base
+{
+
+	public function add($data){
+		$rule = [
+            'staff_id' => 'require|number',// 员工id
+            'type' => 'require|number',	// 类型
+            'tag' => 'require|min:3',	// 标记
+            'remarks' => 'min:3',		// 备注
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+	}
+
+}

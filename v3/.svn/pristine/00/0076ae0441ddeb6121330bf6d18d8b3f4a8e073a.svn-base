@@ -1,0 +1,73 @@
+<?php
+/**
+ * 25boy v3 日志行为类
+ * 2019-01-19 张文杰
+ */
+namespace app\common\hook;
+use think\Db;
+
+class Logs 
+{
+	// 错误信息
+	protected $error;
+	protected $request;
+
+	/**
+	 * 写入操作日志
+	 * @param $log_info [string] 操作内容说明
+	 */
+	public function run($log_info)
+	{
+		if(empty($log_info)){
+			$this->error = '操作日志内容说明为空';
+		}
+		$this->request = Request();
+		$data = array();
+		$data['admin_id'] = 1; //临时写入，需要修改
+		$data['log_ip'] = $this->request->ip();
+		$data['log_url'] = $this->request->url();
+		$data['log_info'] = set_init($log_info, '');
+		$data['module'] = humpToLine($this->request->module());
+		$data['controller'] = humpToLine($this->request->controller());
+		$data['action'] = humpToLine($this->request->action());
+		$data['pk'] = $this->request->param('id', 0, 'intval');
+		$data['params'] = $this->changeParams($data);	// 变动的数据
+		$data['extra'] = json_encode($this->request->param(), JSON_UNESCAPED_UNICODE);	// 原始数据
+		$data['create_time'] = date('Y-m-d H:i:s');
+		$result = Db::connect('center.db')->table('system_log')->insert($data);
+		if($result){
+			return true;
+		}else{
+			$this->error = '添加操作日志失败';
+			return false;
+		}
+	}
+
+	/**
+	 * 找出修改内容
+	 */
+	private function changeParams($data)
+	{
+		$params = $this->request->param();
+		// 查询上一条记录
+		$where = [
+			'module' => $data['module'],
+			'controller' => $data['controller'],
+			'action' => $data['action'],
+			'pk' => $data['pk'],
+		];
+		$extra = Db::connect('center.db')->table('system_log')->where($where)->order('id desc')->value('extra');
+		if(!empty($extra)){
+			// 比较两个数组不同值
+			$extra = json_decode($extra, true);
+			// 修改配置参数单独处理
+			if($data['module'] == 'system' && $data['action'] == 'edit') {
+				$params = $params['data'];
+				$extra = $extra['data'];
+			}
+			$params = array_diff_assoc(insideArray2json($params), insideArray2json($extra));
+		}
+		return json_encode($params, JSON_UNESCAPED_UNICODE);
+	}
+
+}

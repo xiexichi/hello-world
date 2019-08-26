@@ -1,0 +1,305 @@
+<?php
+
+namespace app\order\model;
+use \app\common\controller\Service;
+use \app\cart\model\Cart;
+use think\Exception;
+
+class Order extends Base
+{
+    protected $name = 'order_info';
+
+    const CHANNEL_PC = 1;
+    const CHANNEL_MOBILE = 2;
+    const CHANNEL_O2O = 3;
+    const CHANNEL_APP = 4;
+
+    public static $map_channel = array(
+        self::CHANNEL_PC => array(
+          'desc' => 'PC端',
+        ),
+        self::CHANNEL_MOBILE => array(
+          'desc' => '移动端',
+        ),
+        self::CHANNEL_O2O => array(
+            'desc' => '门店',
+        ),
+        self::CHANNEL_APP => array(
+            'desc' => 'APP',
+        )
+    );
+
+    /**
+     * 获取下单页预购商品
+     * @param $user_id
+     * @param int $channel
+     */
+    public function getBuyGoodsList($user_id,$shop_id=0,$channel=self::CHANNEL_PC){
+        $cartModel = new Cart();
+        $cart_list = $cartModel->getCartList($user_id,$shop_id,$channel,true);
+        $cart_list = $cartModel->cartValid($cart_list);
+        if( empty($cart_list) ) {
+            return $cart_list;
+        }
+        $discount_status = false;
+        //优惠券处理
+        //获取优惠券优惠信息 coupon * n
+        $coupon_list = [];
+        if( !empty($coupon_id) ){
+            $coupon_list = [];// $couponModel->getUseCouponList($coupon_id);
+            $discount_status = true;
+        }
+        //积分处理 point //session预存
+        $point = 100.00;//测试用
+        if( !empty($point) ){
+            //获取积分 rmb 抵扣比例 转 rmb 抵扣金额
+            $discount_status = true;
+        }
+        //余额抵扣
+        if($discount_status){
+            //获取合计信息 不含运费
+            $order_total = $this->getTotal($user_id,$cart_list,0,$shop_id,$channel);
+            if( $order_total === false ){
+                return $cart_list;
+            }
+            foreach( $cart_list as $skey => $shop ){
+                //获取金额百分比占额
+                $shop_percent = bcdiv($shop['goods_price'],$order_total['goods_price'],2);
+                $shop['percent'] = $shop_percent;
+                if( !empty($coupon_list) ){
+                    $coupon_sum = 0;
+                    foreach( $coupon_list as $coupon ){
+                        $shop['coupon_price'] = bcmul($coupon['result'] * $shop_percent,2);
+                    }
+                }
+                if( !empty($point)) {
+                    $shop['discount_price'] = bcmul($point,$shop_percent,2);
+                }
+                foreach( $shop['goods_list'] as $gkey => $goods  ){
+                    $goods_percent = bcdiv($goods['sum_price'],$shop['goods_price'],2);
+                    $goods['percent'] = $goods_percent;
+                    $goods['discount_price'] = bcmul($shop['discount_price'],$goods_percent,2);
+                    $goods['coupon_price'] = bcmul($shop['coupon_price'],$goods_percent,2);
+                    $shop['goods_list'][$gkey] = $goods;
+                }
+                $cart_list[$skey] = $shop;
+            }
+        }
+        return $cart_list;
+    }
+
+    public function setShopShip($template,$address_info,$cart_list){
+        if( empty($template) || empty($cart_list) ){
+            return $cart_list;
+        }
+        $deliveryModel = new \app\system\model\Delivery();
+        foreach( $cart_list as $key => $shop ) {
+            $ship_weight = 0;//店铺商品总重
+            $ship_num = 0;//店铺商品总件
+            foreach ($shop['goods_list'] as $goods) {
+                if( $goods['item_info']['ship_free'] == 0 ){
+                    //店铺商品总重量
+                    $ship_weight = bcadd($ship_weight,$goods['item_info']['weight'],2);
+                    //商品总数
+                    $ship_num = bcadd($ship_num,$goods['num'],0);
+                }
+            }
+            //运费计算
+            $ship_price = $deliveryModel->getGoodsShipPrice($template,$address_info['prov_id'], $ship_num, $ship_weight);
+            if ($ship_price === false) {
+                $shop['ship_status'] = 0;
+                $ship_price = 0.00;
+            }
+            $shop['ship_price'] = $ship_price;
+            $cart_list[$key] = $shop;
+        }
+        return $cart_list;
+    }
+
+    /**
+     * 获取订单运费
+     * @param $user_id          会员id
+     * @param $address_id       收货地址id
+     * @param $delivery_id      物流公司id
+     * @param int $shop_id      店铺id
+     * @param int $channel      下单渠道id
+     * @return array|bool
+     */
+    public function getTotal($user_id,$cart_list=array(),$address_id=0,$delivery_id=0,$channel=self::CHANNEL_PC){
+        //初始化合计信息
+        $order_total = [
+            'goods_num' => 0,
+//            'goods_ship_num' => 0,
+//            'goods_ship_weight' => 0.00,
+//            'goods_gift_num' => 0,
+            'coupon_price' => 0.00,
+            'discount_price' => 0.00,
+            'goods_price' => 0.00,
+            'ship_status' => 1,
+            'order_ship_price' => 0.00,
+            'order_price' => 0.00
+        ];
+        if( empty($cart_list) ){
+            return $order_total;
+        }
+        try{
+            //------------按店铺订单计算运费模式 用这部分 start----------------------
+            if( !empty($address_id) ){
+                $server = new Service();
+                //检查用户信息
+                $user_info = $server->setHost('center_data')->post('user/user/one',['id'=>$user_id]);
+                if( !empty($user_id) ) {
+                    //获取会员收货地址信息
+                    $address_info = $server->setHost('center_data')->post('user/address/one', ['id' => $address_id, 'user_id' => $user_info['id']]);
+                    if (!empty($address_info)) {
+                        //获取默认运费模板
+                        $deliveryModel = new \app\system\model\Delivery();
+                        $deliveryTp = $deliveryModel->getDeliveryTp($delivery_id,$address_info['prov_id']);
+                        if( !empty($deliveryTp) ){
+                            $cart_list = $this->setShopShip($deliveryTp,$address_info,$cart_list);
+                        }
+                    }else{
+                        $order_total['ship_status'] = 0;
+                    }
+                }else{;
+                    throw new Exception('用户信息异常');
+                }
+            }
+            //------------按店铺订单计算运费模式 用这部分 end--------------------
+            foreach( $cart_list as $shop ){
+                //------------按店铺订单计算运费模式 用这部分 start--------------------
+                if( $shop['ship_status'] == 0){
+                    $order_total['ship_status'] = 0;
+                }else{
+                    $order_total['order_ship_price'] = bcadd( $order_total['order_ship_price'],$shop['ship_price'],2);
+                }
+                //------------按店铺订单计算运费模式 用这部分 end--------------------
+                foreach( $shop['goods_list'] as $goods ){
+                    $order_total['goods_num'] = bcadd($order_total['goods_num'],$goods['num'],0);
+                    //------------按总订单计算运费模式 用这部分 start----------------------
+//                    if( $goods['item_info']['ship_free'] == 0 ){
+                        //$order_total['goods_ship_num'] = bcadd($order_total['goods_ship_num'],$goods['num'],0);
+                        //$order_total['goods_ship_weight'] = bcadd($order_total['goods_ship_weight'],$goods['item_info']['weight'],0);
+//                    }
+                    //------------按总订单计算运费模式 用这部分 end----------------------
+                    //预留部分
+                    //是否存在活动礼物部分
+                    //获取礼物商品信息
+                    //$goodsItemModel = new \app\goods\model\GoodsItem();
+                    //$goodsItemModel->getItemInfo($item_id);
+
+                    //优惠券优惠
+                    $order_total['coupon_price'] = bcadd($order_total['coupon_price'],$goods['coupon_price'],2);
+                    //优惠金额
+                    $order_total['discount_price'] = bcadd($order_total['discount_price'],$goods['discount_price'],2);
+                    //商品金额计算
+                    $order_total['goods_price'] = bcadd($order_total['goods_price'],$goods['sum_price'],2);
+                }
+            }
+            //------------按总订单计算运费模式 用这部分 start----------------------
+            //运费部分
+//            $ship_price = 0;
+//            if( !empty($address_id) ){
+//                $server = new Service();
+//                //检查用户信息
+//                $user_info = $server->setHost('center_data')->post('user/user/one',['id'=>$user_id]);
+//                if( !empty($user_info) ) {
+//                    //获取会员收货地址信息
+//                    $address_info = $server->setHost('center_data')->post('user/address/one', ['id' => $address_id, 'user_id' => $user_info['id']]);
+//                    if (!empty($address_info)) {
+//                        //获取默认运费模板
+//                        $deliveryModel = new \app\system\model\Delivery();
+//                        $deliveryTp = $deliveryModel->getDeliveryTp($delivery_id,$address_info,$address_info['prov_id']);
+//                        $ship_price = 0.00;
+//                        if(!empty($deliveryTp)) {
+//                            $ship_price = $deliveryModel->getGoodsShipPrice($deliveryTp, $order_total['goods_ship_num'], $order_total['goods_ship_weight']);
+//                            if ($ship_price === false) {
+//                                $order_total['ship_status'] = 0;
+//                                $ship_price = 0.00;
+//                            }
+//                        }else{
+//                            $order_total['ship_status'] = 0;
+//                        }
+//                    }
+//                }else{;
+//                    throw new Exception('用户信息异常');
+//                }
+//            }
+//            $order_total['order_ship_price'] = $ship_price;
+            //------------按总订单计算运费模式 用这部分 end----------------------
+            //订单总金额计算
+            $order_total['order_price'] = bcadd($order_total['order_ship_price'],
+                bcsub(
+                    $order_total['goods_price'],
+                    bcadd(
+                        $order_total['coupon_price'],
+                        $order_total['discount_price'],
+                        2
+                    ),
+                    2
+                )
+            ,2);
+        }catch( Exception $e ){
+            $this->error = $e->getMessage();
+            return false;
+        }
+        return $order_total;
+    }
+
+    //商品运费计算
+    public function getItemShip($item_id,$num=1,$delivery_id,$prov_id){
+        $item_ship_info = [
+            'ship_status' => 1,
+            'ship_price' => 0.00
+        ];
+        //运费部分
+        $goodsItemModel = new \app\goods\model\GoodsItem();
+        $itemInfo = $goodsItemModel->getItemInfo($item_id);
+        //获取默认运费模板
+        $deliveryModel = new \app\system\model\Delivery();
+        $deliveryTp = $deliveryModel->getDeliveryTp($delivery_id,$prov_id);
+        $ship_price = 0.00;
+        if(!empty($deliveryTp)){
+            $ship_price = $deliveryModel->getGoodsShipPrice($deliveryTp,$num,bcmul($itemInfo['weight'],$num,2));
+            if( $ship_price === false ){
+                $ship_price = 0.00;
+            }
+        }else{
+            $item_ship_info['ship_status'] = 0;
+        }
+        $item_ship_info['ship_price'] = $ship_price;
+        return $item_ship_info;
+    }
+
+    /**
+     * 创建主订单
+     * @param $orderData
+     * @param int $channel
+     */
+    public function createMasterOrder($user_id,$shop_id,$address_id,$channel=self::CHANNEL_PC){
+        $shop_list = $this->getBuyGoodsList($user_id,$shop_id,$channel);
+        $this->getTotal($user_id,$shop_list,$address_id,$channel);
+        //对商家下单
+        try{
+            $stockModel = new \app\depot\model\Stock();
+            //检查商品库存
+            foreach( $shop_list as $shop ){
+                foreach( $shop['goods_list'] as $goods ){
+                    //检查商品sku库存
+                    $erp_info = explode(',',$goods['item_info']['erp_code']);
+                    if( !$stockModel->checkStockOver($erp_info[0],$erp_info[1],$goods['num'],$shop_id) ){
+                        $this->code = 000014;
+                        throw new Exception($erp_info[0].' '.$erp_info[1].'库存不足');
+                    }
+                }
+            }
+            //创建主订单
+        }catch( Exception $e ){
+            $this->error = $e->getMessage();
+            return false;
+        }
+        return true;
+    }
+
+
+}

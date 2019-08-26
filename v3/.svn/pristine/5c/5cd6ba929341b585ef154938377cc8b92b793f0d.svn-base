@@ -1,0 +1,195 @@
+<style type="text/css">
+  .embed-table{
+    background: #e6e6e6;
+  }
+  .embed-table th{
+    text-align:center;
+  }
+</style>
+
+<div class="layui-card">
+  <div class="layui-card-body">
+    
+  <form class="layui-form" action="">
+    <div class="layui-form-item fled-space-between">
+      <div class="layui-input-inline">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">保存到云端</label>
+        <div class="layui-input-block">
+          <input type="checkbox" name="switch" lay-text="开启|关闭" lay-skin="switch" lay-filter="save-cloud">
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">输入框</label>
+      <div class="layui-input-inline">
+        <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+      </div>
+
+      <label class="layui-form-label">密码框</label>
+      <div class="layui-input-inline">
+        <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">辅助文字</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">选择框</label>
+      <div class="layui-input-inline">
+        <select name="city" lay-verify="required">
+          <option value=""></option>
+          <option value="0">北京</option>
+          <option value="1">上海</option>
+          <option value="2">广州</option>
+          <option value="3">深圳</option>
+          <option value="4">杭州</option>
+        </select>
+      </div>
+    </div>
+    
+  </form>
+
+  </div>
+</div>
+
+
+<!-- 商品表格 -->
+<table id="demo" lay-filter="test">
+</table>
+
+<!-- 库存模板 -->
+<script type="text/html" id="stockTpl">
+  <div class="p-1 text-center embed-table">
+    
+    <table class="layui-table" lay-skin="line">
+    <colgroup>
+      <col width="250">
+      <col width="300">
+      <col width="400">
+      <col width="400">
+    </colgroup>
+    <thead class="text-center">
+      <tr>
+        <th>规格</th>
+        <th>店铺库存</th>
+        <th>总店库存</th>
+        <th>进货数量</th>
+      </tr> 
+    </thead>
+    <tbody>
+
+    {{#  layui.each(d.stocks, function(index, item){ }}
+      <tr>
+        <td>{{ item.sku_prop }}</td>
+        <td>{{ item.business_quantity }}</td>
+        <td>{{ item.boy_quantity }}</td>
+        <td>
+          <div class="p-0-5">
+            <input type="number" name="" class="layui-input" boy_quantity="{{ item.boy_quantity }}" stock_id="{{ item.stock_id }}" depot_id="{{ item.depot_id }}" 
+            {{#  if(item.boy_quantity <= 0){ }}
+              disabled="true" placeholder="缺货"
+            {{# } }}
+            >
+          </div>
+        </td>
+      </tr>
+    {{#  }); }}
+    {{#  if(d.stocks.length === 0){ }}
+      无数据
+    {{#  } }} 
+      </tbody>
+    </table>
+  </div>
+
+</script>
+
+<!-- 图片模板 -->
+<script type="text/html" id="photoTpl">
+  <div>
+    <img src="{{ d.stocks[0].photo_prop }}">
+  </div>
+</script>
+
+
+<script>
+//Demo
+// 预选标签
+var repSelectTagLayer;
+
+var form = layui.form;
+
+// 监听开启云端保存选择商品
+form.on('switch(save-cloud)', function(data){
+  console.log($(data.elem).prop('checked')); //得到radio原始DOM对象
+  console.log(data.value); //被点击的radio的value值
+  if ($(data.elem).prop('checked')) {
+    // 打开弹窗
+    //通过这种方式弹出的层，每当它被选择，就会置顶。
+    repSelectTagLayer = layer.open({
+      type: 2,
+      shade: false,
+      title: '编辑库存预选标签',
+      moveOut: true,
+      area: ['50%', '50%'],
+      maxmin: true,
+      content: '/depot/depot_pre_select/list.html',
+      zIndex: layer.zIndex, //重点1
+      success: function(layero){
+        layer.setTop(layero); //重点2
+      }
+    });
+  } else {
+    // 关闭弹窗
+    layer.close(repSelectTagLayer)
+  }
+
+});
+
+//监听提交
+form.on('submit(formDemo)', function(data){
+  layer.msg(JSON.stringify(data.field));
+  return false;
+});
+
+form.render();
+
+
+ 
+
+
+// 初始化表格
+initTable();
+
+
+function initTable(){
+
+  var table = layui.table;
+
+  //第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: '550px'
+    ,url: '/depot/base/getStock' //数据接口
+    ,page: true //开启分页
+    ,done: function (res, curr, count) {
+      $('.layui-table-cell').css('height', 'auto')
+      $('.embed-table .layui-input').height('25px')
+      $('th').css('text-align', 'center')
+    }
+    ,cols: [[ //表头
+      {field: 'product_name', title: '商品', width:180, sort: true}
+      ,{field: 'price', title: '单价', width:100}
+      ,{field: 'color_prop', title: '颜色', width:80}
+      ,{field: 'sku_sn', title: 'SKU', width:120, sort: true}
+      ,{field: 'sku_sn', title: '图片', width:120, templet: '#photoTpl'} 
+      ,{field: 'stocks', title: '库存', width: 385, templet: '#stockTpl', style: 'height:100px'}
+    ]]
+  });
+}
+
+</script>

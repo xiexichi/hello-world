@@ -1,0 +1,94 @@
+// layui
+layui.use(['table', 'form', 'laydate'], function (){
+  const table = layui.table
+  const form = layui.form
+  const laydate = layui.laydate
+  form.render()
+  laydate.render({
+    elem: '#start_date',
+    type: 'datetime'
+  })
+  laydate.render({
+    elem: '#end_date',
+    type: 'datetime'
+  })
+
+  // 数据表格
+  let url = '/system/logs/index'
+  const parseUrl = parseParams(query)
+  if(parseUrl){
+    url += '?' + parseUrl
+  }
+  table.render({
+    elem: '#logsDataTable',
+    height: 'auto',
+    url: url,
+    limit: 20,
+    headers: {
+      ctrl: CENTER_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:80},
+      {field: 'admin_id', title: '操作人', width:150},
+      {field: 'create_time', title: '操作时间', sort: true, width:200},
+      {field: 'action', title: '操作模块', templet: function (d) {
+        return d.module + '/' + d.controller + '/' + d.action
+      }},
+      {field: 'log_info', title: '日志说明', templet: function (d) {
+        let log_info = d.log_info
+        if(d.action == 'delete'){
+          log_info += '，' + parseParams(d.params)
+        }
+        return log_info
+      }},
+      {field: '', title: '操作', width:130, toolbar: '#ctrlTpl'}
+    ]]
+  })
+
+  //监听行工具事件
+  table.on('tool(logsDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    const params = JSON.parse(data.params)
+
+    let _html = '<div style="padding:10px">'
+    _html += '<table class="layui-table" style="margin:auto;">'
+    _html += '<colgroup>'
+    _html += '<col width="200">'
+    _html += '<col width="300">'
+    _html += '<col width="300">'
+    _html += '<col>'
+    _html += '</colgroup>'
+    _html += '<thead>'
+    _html += '<tr>'
+    _html += '<th>字段名</th>'
+    _html += '<th>修改前</th>'
+    _html += '<th>修改后</th>'
+    _html += '</tr> '
+    _html += '</thead>'
+    _html += '<tbody>'
+    for(var key in params){
+      _html += '<tr>'
+      _html += '<td>' + key + '</td>'
+      _html += '<td>' + params[key].old + '</td>'
+      _html += '<td>' + params[key].new + '</td>'
+      _html += '</tr>'
+    }
+    _html += '</tbody>'
+    _html += '</table>'
+    _html += '</div>'
+
+    if (layEvent === 'detail') {
+      layer.open({
+        type: 1,
+        title: false,
+        closeBtn: false,
+        shadeClose: true,
+        content: _html
+      })
+    }
+  })
+
+})

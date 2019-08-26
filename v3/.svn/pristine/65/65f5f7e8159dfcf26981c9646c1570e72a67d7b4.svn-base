@@ -1,0 +1,109 @@
+<?php
+namespace app\order\controller;
+
+use think\Exception;
+
+class OrderDeliveryPackage extends Base
+{
+    public function createPackage(){
+        $code = 020101;
+        if( !$param = $this->validate->createPackage(input('post.')) ) {
+            return errorJson($code, $this->validate->getError());
+        }
+        $this->model->startTrans();
+        try{
+            //获取订单信息
+            $orderModel = new \app\order\model\Order();
+            $orderInfo = $orderModel->where('order_id',$param['order_id'])->find();
+            if( empty($orderInfo) ){
+                $code = 020110;
+                throw new Exception('订单信息获取失败');
+            }
+            //获取订单收货信息
+            $orderConsigneeModel = new \app\order\model\OrderConsignee();
+            $consignee_info = $orderConsigneeModel->where('order_id',$orderInfo['order_id'])->find();
+            if( empty($consignee_info) ){
+                $code = 020111;
+                throw new Exception('收货人信息获取失败');
+            }
+            //检查物流方式
+            $expressModel = new \app\system\model\Express();
+            $express_info = $expressModel->where('id',$param['express_id'])->find();
+            if( empty($express_info) ){
+                $code = 020112;
+                throw new Exception('物流信息获取失败');
+            }
+            $t = date('Y-m-d H:i:s');
+            //添加包裹
+            $insertData['order_id'] = $param['order_id'];
+            $insertData['order_consignee_id'] = $consignee_info['id'];
+            $insertData['express_id'] = $express_info['id'];
+            $insertData['order_consignee_id'] = $consignee_info['id'];
+            $insertData['express_sn'] = isset($param['express_sn']) ? $param['express_sn'] : '';
+            $insertData['remark'] = $param['desc'];
+            $insertData['create_time'] = $t;
+            $insertData['update_time'] = $insertData['create_time'];
+            if( !$package_id = $this->model->insertGetId($insertData)){
+                $code = 020113;
+                throw new Exception('物流包裹创建失败');
+            }
+            //处理商品
+            if( empty($param['orderGoods']) ){
+                $code = 020114;
+                throw new Exception('物流包裹缺少商品');
+            }
+            $orderGoodsModel = new \app\order\model\OrderGoods();
+            $insertPackageGoods = [];
+            $update['ship_status'] = 1;
+            $update['update_time'] = $t;
+            $where = ' id in (';
+            foreach( $param['orderGoods'] as $goods_id ){
+                //检查orderGoods状态
+                $orderGoodsInfo = $orderGoodsModel->field('id,order_id,goods_id,goods_item_id,erp_code,num,ship_status,is_gift,status')->where('id',$goods_id)->find();
+                if( empty($orderGoodsInfo) ){
+                    $code = 020115;
+                    throw new Exception('商品订单信息获取失败');
+                }
+                if( $orderGoodsInfo['ship_status'] == 1 ){
+                    $code = 020115;
+                    throw new Exception($orderGoodsInfo['erp_code'].'已发货');
+                }
+                if( $orderGoodsInfo['status'] != 0 ){
+                    $code = 020115;
+                    throw new Exception($orderGoodsInfo['erp_code'].'商品不在可发货状态中');
+                }
+                $goodsPackage = [];
+                $goodsPackage['order_delivery_package_id'] = $package_id;
+                $goodsPackage['order_goods_id'] = $goods_id;
+                $where .= $goods_id.',';
+                $insertPackageGoods[] = $goodsPackage;
+            }
+            $orderPackageGoods = new \app\order\model\OrderPackageGoods();
+            if( !$orderPackageGoods->insertAll($insertPackageGoods) ){
+                $code = 020116;
+                throw new Exception('物流包裹创建失败');
+            }
+            $where = trim($where,',').')';
+            if( !$orderGoodsModel->where($where)->update($update) ){
+                $code = 020116;
+                throw new Exception('商品订单信息处理失败');
+            }
+            if( !$orderModel->checkOrderShipFinished($param['order_id'],$orderInfo['order_type'])){
+                $code = 020117;
+                throw new Exception('订单状态更新失败');
+            }
+            $admin_id = 0;
+            $orderLogModel = new \app\order\model\OrderLog();
+            if( !$orderLogModel->markLog($admin_id,$param['order_id'],'包裹发货',$orderLogModel::OPERATOR_TYPE_ADMIN) ) {
+                $code = 020117;
+                throw new Exception('订单状态更新失败');
+            }
+                actionLogs('订单'.$param['order_id'].'创建物流包裹',$this->model);
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($code,$e->getMessage());
+        }
+        return successJson('','设置成功');
+    }
+}

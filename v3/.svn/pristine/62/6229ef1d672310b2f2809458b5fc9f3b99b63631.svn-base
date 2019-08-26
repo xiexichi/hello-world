@@ -1,0 +1,15 @@
+<?php
+/**
+ * 文章分类
+ */
+namespace app\article\controller;
+use think\Db;
+
+
+class Categorys extends Base
+{
+	
+    
+}
+
+?>

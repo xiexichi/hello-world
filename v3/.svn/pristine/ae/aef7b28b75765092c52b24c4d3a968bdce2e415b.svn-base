@@ -1,0 +1,86 @@
+<style>
+    /*body .layui-tree-skin-freestyle a{height:50px; line-height:50px; width:100%; }*/
+    body .layui-tree-skin-freestyle .layui-tree-branch{color: #EDCA50;}
+</style>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="cate" lay-skin="nob" lay-filter="test" ></table>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        getCateList();
+    });
+    function getCateList(){
+        request.setHost(SHOP_DATA).get('/goods/category/getCateAll',{'showType':'tree'}, function(res){
+            if (res.code == 0) {
+                res.data = setTreeList(res.data,'children');
+                //分层标题处理
+                res.data = setTreeGrid(res.data);
+                var table = layui.table;
+                //执行渲染
+                table.render({
+                    id:'cate',
+                    elem: '#cate' //
+                    ,height: 'auto' //容器高度
+                    ,data: res.data//数据内容
+                    ,limit: res.data.length
+                    , toolbar: '<div>' +
+                        '<button class="layui-btn layui-btn-sm layui-btn-primary" onclick="add()">添加分类'+
+                        '</button>' +
+                        '</div>'
+                    ,cols: [[
+                        {field: 'id', title: 'ID', width:80}
+                        ,{field: 'sort', title: '排序', width:80}
+                        ,{field: 'cate_name', title: '分类名', width:500}
+                        ,{field: 'update_time', title: '更新时间', width:200}
+                        ,{field: 'id', title: '操作', width:200, templet: '#ctrlTpl'}
+                    ]]
+                });
+            } else {
+                // 错误提示
+                layer.msg(res.msg);
+            }
+        });
+    }
+    //树状结构多维数组转一维数组
+    function setTreeList(cate_list,child,pNum,returnList){
+        if( typeof(pNum) == 'undefined' ){
+            pNum = 0;
+        }
+        if( typeof(returnList) == 'undefined' ){
+            returnList = new Array();
+        }
+        for( var keys in cate_list ){
+            cate_list[keys]['pNum'] = pNum;
+            returnList.push(cate_list[keys]);
+            if( typeof(cate_list[keys][child]) != 'undefined' && cate_list[keys][child].length > 0 ){
+                returnList = setTreeList(cate_list[keys][child],child,pNum+1,returnList);
+            }
+        }
+        return returnList;
+    }
+
+    function setTreeGrid(cate_list){
+        var nbsp = '';
+        var tree = '';
+        for( var i = 0; i < cate_list.length; i++ ){
+            tree = '';
+            nbsp = '';
+            if( cate_list[i].pNum > 0 ){
+                tree += '├';
+                for( var t = 0; t < cate_list[i].pNum; t++ ){
+                    nbsp += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                    tree += '─';
+                }
+                cate_list[i].cate_name = nbsp+tree+cate_list[i].cate_name;
+            }
+        }
+        return cate_list;
+    }
+</script>
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+    <a href="javascript:void(0);" onclick="detail({{d.id}})" class="layui-table-link">编辑</a>
+    <a href="javascript:void(0);" onclick="deleted({{d.id}})" class="layui-table-link">{{ d.is_deleted ? '恢复' : '删除' }}</a>
+</script>

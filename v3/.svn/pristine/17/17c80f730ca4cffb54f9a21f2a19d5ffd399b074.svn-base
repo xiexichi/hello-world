@@ -1,0 +1,149 @@
+
+<div class="layui-collapse" lay-filter="search-filter">
+  <div class="layui-colla-item">
+    <h2 class="layui-colla-title">温馨提示</h2>
+    <div class="layui-colla-content layui-show">
+    		
+    	<form class="layui-form" action="">
+		  <div class="layui-form-item fled-flex-start">
+		    <!-- <div class="layui-input-inline">
+		      <button class="layui-btn" lay-submit lay-filter="formDemo">查找</button>
+		      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		    </div> -->
+
+		    <div class="layui-input-inline">
+		    	<p style="color: red;">
+		    		<i class="layui-icon layui-icon-tips"></i>
+		    		<span>双击行可以编辑角色</span>
+		    	</p>
+		    </div>
+		  </div>
+		</form>
+
+    </div>
+  </div>
+</div>
+
+<!-- 工具栏 -->
+<script type="text/html" id="toolbar">
+  <div class="layui-btn-group">
+	  <button class="layui-btn layui-btn-primary layui-btn-sm" id="add-btn" title="新增角色">
+	    <i class="layui-icon">&#xe654;</i>
+	  </button>
+	  <button class="layui-btn layui-btn-primary layui-btn-sm" id="edit-btn" title="编辑角色">
+	    <i class="layui-icon">&#xe642;</i>
+	  </button>
+	</div>
+</script> 
+
+<!-- 進貨單表格 -->
+<table id="list" lay-filter="list"></table>
+
+
+<!-- 操作栏 -->
+<script type="text/html" id="ctrlTpl">
+  <div class="">
+  	{{#  if(d.status == 0){ }}
+	    <button class="layui-btn layui-btn-xs edit-order" order_id="{{ d.id }}">编辑商品项</button>
+	{{#  } }} 
+
+	{{#  if(d.status != 0){ }}
+	    <button class="layui-btn layui-btn-disabled layui-btn-xs">编辑商品项</button>
+	{{#  } }}
+  </div>
+</script>
+
+<!-- 引入查找条件操作的js -->
+<include file="depot@base/collapse_ctrl" />
+
+<script type="text/javascript">
+
+	// 选中的行
+	var selectRow;
+
+    // 表单提交
+    var form = layui.form;
+    form.on('submit(formDemo)', function(data){
+	  // 重新获取表格数据
+	  initTable(data.field);
+	  return false;
+	});
+
+	// 初始化表格
+	initTable();
+
+	// 初始化表格
+	function initTable(params){
+
+	  var table = layui.table;
+
+	  // 链接url
+	  let url = '/staff/shop_auth_role/index?';
+
+	  // 拼接参数
+	  if (undefined !== params) {
+		for (let i in params) {
+		  if (params[i] !== '') {
+		  	url += i + '=' + params[i] + '&';
+		  }
+		}	  	
+	  }
+
+	  //第一个实例
+	  table.render({
+	    elem: '#list'
+	    ,height: tableNormalHeight + 'px'
+	    ,url: url //数据接口
+	    ,toolbar: '#toolbar'
+	    // ,defaultToolbar: ['filter', 'print', 'exports']
+	    ,page: true //开启分页
+	    ,headers: {
+	      ctrl: SHOP_DATA
+	    }
+	    ,done: function (res, curr, count) {
+	    	// 表格初始化回调
+			tableDoneCallBack();
+	    }
+	    ,cols: [[ //表头
+	      {type: 'radio', fixed: 'left'}
+	      ,{field: 'role_name', title: '角色名称', width:180}
+	      ,{field: 'descript', title: '角色描述', width:380}
+	    ]]
+	  });
+
+	  // 选中单选框
+	  table.on('radio(list)', function(obj){
+
+	    if (obj.checked) {
+	      // 保存选中的行
+	      selectRow = obj.data;
+	    } else {
+	      selectRow = null;	
+	    }
+
+	  });
+
+	  //监听行双击事件
+	  table.on('rowDouble(list)', function(obj){
+		//obj 同上
+		// 打开角色编辑
+		location.href = '/staff/shop_auth_role/edit_role.html?id='+obj.data.id;
+	  });
+
+	}
+
+
+	/**
+	 * [tableDoneCallBack 表格初始化完成后，回调方法]
+	 * @return {[type]} [description]
+	 */
+	function tableDoneCallBack(){
+		// 添加进货单
+		$('#add-btn').on('click', function(){
+			location.href = '/staff/shop_auth_role/add_role';
+		});
+
+	}
+
+
+</script>

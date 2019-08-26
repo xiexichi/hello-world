@@ -1,0 +1,122 @@
+<div class="layui-collapse" lay-filter="search-filter">
+  <div class="layui-colla-item">
+    <h2 class="layui-colla-title">查找条件</h2>
+    <div class="layui-colla-content layui-show">
+    		
+    	<form class="layui-form" action="">
+		  <div class="layui-form-item fled-flex-start">
+		    <div class="layui-input-inline">
+		      <button class="layui-btn" lay-submit lay-filter="formDemo">查找</button>
+		      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		    </div>
+
+		    <div class="layui-input-inline">
+		    	<p style="color: red;">
+		    		<i class="layui-icon layui-icon-tips"></i>
+		    		<span>双击行可以编辑商品项</span>
+		    	</p>
+		    </div>
+		  </div>
+
+		  <div class="layui-form-item">
+			<div class="layui-inline">
+	            <label class="layui-form-label">日期</label>
+	            <div class="layui-input-inline" style="width: 150px;">
+	              <input id="start-date" type="text" name="start_date" autocomplete="off" placeholder="开始日期" class="layui-input">
+	            </div>
+	            <div class="layui-form-mid">-</div>
+	            <div class="layui-input-inline" style="width: 150px;">
+	              <input id="end-date" type="text" name="end_date" autocomplete="off" placeholder="结束日期" class="layui-input">
+	            </div>
+	          </div>
+
+		    <label class="layui-form-label">单号</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="order_sn" placeholder="请输单号" autocomplete="off" class="layui-input">
+		    </div>
+		  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">进货单类型</label>
+		    <div class="layui-input-inline" style="width:120px;">
+		      <select name="type">
+		        <option value=""></option>
+		        <option value="1">商品</option>
+		        <option value="2">物料</option>
+		      </select>
+		    </div>
+
+		    <label class="layui-form-label">订单状态</label>
+		    <div class="layui-input-inline" style="width:120px;">
+		      <select name="status" id="status">
+		        <option value=""></option>
+		        
+		      </select>
+		    </div>
+			
+			<label class="layui-form-label">商品货号</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="item_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+				
+			<label class="layui-form-label">商品规格</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="sku_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+
+		  </div>	
+
+		</form>
+
+    </div>
+  </div>
+</div>
+
+<!-- 控制器名称 -->
+<div style="display: none;">
+	<span id="controller_name">{:request()->controller()}</span>
+</div>
+
+
+<!--  -->
+<script type="text/javascript">
+	
+	var form = layui.form;
+
+	// 获取控制器名称
+	var controllerName = $('#controller_name').html();
+
+	console.info(controllerName);
+
+	// 数据控制器名称
+	var cname;
+
+	switch (controllerName) {
+		case 'Purchase':
+			cname = 'shop_purchase_order';
+			break;		
+
+		case 'ShopAdjust':
+			cname = 'shop_adjust_order';
+			break;		
+
+		case 'ShopDiffer':
+			cname = 'shop_differ_order';
+			break;
+	}
+
+	// 组合获取订单状态url
+	let statusUrl = '/depot/' + cname + '/getStatus';
+
+	// 获取
+	request.get(statusUrl, function(res){
+		if (res.code == 0) {
+			for (let i in res.data) {
+				$('#status').append('<option value="'+i+'">'+res.data[i]+'</option>');
+			}
+
+			form.render();
+		}
+	});
+
+
+</script>

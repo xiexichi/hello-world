@@ -1,0 +1,48 @@
+GET http://data-shop.25boy.com/index/goods_tag/getTagList
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-01-08T095057.200.json
+
+###
+
+GET http://data-shop.25boy.com/index/goods_tag/getTagList
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-01-08T095019.200.json
+
+###
+
+GET http://data-shop.25boy.com/index/goods_tag/getTagList
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-01-08T094933.500.html
+
+###
+
+GET http://data-shop.25boy.com/index/goods_tag/getTagList?type=1
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-01-08T094843.500.html
+
+###
+
+GET http://data-center.25boy.com/index/area/getAreas/?type=1
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-01-08T094724.200.json
+
+###
+
+GET http://data-center.25boy.com/index/area/getAreas/?type=3&pid=2
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-01-08T094714.200.json
+
+###
+

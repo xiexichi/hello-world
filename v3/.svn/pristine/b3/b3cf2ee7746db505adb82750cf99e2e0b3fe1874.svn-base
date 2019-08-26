@@ -1,0 +1,59 @@
+<?php
+
+namespace app\article\model;
+
+class Article extends Base
+{
+    protected $name = 'article';
+
+    public function indexBefore(){
+
+        if (!empty($this->data['title'])) {
+            $this->where('a.title','like',"%{$this->data['title']}%");
+        }
+
+        if (!empty($this->data['categorys_id'])) {
+            $this->where('a.categorys_id',$this->data['categorys_id']);
+        }
+        $this->where('a.is_deleted',0);
+        if (!empty($this->data)) {
+            $this->alias('a')
+                ->field('a.*,cate.name as cate_name')
+                ->join('article_categorys cate','a.categorys_id = cate.id');
+        }
+
+    }
+
+    public function addBefore(){
+        $this->data['create_time'] = date('Y-m-d H:i:s');
+        $this->data['update_time'] = $this->data['create_time'];
+        return true;
+    }
+
+   public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        return true;
+   }
+
+
+   public function checkRepeatArticleName($where = []){
+
+        if(!empty($this->data['title'])){
+            $this->where('title',$this->data['title']);
+        }
+        if(!empty($where) ){
+            foreach( $where as $key => $val ) {
+                $this->where($key,$val[0],$val[1]);
+            }
+        }
+        $info = $this->find();
+        if($info){
+            $this->code = 200402;
+            $this->isExit = true;
+            $this->error = "分类名已存在！";
+            return false;
+        }
+        return true;
+   }
+
+}

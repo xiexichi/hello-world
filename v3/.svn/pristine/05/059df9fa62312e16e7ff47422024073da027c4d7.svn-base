@@ -1,0 +1,20 @@
+<?php
+namespace app\share\validate;
+
+class ShareActivity extends Base
+{
+
+    public function getIndex($data){
+        $rule = [
+            'type' => 'integer|in:1,2,3',
+            'status' => 'integer|in:1,2,3',
+            //'start_time' => 'integer'
+        ];
+        $message = [
+            'type' => '参数错误',
+            'status' => '参数错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+}

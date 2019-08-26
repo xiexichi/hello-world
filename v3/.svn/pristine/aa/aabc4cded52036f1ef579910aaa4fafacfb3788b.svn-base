@@ -1,0 +1,225 @@
+<style>
+    .body-tab th{ min-width:100px; line-height:35px; text-align:right; }
+    .body-tab td{ min-width:100px; }
+</style>
+<div class="layui-fluid" id="vue_main">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">综合信息</li>
+                    <li>商品信息</li>
+                    <li>物流包裹</li>
+                    <li>订单日志</li>
+                </ul>
+                <div class="layui-tab-content" >
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-card">
+                            <div class="layui-card-header">基础信息</div>
+                            <table class="body-tab">
+                                <tr>
+                                    <th>店铺：</th>
+                                    <td>{{ shop_info.name }}</td>
+                                    <th>发货方式：</th>
+                                    <td style="color:#FB5A5C;" >{{ order_info.orderTypeDesc }}</td>
+                                </tr>
+                                <tr>
+                                    <th>订单号：</th>
+                                    <td>{{ order_info.order_sn }}</td>
+                                    <th>订单状态：</th>
+                                    <td style="color:#FB5A5C;" >{{ order_info.orderStatusDesc }}</td>
+                                    <th>支付类型：</th>
+                                    <td style="color:#FB5A5C;" >{{ order_info.pay_status ? '未关联支付类型' : '未支付' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>会员id：</th>
+                                    <td>{{ user_info.id }}</td>
+                                    <th>会员名：</th>
+                                    <td>{{ user_info.user_name }}</td>
+                                    <th>会员手机：</th>
+                                    <td>{{ user_info.phone }}</td>
+                                    <th>下单时间：</th>
+                                    <td>{{ order_info.create_time }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="layui-card">
+                            <div class="layui-card-header">订单计算</div>
+                            <table class="body-tab">
+                                <tr>
+                                    <th style="color:#FB5A5C;">订单总额：</th>
+                                    <td style="color:#FB5A5C;" >{{ order_info.order_price }}</td>
+                                    <th style="color:#FB5A5C;">已实付金额：</th>
+                                    <td style="color:#FB5A5C;" >{{ order_info.pay_price }}</td>
+                                    <th style="color:#01AAED;">商品总额：</th>
+                                    <td style="color:#01AAED;">{{ order_info.goods_price }}</td>
+                                    <th style="color:#01AAED;">运费：</th>
+                                    <td style="color:#01AAED;">{{ order_info.ship_price }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color:#01AAED;">积分抵扣：</th>
+                                    <td style="color:#01AAED;">{{ order_info.discount_price }}</td>
+                                    <th style="color:#01AAED;">优惠券优惠：</th>
+                                    <td style="color:#01AAED;">{{ order_info.coupon_price }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="layui-card">
+                            <div class="layui-card-header">收货人信息</div>
+                            <table class="body-tab">
+                                <table class="body-tab" style="overflow:hidden;">
+                                    <tr>
+                                        <th class="title">收货人：</th>
+                                        <td>{{ consignee.consignee_name }}</td>
+                                        <th class="title">联系电话：</th>
+                                        <td>{{ consignee.mobile }}</td>
+                                        <!--<td class="title">邮编：</td>-->
+                                        <!--<td>{{ consignee.user_name }}</td>-->
+                                        <!--<td class="title">邮编:</td>-->
+                                    </tr>
+                                    <tr>
+                                        <th class="title">收货地址：</th>
+                                        <td colspan="5">{{ consignee.prov_name+consignee.city_name+consignee.area_name+' '+consignee.address }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>下单备注：</th>
+                                        <td colspan="5" style="max-width:500px; color:#009688;">{{ order_info.remark }}</td>
+                                    </tr>
+                                </table>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="20">
+                                <col width="150">
+                                <col>
+                                <col>
+                                <col width="80">
+                                <col>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>图片</th>
+                                <th>商品名</th>
+                                <th>商品规格</th>
+                                <th>erp货号</th>
+                                <th>单价(现价)</th>
+                                <th>数量</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(goods,index) in goods_list" >
+                                <td>{{index+1}}</td>
+                                <td><img :src="goods.item_info.item_img" ></td>
+                                <td>{{goods.item_info.goods_name}}<a href="" style="color:#FB5A5C;" v-if="goods.status>0">({{goods.goods_status_desc}})</a><span v-if="goods.packageNum > 0" style="color:#FF5722">（物流包裹{{goods.packageNum}}）</span></td>
+                                <td>{{goods.item_info.pv_name}}</td>
+                                <td>{{goods.item_info.erp_code}}</td>
+                                <td>{{goods.item_price}}({{goods.item_info.item_price}})</td>
+                                <td>{{goods.num}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="layui-tab-item">
+                        <table class="layui-table" v-if="package_list.length > 0">
+                            <colgroup>
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>包裹号</th>
+                                <th>物流公司</th>
+                                <th>单号</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(package,p_index) in package_list" >
+                                <td>{{p_index+1}}</td>
+                                <td>{{package.name}}</td>
+                                <td>{{package.express_sn}}</td>
+                                <td>{{package.remark}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <p style="text-align:center; margin:0 auto;" v-if="package_list.length == 0" >暂无物流信息</p>
+                    </div>
+                    <div class="layui-tab-item">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="200">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>用户</th>
+                                <th>内容</th>
+                                <th>时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(log,index) in log" >
+                                <td>{{ log.operator_type ? 'admin' : '会员' }}</td>
+                                <td>{{ log.content }}</td>
+                                <td>{{ log.create_time }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hea:js src="/static/js/vue.js" />
+<script>
+    var id = getUrlParam('id');
+
+    var form = layui.form;
+    var Vue = new Vue({
+        el: '#vue_main',
+        data:{
+            'order_id' : id,
+            'order_info' : {},
+            'shop_info' : {},
+            'user_info' : {},
+            'consignee' : {},
+            'package_list' : {},
+            'goods_list' : {},
+            'log' : {}
+        },
+        mounted:function(){
+            var that = this;
+            that.getOrderInfo();
+        },
+        methods:{
+            getOrderInfo:function(){
+                var that = this;
+                var param = {};
+                param.order_id = that.order_id;
+                request.setHost(SHOP_DATA).post('/order/order/getOrderInfo',param, function(res){
+                    if (res.code == 0) {
+                        that.order_info = res.data.order_info;
+                        that.shop_info = res.data.shop_info;
+                        that.user_info = res.data.user_info;
+                        that.consignee = res.data.consignee;
+                        that.package_list = res.data.order_package;
+                        that.goods_list = res.data.goods_list;
+                        that.log = res.data.log;
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            }
+        }
+    });
+
+
+</script>
+

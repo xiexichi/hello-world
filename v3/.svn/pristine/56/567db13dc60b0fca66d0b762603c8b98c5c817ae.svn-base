@@ -1,0 +1,7 @@
+<import src="/node-modules/@dcloudio/uni-ui/lib/uni-list/uni-list.vue.wxml" />
+<import src="/node-modules/@dcloudio/uni-ui/lib/uni-list-item/uni-list-item.vue.wxml" />
+
+<template name="30fca8cf-default-30fca8cf-1"><template data="{{...$root['0'], ...$root[$kk+'30fca8cf-0'],$root}}" is="d38c9616"></template></template>
+
+<template name="30fca8cf-default-30fca8cf-7"><template wx:key="index" data="{{...$root['0'], ...$root[$kk+'30fca8cf-5-'+index],$root}}" is="d38c9616" wx:for="{{deduction}}" wx:for-index="index" wx:for-item="item"></template><template badge-type="error" wx:if="{{coupons}}" data="{{...$root['0'], ...$root[$kk+'30fca8cf-6'],$root}}" is="d38c9616"></template></template>
+

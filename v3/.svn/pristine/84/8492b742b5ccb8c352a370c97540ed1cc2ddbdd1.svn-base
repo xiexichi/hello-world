@@ -1,0 +1,197 @@
+<style type="text/css">
+	.del-item{
+		height:25px;
+		line-height: 25px;
+	}
+</style>
+
+<div class="layui-collapse" lay-filter="search-filter">
+  <div class="layui-colla-item">
+    <h2 class="layui-colla-title">查找条件</h2>
+    <div class="layui-colla-content layui-show">
+    	<form class="layui-form" action="">
+		  <div class="layui-form-item">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" lay-submit lay-filter="formDemo">查找</button>
+		      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		    </div>
+		  </div>
+		  
+		  <div class="layui-form-item">
+			<label class="layui-form-label">商品货号</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="item_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+				
+			<label class="layui-form-label">商品规格</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="sku_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+
+		  </div>	
+
+		</form>
+    </div>
+  </div>
+</div>
+
+<div>
+	<!-- 進貨單表格 -->
+	<table id="list" lay-filter="list"></table>
+</div>
+
+<!-- 申请数量 -->
+<script type="text/html" id="applyQuantityTpl">
+	<div class="fled-flex-start">
+	  {{#  if(d.order_status == 0){ }}
+		<input type="number" item_id="{{ d.id }}" name="apply_quantity" boy_quantity="{{ d.salable_qty }}" stock_id="{{ d.stock_id }}" min="0" max="{{ d.salable_qty }}" class="purchase_quantity layui-input" style="height: 25px;" value="{{ d.apply_quantity }}">
+	  {{#  } }} 
+	  
+	  {{#  if(d.order_status != 0){ }}
+		{{ d.apply_quantity }}
+	  {{#  } }}
+	</div>
+</script>
+
+
+<!-- 工具栏 -->
+<script type="text/html" id="ctrlTpl">
+  <button class="layui-btn layui-btn-primary layui-btn-sm del-item" item_id="{{ d.id }}">
+    <i class="layui-icon">&#xe640;</i>
+  </button>
+</script>
+
+
+<!-- 商品图片 -->
+<script type="text/html" id="itemImgTpl">
+  <img src="{{ d.item_img }}" style="width: 100%;">
+</script>
+
+
+<!-- 引入公共模块js -->
+<include file="depot@base/actual_select" />
+
+<!-- 引入查找条件操作的js -->
+<include file="depot@base/collapse_ctrl" />
+
+<script type="text/javascript">
+	
+	// 获取退货单id
+	var id = getUrlParam('adjust_id');
+
+	// 获取退货单数据
+	request.setHost(SHOP_DATA).get('/depot/shop_adjust_order/one?id='+id, function(res){
+	  	console.info(res);
+	})
+
+	// 表单提交
+    var form = layui.form;
+    form.on('submit(formDemo)', function(data){
+	  // layer.msg(JSON.stringify(data.field));
+	  // 重新获取表格数据
+	  initTable(data.field);
+	  return false;
+	});
+
+
+	// 初始化表格
+	initTable();
+
+	// 初始化表格
+	function initTable(params){
+
+	  var table = layui.table;
+
+	  // 链接url
+	  let url = '/depot/shop_adjust_item/index?shop_adjust_order_id='+id+'&';
+
+	  // 拼接参数
+	  if (undefined !== params) {
+		for (let i in params) {
+		  if (params[i] !== '') {
+		  	url += i + '=' + params[i] + '&';
+		  }
+		}	  	
+	  }
+
+	  //第一个实例
+	  table.render({
+	    elem: '#list'
+	    ,height: tableNormalHeight + 'px'
+	    ,url: url //数据接口
+	    ,toolbar: '#toolbar'
+	    // ,defaultToolbar: ['filter', 'print', 'exports']
+	    ,page: true //开启分页
+	    ,headers: {
+	      ctrl: SHOP_DATA
+	    }
+	    ,done: function (res, curr, count) {
+	    	// 监听进货数量
+	    	selectPurchaseQuantity();
+
+	    	$('tr').height(70);
+	    	$('tr').find('div').height(70).css('line-height', '70px');
+	    	$('td').css('vertical-align', 'middle');
+	    }
+	    ,cols: [[ //表头
+	      {field: 'goods_name', title: '商品', width:280}
+	      ,{field: 'item_img', title: '图片', width:100, templet: '#itemImgTpl'}
+	      ,{field: 'item_code', title: '商品代码', width:120}
+	      ,{field: 'item_price', title: '单价', width:80}
+	      ,{field: 'sku_name', title: '规格', width:180}
+	      ,{field: 'apply_quantity', title: '申请调整数量', width: 120, templet: '#applyQuantityTpl'}
+	      ,{field: 'real_quantity', title: '实际调整数量', width: 120}
+	      ,{field: 'id', title: '操作', width: 120, templet: '#ctrlTpl'}
+	    ]]
+	  });
+
+	}
+
+
+	/**
+	 * [selectPurchaseQuantity 选择进货数量]
+	 * @return {[type]} [description]
+	 */
+	function selectPurchaseQuantity(){
+	  // 修改进货数量
+	  $('.purchase_quantity').bind('input propertychange', function()
+	  {
+
+	  	let params = {
+	  		url : '/depot/shop_adjust_item/edit',
+	  		id: $(this).attr('item_id'),
+	  		apply_quantity: $(this).val()
+	  	}
+
+	    // 保存
+	    actualSelectCtrl.save(params, $(this));
+	  })
+
+	  // 删除进货商品项
+	  $('.del-item').on('click', function(){
+		
+		let $this = $(this);
+
+		// 询问
+	  	layer.confirm('确认删除?', function(index){
+	  	  // 关闭弹出
+		  layer.close(index);
+
+		  let params = {
+	  		url : '/depot/shop_adjust_item/delete',
+	  		ids: $this.attr('item_id')
+		  }
+		  
+		  // 删除
+		  actualSelectCtrl.del(params, function(res){
+		    // 删除行
+		    $this.parent().parent().parent().remove();
+		  });
+
+		});
+
+	  })
+
+	}
+
+</script>

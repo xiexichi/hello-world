@@ -1,0 +1,50 @@
+<?php
+/**
+ * 商品属性值
+ */
+namespace app\goods\controller;
+
+class GoodsPropVal extends Base
+{
+    //获取所有标签列表
+    public function getPropValAll(){
+        if( !$checkData = $this->validate->getPropValAll(input('get.')) ){
+            return errorJson(020401, $this->validate->getError());
+        }
+        $list = $this->model->getPropValAll($checkData['prop_id'],$checkData['page'],$checkData['limit'],true);
+        return successJson($list['list'],'',$list['count']);
+    }
+
+    public function getPropValInfo(){
+        $param = input('post.');
+        if( !$checkData = $this->validate->getPropValInfo($param) ){
+            return errorJson(020401, $this->validate->getError());
+        }
+        $info = $this->model->getPropValInfo($checkData['id']);
+        if( empty($info) ){
+            return errorJson(020402, '属性值型不存在');
+        }
+        return successJson($info);
+    }
+
+    public function deleted(){
+        if( !$checkData = $this->validate->getPropValInfo(input('post.')) ){
+            return errorJson(020401, $this->validate->getError());
+        }
+        //检查是否存在
+        $info = $this->model->getPropValInfo($checkData['id']);
+        if( empty($info) ){
+            return errorJson(020402, '属性值型不存在');
+        }
+        //检查是否存在商品绑定
+        $goodsPropValModel = new \app\goods\model\GoodsPropVal();
+        $returnList = $goodsPropValModel->getPropValGoods($checkData['id'],'pv');
+        if( !empty($returnList) ){
+            return errorJson(020405, '存在商品绑定不允许删除');
+        }
+        //执行删除
+        $updateData['is_deleted'] = 1;
+        $this->model->where('id',$checkData['id'])->update($updateData);
+        return successJson(true,'删除成功');
+    }
+}

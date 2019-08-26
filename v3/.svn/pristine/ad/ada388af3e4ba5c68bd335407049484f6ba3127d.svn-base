@@ -1,0 +1,38 @@
+<?php
+/**
+ * 商品标签
+ */
+namespace app\goods\controller;
+
+class GoodsTag extends Base
+{
+
+    //获取所有标签列表
+    public function getTagAll(){
+        if( !$checkData = $this->validate->getTagAll(input('get.')) ){
+            return errorJson(020601, $this->validate->getError());
+        }
+        $list = $this->model->getTagAll($checkData['page'],$checkData['limit'],true);
+        return successJson($list['list'],'',$list['count']);
+    }
+
+    //获取单个标签内容
+    public function getTagInfo(){
+        if( !$checkData = $this->validate->getTagInfo(input('post.')) ){
+            return errorJson(020601, $this->validate->getError());
+        }
+        $info = $this->model->getTagInfo($checkData['id']);
+        return successJson($info);
+    }
+
+    public function deleted(){
+        if( !$checkData = $this->validate->deleted(input('post.')) ){
+            return errorJson(020601, $this->validate->getError());
+        }
+        if( !$this->model->deleted($checkData['id']) ){
+            return errorJson($this->model->getCode(), $this->model->getError());
+        }
+        return successJson(true,'删除成功');
+    }
+
+}

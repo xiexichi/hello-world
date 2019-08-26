@@ -1,0 +1,14 @@
+<?php
+/*
+ * 由后台生成的配置文件 system/system/updateConfigFile
+ * 请勿直接修改此文件
+ * 最后更新时间：2019-01-11 14:44:01
+*/
+
+return [
+	'WEB_SITE_TITLE' => '25BOY原创国潮品牌',
+	'WEB_SITE_ICP' => '1234562',
+	'M_LOGO' => 'http://api.25boy.cn/Public/images/logo.png',
+	'TEST_NAME' => '张三,李四,王五',
+	'APP_THIRD_TYPE' => 'weixin,weapp,alipay,aliapp,qq,weibo,paypal',
+];

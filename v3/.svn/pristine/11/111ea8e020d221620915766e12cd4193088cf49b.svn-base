@@ -1,0 +1,1718 @@
+---------------------------------------------------------------
+[ 2019-01-03T17:33:26+08:00 ] 127.0.0.1 GET center.25boy.com/
+[运行时间：0.026000s] [吞吐率：38.46req/s] [内存消耗：1,390.98kb] [文件加载：42]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => '',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\index\controller\Index->index[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Index.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:33:33+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas
+[运行时间：0.031000s] [吞吐率：32.26req/s] [内存消耗：1,340.41kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:33:45+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.031000s] [吞吐率：32.26req/s] [内存消耗：1,340.77kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:34:28+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,343.18kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:34:46+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.023000s] [吞吐率：43.48req/s] [内存消耗：1,341.45kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:34:47+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,341.45kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:34:47+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.018000s] [吞吐率：55.56req/s] [内存消耗：1,341.45kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:34:47+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.017000s] [吞吐率：58.82req/s] [内存消耗：1,341.45kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:34:48+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.018000s] [吞吐率：55.56req/s] [内存消耗：1,341.45kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:34:55+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,343.18kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:35:13+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.028000s] [吞吐率：35.71req/s] [内存消耗：1,433.61kb] [文件加载：46]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [0]方法不存在:think\Request->getUrl[E:\new-project\25boy-v3\control\control-center\thinkphp\library\think\Request.php:156]
+---------------------------------------------------------------
+[ 2019-01-03T17:37:22+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.023000s] [吞吐率：43.48req/s] [内存消耗：1,341.41kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:38:01+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.037000s] [吞吐率：27.03req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:40+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.037000s] [吞吐率：27.03req/s] [内存消耗：1,444.95kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:43+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.027000s] [吞吐率：37.04req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:43+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.037000s] [吞吐率：27.03req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:43+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.036000s] [吞吐率：27.78req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:43+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.028000s] [吞吐率：35.71req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:43+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.031000s] [吞吐率：32.26req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:44+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.021000s] [吞吐率：47.62req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:44+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.038000s] [吞吐率：26.32req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:45+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.030000s] [吞吐率：33.33req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:41:46+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.028000s] [吞吐率：35.71req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:42:24+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.036000s] [吞吐率：27.78req/s] [内存消耗：1,444.95kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:42:24+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.034000s] [吞吐率：29.41req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:42:25+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.026000s] [吞吐率：38.46req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:42:25+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.025000s] [吞吐率：40.00req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:42:25+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.030000s] [吞吐率：33.33req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:44:35+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.039000s] [吞吐率：25.64req/s] [内存消耗：1,445.02kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:160]
+---------------------------------------------------------------
+[ 2019-01-03T17:45:06+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.043000s] [吞吐率：23.26req/s] [内存消耗：1,447.91kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\index\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php:29]
+---------------------------------------------------------------
+[ 2019-01-03T17:45:47+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.029000s] [吞吐率：34.48req/s] [内存消耗：1,444.97kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to protected method app\common\controller\Service::curl_post() from context 'app\index\controller\Area'[E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php:16]
+---------------------------------------------------------------
+[ 2019-01-03T17:46:05+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.046000s] [吞吐率：21.74req/s] [内存消耗：1,445.16kb] [文件加载：47]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+[ error ] [1]Call to undefined function app\common\controller\curl_init()[E:\new-project\25boy-v3\control\control-center\application\common\controller\Service.php:120]
+---------------------------------------------------------------
+[ 2019-01-03T17:47:22+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.027000s] [吞吐率：37.04req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:47:40+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.036000s] [吞吐率：27.78req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:43+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.034000s] [吞吐率：29.41req/s] [内存消耗：1,418.08kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:45+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.023000s] [吞吐率：43.48req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:46+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.023000s] [吞吐率：43.48req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:49+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:51+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.024000s] [吞吐率：41.67req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:52+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.023000s] [吞吐率：43.48req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:52+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:52+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:53:53+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.025000s] [吞吐率：40.00req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:55:33+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.033000s] [吞吐率：30.30req/s] [内存消耗：1,418.08kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:55:36+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.023000s] [吞吐率：43.48req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:55:36+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.035000s] [吞吐率：28.57req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:55:37+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:55:37+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.024000s] [吞吐率：41.67req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:55:37+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.019000s] [吞吐率：52.63req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:55:38+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,417.43kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T17:56:18+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.035000s] [吞吐率：28.57req/s] [内存消耗：1,418.08kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s9445427200',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T18:01:28+08:00 ] 127.0.0.1 GET center.25boy.com/
+[运行时间：0.137000s] [吞吐率：7.30req/s] [内存消耗：1,390.88kb] [文件加载：42]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => '',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\index\controller\Index->index[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Index.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T18:01:36+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.042000s] [吞吐率：23.81req/s] [内存消耗：1,417.07kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s8394033152',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T18:03:28+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.039000s] [吞吐率：25.64req/s] [内存消耗：1,418.08kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s8394033152',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-03T18:11:08+08:00 ] 127.0.0.1 GET center.25boy.com/index/area/getAreas?type=1
+[运行时间：0.034000s] [吞吐率：29.41req/s] [内存消耗：1,418.08kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\25boy-v3\control\control-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; pgv_si=s8394033152',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ E:\new-project\25boy-v3\control\control-center\application\index\controller\Area.php ]
+[ info ] [ LOG ] INIT File

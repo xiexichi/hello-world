@@ -1,0 +1,1023 @@
+<?php
+
+namespace app\common\model;
+
+use think\Model;
+use think\Db;
+use think\Validate;
+
+class CommonModel extends Model
+{
+	protected $code;// 错误码
+
+	// 是否退出
+	protected $isExit;
+
+	// 验证规则
+	protected $rule;
+
+	protected $ruleMsg = [];
+
+	// 更新条件
+	protected $updateCondition = [];
+
+	// 表前缀
+	protected $prefix;
+
+	// 排序条件
+	protected $orderBy;
+
+	// 页码
+	public $page;
+
+	// 模型查找参数[array]
+	public $param;
+
+	// 临时数据
+	public $tempData;
+
+	// 使用having获取的总条数
+	protected $havingCount;
+
+	protected $isHaving;
+
+	// 是否禁用事务
+	protected $disableTrans = false;
+
+	// 系统日志模型 
+	protected $systemLogModel;
+
+	// 是否自动添加系统日志
+	protected $isAutoAddSystemLog = true;
+
+	// 商品库存仓库代码
+	const SALES_WAEREHOUSE = '001';		// 销售仓
+	const MATERIALS_WAEREHOUSE = '007';	// 物料仓
+
+	/**
+	 * [initialize 模型初始化方法]
+	 * @return [type] [description]
+	 */
+	public function initialize(){
+		parent::initialize();
+
+		// 设置只允许添加表中存在的字段
+		$this->allowField(true);
+
+		// 表前缀
+		$this->prefix = config('database.prefix');
+
+		// 创建系统日志模型
+		// $this->systemLogModel = new SystemLog();
+	}
+
+	/**
+	 * [setParam 设置查找参数]
+	 * @param [array] $param [查找参数]
+	 */
+	public function setParam($param){
+		$this->param = $param;
+		return $this;
+	}
+
+	/**
+	 * [getParam 获取模型接收的参数]
+	 * @return [type] [description]
+	 */
+	public function getParam(){
+		return $this->param;
+	}
+
+	/**
+	 * [setDisableTrans 设置事务禁用状态]
+	 * @param boolean $is_disable [description]
+	 */
+	public function setDisableTrans($is_disable){
+		$this->disableTrans = $is_disable;
+		return $this;
+	}
+
+	// 获取表别名
+	public function getAlias(){
+		if (objHasPropertie($this, 'alias')) {
+			return $this->alias;
+		}
+
+		return false;
+	}
+
+
+    /**
+     * 设置where参数
+     */
+	public function setWhere() {
+        $args = func_get_args();
+
+        // 2个参数
+        if (count($args) == 2) {
+            $this->where($args[0], $args[1]);
+        }
+
+        // 3个参数
+        if (count($args) == 3) {
+            $this->where($args[0], $args[1], $args[2]);
+        }
+
+        return $this;
+    }
+
+	/*===========================================================================
+		重写事务方法是为了实现在多个模型调用时，内部已编写了事务方法的事务失效
+		可以在最外层控制多个模型处理数据时的一致性
+	=============================================================================*/
+	/**
+	 * override
+	 * [startTrans 开启事务]
+	 */
+	public function startTrans(){
+		// 如果不是禁用事务
+		if (!$this->disableTrans) {
+			// 开启事务
+			parent::startTrans();
+		}
+	}
+
+	/**
+	 * override
+	 * [rollback 回滚事务]
+	 */
+	public function rollback(){
+		// 如果不是禁用事务
+		if (!$this->disableTrans) {
+			// 开启事务
+			parent::rollback();
+		}
+	}
+
+	/**
+	 * [commit 提交事务]
+	 */
+	public function commit(){
+		// 如果不是禁用事务
+		if (!$this->disableTrans) {
+			// 开启事务
+			parent::commit();
+		}
+	}
+
+	/**
+	 * [confirmStartTrans 确定打开事务]
+	 */
+	public function confirmStartTrans(){
+		// 开启事务
+		parent::startTrans();
+	}
+
+	/**
+	 * [confirmRollBack 确定回滚事务]
+	 */
+	public function confirmRollBack(){
+		// 回滚事务
+		parent::rollback();
+	}
+
+	/**
+	 * [confirmCommit 确定提交事务]
+	 */
+	public function confirmCommit(){
+		// 提交事务
+		parent::commit();
+	}
+
+	/*===========================================================================
+		重写事务方法是为了实现在多个模型调用时，内部已编写了事务方法的事务失效
+		可以在最外层控制多个模型处理数据时的一致性
+	=============================================================================*/
+
+
+	/**
+	 * [setTableName 设置表名]
+	 * @param [type] $table [description]
+	 */
+	public function setTableName($table){
+		// 表前缀
+		$prefix = config('database.prefix');
+
+		$this->setTable($prefix.$table);
+	}
+
+
+	/**
+	 * [checkValidate 检测验证]
+	 * @return [type] [description]
+	 */
+	protected function checkValidate(){
+		if (empty($this->rule)) {
+			return true;
+		}
+
+		// 创建验证器
+		if ($this->ruleMsg) {
+			$validate = new Validate($this->rule, $this->ruleMsg);
+		} else {
+			$validate = new Validate($this->rule);
+		} 
+
+		if(!$validate->check($this->data)){
+			// 设置错误信息
+			$this->error = $validate->getError();
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * [setUpdateCondition 设置更新添加]
+	 * @param [type] $coditions [description]
+	 */
+	public function setUpdateCondition($conditions){
+		if ($conditions && is_array($conditions)) {
+			$this->updateCondition = $conditions;
+		} else {
+			pe('请设置正确的更新条件');
+		}
+		return $this;
+	}
+
+	/**
+	 * [setRule 设置验证规则]
+	 * @param [type] $rule [description]
+	 */
+	public function setRule($rule = array(), $ruleMsg = array()){
+		if ($rule && is_array($rule)) {
+			$this->rule = $rule;
+		}
+
+		if ($ruleMsg && is_array($ruleMsg)) {
+			$this->ruleMsg = $ruleMsg;
+		}
+		return $this;
+	}
+
+
+	/**
+	 * [index 获取列表数据]
+	 * @return [type] [description]
+	 */
+	public function index(){
+
+		// 执行后置方法
+		$this->execBeforeMethods('index');
+		if ($this->isExit) {
+			return false;
+		}
+
+		// 设置排序规则
+		$this->setMyOrderBy();
+
+		// 分页偏移量
+		$offset = $this->getOffset();
+
+		// 查找数据
+		// $this->data = $this->limit($offset['offset'], $offset['page_size'])->paginate($offset['page_size']);
+
+		// 如果是having查询
+		if ($this->isHaving) {
+
+			$this->data = $this->limit($offset['offset'], $offset['page_size'])->select();
+
+			$items = $this->data;
+		
+		} else {
+			// 不是having查询
+			$this->data = $this->limit($offset['offset'], $offset['page_size'])->paginate($offset['page_size']);
+
+			$items = $this->data->items();
+		}
+
+
+		// 打印sql标记
+		if (isset($this->tempData['print_sql'])) {
+			p($offset);
+			pe($this->getLastSql());
+		}
+
+		// 执行后置方法
+		$this->execAfterMethods('index');
+
+		// 判断是否有having子句查询的总条数
+		if ($this->isHaving) {
+			$total = $this->havingCount;
+		} else {
+			// 设置总条数
+			$total = $this->data->total();
+		}
+
+		// 返回数据
+		return $result = [
+			'items' => $items,
+			'page'  => $this->pagetion($total, $this->page, $offset['page_size'])
+		];
+
+	}
+
+	/**
+	 * [getOffset 获取分页偏移量]
+	 * @return [type] [description]
+	 */
+	protected function getOffset(){
+		// 分页配置
+		$pagetionConfig = config('pagetion');
+
+		if ($this->page) {
+			return [
+				'offset' => ($this->page - 1) * $pagetionConfig['page_size'],
+				'page_size' => $pagetionConfig['page_size']
+			];
+		}
+
+		// 计算分页参数
+		$page = max(input('page',0,'int'),1);
+		$pageSize = input('page_size',0,'int');
+
+		// 如果没有page_size参数
+		if (!$pageSize) {
+			// 则查找是否有limit参数，有则代替page_size
+			$pageSize = input('limit',0,'int');
+		}
+
+		// 如果有自定义页码
+		if (isset($this->tempData['page'])) {
+			$page = $this->tempData['page'];
+		}
+
+		
+		if (empty($pageSize)) {
+			$pageSize = $pagetionConfig['page_size'];
+		}
+		$pageSize = min($pagetionConfig['max_page_size'], $pageSize);
+
+		// 保存页码
+		$this->page = $page;
+
+		return [
+			'offset' => ($page - 1) * $pageSize,
+			'page_size' => $pageSize
+		];
+	}
+
+	/**
+	 * [setMyOrderBy 设置自定义排序规则]
+	 */
+	protected function setMyOrderBy(){
+		// 设置排序规则
+		if($options = $this->getOptions()){
+
+			if (isset($options['order']) && count($options['order']) > 0) {
+				// $this->orderBy = $options['order'];
+			} else {
+				// 默认排序规则
+				$this->orderBy = $this->getPkName().' DESC';
+				// 获取表别名称
+				if (isset($options['alias']) && !empty($options['alias'][$this->getTable()])) {
+					$this->orderBy = $options['alias'][$this->getTable()].'.'.$this->getPkName().' DESC';
+				}
+				// 设置默认排序条件
+				$this->order($this->orderBy);
+			}
+		}
+	}
+
+
+	/**
+	 * [one 查找单条数据]
+	 * @return [type] [description]
+	 */
+	public function one(){
+
+		// 执行后置方法
+		$this->execBeforeMethods('one');
+		if ($this->isExit) {
+			return false;
+		}
+
+		// 查找数据
+		$this->data = $this->find();
+
+		// pe($this->getLastSql());
+
+		// 执行后置方法
+		$this->execAfterMethods('one');
+		if ($this->isExit) {
+			return false;
+		}
+
+		return $this->data;
+	}
+
+	/**
+	 * [getAll 获取所有数据]
+	 * @return [type] [description]
+	 */
+	public function getAll(){
+
+		// 执行前置方法
+		$this->execBeforeMethods('getAll');
+		if ($this->isExit) {
+			return false;
+		}
+
+		$this->data = $this->select();
+
+		// pe($this->getLastSql());
+
+		// 执行后置方法
+		$this->execAfterMethods('getAll');
+		if ($this->isExit) {
+			return false;
+		}
+
+		return $this->data;
+	}
+
+/**
+	 * override
+     * 查找所有记录
+     * @access public
+     * @param mixed        $data  主键列表或者查询条件（闭包）
+     * @param array|string $with  关联预查询
+     * @param bool         $cache 是否缓存
+     * @return static[]|false
+     * @throws exception\DbException
+     */
+    public static function all($data = null, $with = [], $cache = false)
+    {
+
+    	// pe(static::class);
+		$query = static::parseQuery($data, $with, $cache);
+
+		$className = static::class;
+
+		// 实例类
+		$model = new $className();
+
+		// 开启事务
+		$query->startTrans();
+
+    	// 执行前置方法
+		$query = execBeforeMethods($model, $query,'all');
+		if ($model->isExit) {
+			// 回滚
+			$query->rollback();
+			return false;
+		}
+
+        if (true === $with || is_int($with)) {
+            $cache = $with;
+            $with  = [];
+        }
+        
+        
+        $data = $query->select($data);
+
+        // 执行前置方法
+		$data = execAfterMethods($model, $data,'all');
+		if ($model->isExit) {
+			// 回滚
+			$query->rollback();
+			return false;
+		}
+
+		// 提交事务
+		$query->commit();
+
+		return $data;
+    }
+
+	/**
+	 * [addAll 添加多条数据]
+	 */
+	public function addAll($data = array()){
+		// 开启事务
+		$this->startTrans();
+
+		if ($data) {
+			// 保存数据
+			$this->data = $data;
+		}
+
+		// 执行前置方法
+		$this->execBeforeMethods('addAll');
+		if ($this->isExit) {
+			// 回滚
+			$this->rollback();
+			return false;
+		}
+		
+		// 添加数据
+		$res = $this->saveAll($this->data);
+
+		if (!$res) {
+			// 回滚
+			$this->rollback();
+			return false;
+		}
+
+		// 执行后置方法
+		$this->execAfterMethods('addAll');
+		if ($this->isExit) {
+			// 回滚
+			$this->rollback();
+			return false;
+		}
+
+		// 提交事务
+		$this->commit();
+		return true;
+	}
+
+
+	/**
+	 * [add 添加数据]
+	 */
+	public function add(){
+
+		// 保存数据
+		return $this->saveData('add');
+	}
+
+	/**
+	 * [edit 修改]
+	 * @return [type] [description]
+	 */
+	public function edit(){
+		// 保存数据
+		return $this->saveData('edit');
+	}
+
+	/**
+	 * [setOrderBy 设置排序规则]
+	 */
+	public function setOrderBy($orderBy){
+		$this->orderBy = $orderBy;
+		return $this;
+	}
+
+	/**
+	 * [saveData 保存数据]
+	 * @param  string $method [调用前后置方法名称]
+	 * @return [type]         [description]
+	 */
+	protected function saveData($method = 'add'){
+
+		// 检测验证
+		if (!$this->checkValidate()) {
+			return false;
+		}
+
+		if (empty($this->data)) {
+			$this->error = '保存数据不能为空';
+			return false;
+		}
+
+		// 如果是修改，获取旧数据
+		// if ($method == 'edit') {
+		// 	$oldData = $this->where('id', $this->data['id'])->find();
+		// 	// 存入旧参数
+		// 	$this->systemLogModel->params['oldParam'] = $oldParam;
+		// }
+
+		// 开启事务
+		$this->startTrans();
+
+		// 执行前置方法
+		$this->execBeforeMethods($method);
+		if ($this->isExit) {
+			// 回滚
+			$this->rollback();
+			return false;
+		}
+
+		// 保存数据
+		if ($method == 'add') {
+
+			// 添加数据
+			$res = $this->save($this->data);
+			// $res = $this->insert($this->data);
+
+			if (isset($this->data[$this->pk])) {
+				// 添加主键到临时数据中
+				$this->tempData['data'][$this->pk] = $this->data[$this->pk];
+			}
+			
+		} else {
+
+			// 如果没有更新条件，并且有主键存在
+			$pk = $this->getPkName();
+
+			if (empty($this->updateCondition) && !empty($this->data[$pk])) {
+				// 设置主键为更新条件
+				$this->updateCondition = [$pk => $this->data[$pk]];
+			}
+
+			// 更新
+			$res = $this->save($this->data, $this->updateCondition);
+		}
+
+		if ($res === false) {
+			if ($method == 'add') {
+				$this->error = '添加失败';
+			} else {
+				$this->error = '修改失败';
+			}
+			// 回滚
+			$this->rollback();
+			return false;
+		}
+
+		// 执行后置方法
+		$this->execAfterMethods($method);
+		if ($this->isExit) {
+			// 回滚
+			$this->rollback();
+			return false;
+		}
+
+
+		// 添加系统日志
+		// $this->systemLogModel->add();
+
+		// 提交事务
+		$this->commit();
+		return true;
+	}
+
+    /**
+     * @return int
+     */
+	public function del(){
+
+	    // 开启事务
+	    $this->startTrans();
+
+        // 执行前置方法
+        $this->execBeforeMethods('del');
+        if ($this->isExit) {
+            // 回滚
+            $this->rollback();
+            return false;
+        }
+
+        // 删除
+	    $res = $this->delete();
+
+        // 执行后置方法
+        $this->execAfterMethods('del');
+        if ($this->isExit) {
+            // 回滚
+            $this->rollback();
+            return false;
+        }
+
+        // 提交事务
+        $this->commit();
+
+        return $res;
+    }
+
+    /**
+     * [editOrAdd 修改或添加]
+     * @return [type] [description]
+     */
+    public function editOrAdd(){
+    	$updateData = $this->data;
+
+    	// 如果有自定义的where条件
+    	if (!empty($this->tempData['where'])) {
+    		$this->where($this->tempData['where']);
+    	}
+
+    	// 查找数据
+    	$data = $this->find();
+
+    	if ($data) {
+
+    		// 更新
+    		$res = $data->save($updateData);
+    	} else {
+
+    		// 新增
+    		$res = $this->insert($updateData);
+    	}
+
+    	return $res;
+    }
+
+
+	/**
+	 * [getPkName 获取主键名称]
+	 * @return [type] [description]
+	 */
+	public function getPkName() {
+
+		if ($this->pk) {
+			return $this->pk;
+		}
+
+		// 如果有自定义链接数据库配置
+		if (objHasPropertie($this, 'connection')) {
+			$desc = DB::connect($this->connection)->query('desc '.$this->getTable());
+		} else {
+			$desc = DB::query('desc '.$this->getTable());
+		}
+		
+		foreach ($desc as $v) {
+			if ($v['Key'] == 'PRI') {
+				return $v['Field'];
+			}
+		}
+
+		return '';
+	}
+
+
+	/**
+	 * [tableIsExist 判断表是否存在]
+	 * @param  [type] $table [表名]
+	 * @return [bool]        [true/false]
+	 */
+	protected function tableIsExist($table){
+		$res = DB::query("SHOW TABLES LIKE '{$table}'");
+		if ($res) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * [diyGetTableName 自定义获取表名]
+	 * @return [type] [description]
+	 */
+	protected function diyGetTableName() {
+		return str_replace($this->prefix, '', $this->getTable());
+	}
+
+	/**
+	 * [execBeforeMethods 执行自定义前置方法]
+	 */
+	protected function execBeforeMethods($action = ''){
+		$beforeAction = $action.'Before';
+
+		// 临时保存修改前数据，添加操作日志使用
+		if($action === 'edit') {
+			$this->setChangeBeforeData();
+		}
+
+		if (objHasMethod($this, $beforeAction)) {
+			// 执行前置方法
+			$this->$beforeAction();
+		}
+	}
+	
+
+	/**
+	 * [execAfterMethods 执行自定义后置方法]
+	 */
+	protected function execAfterMethods($action = ''){
+		
+		$afterAction = $action.'After';
+
+		if (objHasMethod($this, $afterAction)) {
+			// 执行后置方法
+			$this->$afterAction($this->data);
+		}
+	}
+
+	/**
+	 * 临时保存修改前数据，添加操作日志使用
+	 */
+	public function setChangeBeforeData($data = [])
+	{
+		if( !empty($data) ){
+			$this->tempData['changeBeforeData'] = $data;
+		}else{
+			$pk = $this->getPkName();
+			$id = isset($this->data[$pk]) ? $this->data[$pk] : NULL;
+			$this->tempData['changeBeforeData'] = $this->find($id)->getData();
+		}
+	}
+
+	/**
+	 * [pageList 自定义分页方法]
+	 * @param  [int] $pageSize [每页显示多少条数据]
+	 * @param  [int] $cur_page [当前页码]
+	 * @param  [int] $number   [显示的页码数量]
+	 * @return [array]         [分页信息数组]
+	 */
+	protected function pagetion($count , $cur_page = 1,$pageSize='',$number = 5){
+		if ($count == 0) {
+			return [];
+		}
+
+		//获取每页显示多少条数据
+		$pageSize = empty($pageSize) ? config('pagetion')['page_size'] : $pageSize;
+
+		//获取总页数
+		$pages = ceil($count/$pageSize);
+		
+		//如果要显示页码数量是否比页码总数量大，显示的页码数量就等于页码总数
+		if($number >= $pages)$number = $pages;
+
+		//将显示页数-1
+		$number = $number - 1;
+
+		//求出前部分页码数量
+		$before = ceil($number/2);
+		//求出后部分页码数量
+		$after = $number - $before;
+
+		//求出当前显示页码的起始页码
+		$start = $cur_page - $before;
+		//求出当前显示页码的结束页码
+	    $end = $cur_page + $after;
+
+	    $prev = max($cur_page - 1,1);
+	    $cur_page = min(max($cur_page,1),$pages);
+	    $next = min($cur_page + 1,$pages);
+
+	    //如果起始页码小于1，起始页码就等于1
+	    if($start < 1)$start = 1;
+	    //如果结束页码大于总页码，结束页码就等于最后的页码
+	    if($end > $pages)$end = $pages;
+
+	    //如果起始页码等于1，结束页码就等于显示页码数
+	    if($start == 1)$end = $start + $number;
+	    //如果结束页码等于最后页码，起始页码就等于最后的页码减去要显示的页码数
+	    if($end == $pages)$start = $pages - $number;
+
+	    //返回页码信息数组
+	    return $page_num = array(
+	        'count' => $count,
+	    	'pages' => $pages,
+	    	'start' => $start,
+	    	'end'   => $end+1,
+	    	'prev'  => $prev,
+	    	'current' => $cur_page,
+	    	'next'  => $next
+	    );
+	}
+
+
+	/**
+	 * [setErrorAndCode 设置错误信息和状态码]
+	 * @param [type]  $error [错误信息]
+	 * @param integer $code  [错误码]
+	 */
+	public function setErrorAndCode($error, $code = 0){
+		$this->error = $error;
+		$this->code = $code;
+	}
+
+	/**
+	 * [setErrorAndCodeExit 设置错误信息和状态码并退出]
+	 * @param [type]  $error [错误信息]
+	 * @param integer $code  [错误码]
+	 */
+	public function setErrorAndCodeExit($error, $code = 0){
+		$this->error = $error;
+		$this->code = $code;
+		$this->isExit = true;
+		return false;
+	}
+
+	/**
+	 * [getCode 获取状态码]
+	 * @return [type] [description]
+	 */
+	public function getCode(){
+		return $this->code;
+	}
+
+	/**
+	 * [getError 获取错误信息]
+	 * @param  string $defaultError [默认错误信息]
+	 * @return [type]        		[description]
+	 */
+	public function getError($defaultError = ''){
+		if ($this->error) {
+			return $this->error;
+		}
+
+		if ($defaultError) {
+			return $defaultError;
+		}
+
+		return '操作失败';
+	}
+
+	/**
+	 * [addOperatorJoin 添加操作者的跨库join]
+	 * @param [type] $model [查找的模型]
+	 * @param string $alias [表别名]
+	 */
+	public function addOperatorJoin($model = null, $alias = 'a'){
+
+		if ($model == null) {
+			$model = $this;
+		}
+
+		$model->join('miao.o2o_login_track ml',$alias.'.login_id = ml.login_id','LEFT')
+		      ->join('miao.o2o_staff mos','ml.staff_id = mos.staff_id','LEFT')
+		      ->join('miao.business mb','ml.business_id = mb.business_id','LEFT');
+
+		return $model;
+	}
+
+
+	/**
+	 * 修改系统文件
+	 * override
+     * 时间日期字段格式化处理
+     * @access public
+     * @param mixed $time      时间日期表达式
+     * @param mixed $format    日期格式
+     * @param bool  $timestamp 是否进行时间戳转换
+     * @return mixed
+     */
+    protected function formatDateTime($time, $format, $timestamp = false)
+    {
+        if (false !== strpos($format, '\\')) {
+            $time = new $format($time);
+        } elseif (!$timestamp && false !== $format) {
+            if (is_numeric($time)) {
+                $time = date($format, $time);
+            }
+        }
+        return $time;
+    }
+
+    /**
+     * [floatHandle 小数处理]
+     * @return [type] [description]
+     */
+    public function floatHandle($field){
+    	return "ROUND({$field}, 2)";
+    }
+
+    /**
+     * [list 获取列表数据]
+     * @return [type] [description]
+     */
+    public function getList(){
+
+    	// 执行后置方法
+    	$this->execBeforeMethods('list');
+    	if ($this->isExit) {
+    		return false;
+    	}
+
+    	// 设置排序规则
+    	$this->setMyOrderBy();
+
+    	// 分页偏移量
+    	$offset = $this->getOffset();
+
+    	// 查找数据
+    	$this->data = $this->limit($offset['offset'], $offset['page_size'])->paginate($offset['page_size']);
+
+    	// 打印sql标记
+    	if (isset($this->tempData['pe_sql'])) {
+    		p($offset);
+    		pe($this->getLastSql());
+    	}
+
+    	// 执行后置方法
+    	$this->execAfterMethods('list');
+
+    	// 返回数据
+    	return $result = [
+    		'items' => $this->data->items(),
+    		'page'  => $this->pagetion($this->data->total(), $this->page, $offset['page_size'])
+    	];
+
+    }
+
+
+
+   /**
+	* 通过crypt散列加密密码
+	* @param  string [密码]
+	* @return string 
+	*/
+	protected function passCrypt($pass)
+	{
+		// 加盐
+		$salt = '$2a$07$wwbomeyywelcooutocw25onsule$';
+		return crypt($pass, $salt);
+	}
+
+
+}

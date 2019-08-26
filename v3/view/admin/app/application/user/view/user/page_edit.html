@@ -1,0 +1,233 @@
+<style type="text/css">
+html {
+    background-color: #fff;
+}
+</style>
+<div class="layui-fluid">
+    <div class="layui-tab layui-tab-card">
+        <ul class="layui-tab-title">
+            <li class="layui-this">基本信息</li>
+            <li>详细信息</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form" action="" lay-filter="formBase">
+                    <input type="hidden" name="id">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" type="number" name="phone" placeholder="手机号" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" type="text" name="email" placeholder="邮箱" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" lay-verify="required" name="user_name" placeholder="用户名" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">真实姓名</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" name="real_name" placeholder="" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">修改密码</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" type="password" name="pass" placeholder="不修改不用填写" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" value="1" title="正常">
+                            <input type="radio" name="status" value="0" title="异常">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">性别</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="gender" value="1" title="男">
+                            <input type="radio" name="gender" value="2" title="女">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">生日</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" id="birthday" name="birthday" placeholder="生日" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" type="text" name="remark" placeholder="备注" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">能否改昵称</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_rename" value="1" title="是">
+                            <input type="radio" name="is_rename" value="0" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">会员地区</label>
+                        <div class="layui-input-inline" style="width:18%;">
+                            <select name="country_id" lay-filter="country_id">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline" style="width:18%;">
+                            <select name="province_id" lay-filter="province_id">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline" style="width:18%;">
+                            <select name="city_id" lay-filter="city_id">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline" style="width:18%;">
+                            <select name="region_id" >
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="text-align: right;">
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit lay-filter="submitBaseBtn">立即提交</button>
+                            <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-tab-item">
+                123
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var userID = getUrlParam('id');
+var $ = layui.jquery;
+var form = layui.form;
+var layer = layui.layer;
+var laydate = layui.laydate;
+
+$(document).ready(function() {
+    layui.use(['jquery', 'form', 'layer', 'laydate'], function() {
+        laydate.render({
+            elem: '#birthday'
+        });
+
+        request.setHost(CENTER_DATA).post('/user/user/getEditData', { 'id': userID }, function(res) {
+            if (res.code == 0) {
+                if(res.data.areas.country.length > 0){
+                    createrAreaDom(res.data.areas.country, 'country_id');
+                }
+                if(res.data.areas.province.length > 0){
+                    createrAreaDom(res.data.areas.province, 'province_id');
+                }                
+                if(res.data.areas.city.length > 0){
+                    createrAreaDom(res.data.areas.city, 'city_id');
+                }
+                if(res.data.areas.region.length > 0){
+                    createrAreaDom(res.data.areas.region, 'region_id');
+                }
+
+                var userData = res.data.user;
+                form.val("formBase", {
+                    "id": userData.id,
+                    "phone": userData.phone,
+                    "email": userData.email,
+                    "user_name": userData.user_name,
+                    "real_name": userData.real_name,
+                    "status": String(userData.status),
+                    "gender": String(userData.gender),
+                    "birthday": userData.birthday,
+                    "remark": userData.remark,
+                    "is_rename": String(userData.is_rename),
+                    "country_id": userData.country_id,
+                    "province_id": userData.province_id,
+                    "city_id": userData.city_id,
+                    "region_id": userData.region_id
+                });
+                form.render();
+            } else {
+                layer.msg(res.msg);
+            }
+        });
+
+        //监听提交
+        form.on('submit(submitBaseBtn)', function(data) {
+            request.setHost(CENTER_DATA).post('/user/user/editUser', data.field, function(res) {
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    setTimeout(function() {
+                        parent.window.callback();
+                    }, 1000);
+                } else {
+                    layer.msg(res.msg);
+                }
+            });
+            return false;
+        });
+
+        form.on('select(country_id)',function(data){
+            loadAreasByPid(data.value, 'country_id');
+        });
+        form.on('select(province_id)',function(data){
+            loadAreasByPid(data.value, 'province_id');
+        });
+        form.on('select(city_id)',function(data){
+            loadAreasByPid(data.value, 'city_id');
+        });
+
+        form.render();
+    });
+});
+
+function createrAreaDom(data,inputName){
+    inputDom = $('select[name='+inputName+']');
+    inputDom.empty();
+    inputDom.append('<option value=""></option>');
+    for(var i in data){
+        inputDom.append('<option value="'+data[i].id+'">'+data[i].area_name+'</option>');
+    }
+    form.render();
+}
+function loadAreasByPid(pid,inputName){
+    var nextInputName = cleanAreaDom(inputName);
+    if(pid > 0){
+        request.setHost(CENTER_DATA).get('/index/area/getAreasByPid',{pid: pid}, function(res){
+            if( res.code == 0 ){
+                createrAreaDom(res.data, nextInputName);
+            }else {
+                layer.msg(res.msg);
+            }
+        });
+    }
+}
+function cleanAreaDom(inputName){
+    var nextInputName = '';
+    switch (inputName) {
+        case 'country_id':
+            nextInputName = nextInputName ? nextInputName : 'province_id';
+            createrAreaDom([],'province_id');
+        case 'province_id':
+            nextInputName = nextInputName ? nextInputName : 'city_id';
+            createrAreaDom([],'city_id');
+        case 'city_id':
+            nextInputName = nextInputName ? nextInputName : 'region_id';
+            createrAreaDom([],'region_id');
+        break;
+    }
+    return nextInputName;
+}
+</script>

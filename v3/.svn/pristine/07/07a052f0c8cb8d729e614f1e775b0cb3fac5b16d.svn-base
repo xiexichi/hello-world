@@ -1,0 +1,532 @@
+<style type="text/css">
+  .embed-table{
+    background: #e6e6e6;
+  }
+  .embed-table th{
+    text-align:center;
+  }
+</style>
+
+<div class="layui-card">
+  <div class="layui-card-body">
+    
+  <form class="layui-form" action="">
+    <div class="layui-form-item fled-space-between">
+      <div class="layui-input-inline">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">查找</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">SKU</label>
+      <div class="layui-input-inline">
+        <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+      </div>
+
+      <label class="layui-form-label">密码框</label>
+      <div class="layui-input-inline">
+        <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">辅助文字</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">分类</label>
+      <div class="layui-input-inline">
+        <select id="category_id" name="category_id" lay-verify="required">
+          <option value=""></option>
+        </select>
+      </div>
+
+      <label class="layui-form-label">品牌</label>
+      <div class="layui-input-inline">
+        <select id="brand_id" name="brand_id" lay-verify="required">
+          <option value=""></option>
+        </select>
+      </div>
+    </div>
+    
+  </form>
+
+  </div>
+</div>
+
+
+<!-- 商品表格 -->
+<table id="demo" lay-filter="test">
+</table>
+
+<!-- 库存模板 -->
+<script type="text/html" id="stockTpl">
+  <div class="p-1 text-center embed-table">
+    
+    <table class="layui-table" lay-skin="line">
+    <colgroup>
+      <col width="250">
+      <col width="300">
+      <col width="400">
+      <col width="400">
+      <col width="400">
+    </colgroup>
+    <thead class="text-center">
+      <tr>
+        <th>规格</th>
+        <th>店铺库存</th>
+        <th>总店库存</th>
+        <th class="ctrl_name">进货数量</th>
+        <th>操作</th>
+      </tr> 
+    </thead>
+    <tbody>
+
+    {{#  layui.each(d.pre_select, function(index, item){ }}
+      <tr>
+        <td>{{ item.sku_code }}</td>
+        <td>{{ item.shop_quantity }}</td>
+        <td>{{ item.salable_qty }}</td>
+        <td>
+          <div class="p-0-5">
+            <input type="number" class="layui-input purchase_quantity pre-select" min="0" max="{{ item.salable_qty }}" boy_quantity="{{ item.salable_qty }}" stock_id="{{ item.stock_id }}" value="{{ item.quantity }}" depot_id="{{ item.depot_id }}" 
+            {{#  if(item.salable_qty <= 0){ }}
+              disabled="true" placeholder="缺货"
+            {{# } }}
+            >
+          </div>
+        </td>
+        <td>
+          <button class="del-item layui-btn layui-btn-primary layui-btn-sm" id="{{ item.id }}">
+            <i class="layui-icon">&#xe640;</i>
+          </button>
+        </td>
+      </tr>
+    {{#  }); }}
+    {{#  if(d.pre_select.length === 0){ }}
+      无数据
+    {{#  } }} 
+      </tbody>
+    </table>
+  </div>
+
+</script>
+
+<!-- 图片模板 -->
+<script type="text/html" id="photoTpl">
+  <div>
+    <img src="{{ d.image }}">
+  </div>
+</script>
+
+<!-- 工具栏 -->
+<script type="text/html" id="toolbar">
+  <!-- <div class="layui-btn-group">
+    <button class="layui-btn layui-btn-sm">提交</button>
+    <button class="layui-btn layui-btn-sm">编辑</button>
+    <button class="layui-btn layui-btn-sm">删除</button>
+  </div> -->
+
+  <div>
+    <button id="submit-select" class="layui-btn layui-btn-sm">提交</button>
+  </div>
+</script>
+
+<!-- 进货类型 -->
+<!-- <div id="purchase_type" class="layui-form mb-1" lay-filter="test1" style="display: none;">
+  <div class="layui-input-inline fled-flex-start">
+    <label class="layui-form-label" style="width: auto;">进货类型</label>
+    <input type="radio" name="type" value="1" title="商品" checked>
+    <input type="radio" name="type" value="2" title="物料">
+  </div>
+</div> -->
+
+<!-- 店铺列表（此店铺列表不能删除） -->
+<div id="shop_list_div" class="layui-form mb-1" lay-filter="test1" style="display: none;">
+  <div class="layui-input-inline fled-flex-start">
+    <label class="layui-form-label" style="width: auto;">店铺列表</label>
+    <select id="shop_list"></select>
+  </div>
+</div>
+
+
+<div id="remarks" style="display: none;">
+
+    <!-- 店铺列表 -->
+    <div id="shop_list_div" class="layui-form mb-1" lay-filter="shop_list_form">
+      <div class="layui-input-inline fled-flex-start">
+        <label class="layui-form-label" style="width: auto;">收货店铺</label>
+        <select id="shop_list" lay-filter='shop-list'></select>
+      </div>
+    </div>
+    
+    <!-- 备注信息 -->
+    <div class="layui-input-block" style="margin-left: 0px;">
+      <textarea style="width: 100%;" id="remarks-info" placeholder="备注信息" class="layui-textarea"></textarea>
+    </div>
+
+</div>
+
+<!-- <label class="layui-form-label">SKU</label>
+<div class="layui-input-inline">
+  <select id="sku-select" ></select>
+</div> -->
+
+<!-- 引入公共模块js -->
+<include file="depot@base/pre_select" />
+
+<script>
+//Demo
+var shopList = [];  // 同类型的店铺列表（用于调货）
+
+// 默认进货类型
+var purchaseType = 1;
+
+// 获取预选id
+var selectId = getUrlParam('shop_depot_pre_select_id');
+
+// 查找预选标签数据
+request.setHost(SHOP_DATA).get('/depot/shop_depot_pre_select/one?id='+selectId, function(res){
+  
+  if (res.code != 0) {
+    layer.alert('获取预选商品失败！');
+    return;
+  }
+
+  // 设置预选标签
+  preSelectTag = res.data;
+})
+
+var form = layui.form;
+
+// 商品分类
+request.setHost(SHOP_DATA).get('/goods/category/getCateAll?showType=list', function(res) {
+  console.info(res);
+  for (let i in res.data) {
+    let item = res.data[i];
+    $('#category_id').append('<option value="'+item.id+'">'+item.cate_name+'</option>');
+  }; 
+  form.render();
+})
+
+// 商品品牌
+request.setHost(SHOP_DATA).get('/goods/goods_brands/all', function(res) {
+  console.info(res);
+  for (let i in res.data) {
+    let item = res.data[i];
+    $('#brand_id').append('<option value="'+item.id+'">'+item.brand_name+'</option>');
+  }; 
+  form.render();
+})
+
+// 获取店铺列表
+request.setHost(CENTER_DATA).get('/merchant/shop/all', function(res){
+  // 添加店铺列表数据
+  if (res.code == 0) {
+    shopList = res.data;
+  }
+})
+
+//监听提交
+form.on('submit(formDemo)', function(data){
+  layer.msg(JSON.stringify(data.field));
+  return false;
+});
+
+form.render();
+
+
+// 初始化表格
+initTable();
+
+
+function initTable(){
+
+  var table = layui.table;
+
+  // 链接url
+  let url = '/depot/shop_depot_pre_select_item/index?';
+
+  // 如果有选中的标记
+  if (selectId) {
+    url += 'shop_depot_pre_select_id='+selectId;
+  }
+
+  //第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: '550px'
+    ,url: url //数据接口
+    ,toolbar: '#toolbar'
+    // ,toolbar: true
+    // ,defaultToolbar: ['filter', 'print', 'exports']
+    ,page: true //开启分页
+    ,headers: {
+      ctrl: SHOP_DATA
+    }
+    ,done: function (res, curr, count) {
+      $('.layui-table-cell').css('height', 'auto');
+      $('.embed-table .layui-input').height('25px');
+      $('th').css('text-align', 'center');
+
+      // 进货单才显示进货类型选择
+      if (preSelectTag.type == 1) {
+        $('#purchase_type').show();
+        // 添加进货单类型选择radio
+        // $('#remarks').prepend($('#purchase_type').clone(true).show());
+      }
+
+      // 添加订单地址
+      let url = '/depot/shop_purchase_order/add';
+      // 跳转地址
+      let jumpUrl = '/depot/purchase/list.html';
+
+      // 如果选择类型不是调货单，就删除商店列表
+      if (preSelectTag.type != 4) {
+        $('#shop_list_div').remove();
+      }
+
+      switch ( parseInt(preSelectTag.type) ) {
+      case 1:
+        // 进货单
+        url = url;
+        break;
+      case 2:
+        // 退货单
+        url = "/depot/shop_return_order/add";
+        jumpUrl = "/depot/shop_return/list";
+        $('.ctrl_name').html('退货数量');
+        break;        
+      case 3:
+        // 调整单
+        url = "/depot/shop_adjust_order/add";
+        jumpUrl = "/depot/shop_adjust/list";
+        $('.ctrl_name').html('调整后数量');
+        break;        
+      case 4:
+        // 调拨单
+        url = "/depot/shop_transfer_order/add";
+        jumpUrl = "/depot/shop_transfer/list";
+        $('.ctrl_name').html('调拨数量');
+        break;
+      default:
+        layer.alert('不知道的单据类型');
+        return;
+      }
+
+      // 提交数据
+      $('#submit-select').on('click', function(){
+
+        console.info('remarks length:', $('#remarks').length);
+
+        // 复制
+        let $shopListDiv = $('#shop_list_div').clone(true);
+        let $remarks = $('#remarks').clone(true);
+
+        // 1.弹出备注确认框
+        layer.open({
+          title: '提交进货单',
+          area: ['500px', '290px'],
+          content: $('#remarks'),
+          success: function(layero, index){
+            // 提交备注框处理
+            remarksHandle();
+          },
+          yes: function(index, layero){
+            //do something
+            layer.close(index); //如果设定了yes回调，需进行手工关闭
+
+            // 获取备注信息
+            let remarks = $('#remarks-info').val();
+
+            let data;
+
+            // 如果进货类型为1，即进货单
+            if (preSelectTag.type == 1) {
+              data = {
+                shop_depot_pre_select_id: preSelectTag.id,
+                shop_remark: remarks,
+                type: purchaseType
+              };
+            } else {
+              data = {
+                shop_depot_pre_select_id: preSelectTag.id,
+                shop_remark: remarks
+              };
+            }
+
+            // 
+            console.info('preSelectTag.type:', preSelectTag.type);
+
+            // 如果是调货类型，添加调入门店id
+            if (preSelectTag.type == 4) {
+              // 获取调出门店id
+              let inShopId = $('#shop_list').val();
+              data['in_shop_id'] = inShopId;
+            }
+
+            // 2.提交表单
+            request.setHost(SHOP_DATA).post(url, data, function(res){
+              if (res.code == 0) {
+                layer.alert('添加成功', function(index){
+                  // 1.跳转到进货单列表
+                  location.href = jumpUrl;
+                });
+              } else {
+                // 提示错误信息
+                layer.alert(res.msg);
+
+                // 必须再次添加这两个元素到body中，否则再次打开弹窗时，会出bug
+                $('body').append($shopListDiv).append($remarks);
+                // 提交备注框处理
+                remarksHandle();
+              }
+            });
+
+          },
+          cancel: function(index, layero){ 
+            // 必须再次添加这两个元素到body中，否则再次打开弹窗时，会出bug
+            $('body').append($shopListDiv).append($remarks);
+            // 提交备注框处理
+            remarksHandle();
+
+            layer.close(index)
+            return false; 
+          } 
+        });
+
+      });
+
+      // 颜色
+      let colors = ['', 'layui-btn-primary', 'layui-btn-normal', 'layui-btn-warm', 'layui-btn-danger', 'layui-btn-disabled'];
+
+      // 
+      for (let i = 0; i < res.data.length; i++) {
+        let skuSn = res.data[i].sku_sn;
+        let btn = "<a href='#"+skuSn+"' class='layui-btn layui-btn-sm layui-btn-radius "+colors[random(0, colors.length - 1)]+"'>"+skuSn+'-'+res.data[i].color+"</a>";
+        let option = "<option>"+btn+"</option>";
+        $('#sku-select').append(option);
+      }
+
+      form.render();
+
+      // 选择进货数量
+      selectPurchaseQuantity();
+
+      // 删除item
+      delItem();
+    }
+    ,cols: [[ //表头
+      {field: 'goods_name', title: '商品', width:180, sort: true}
+      ,{field: 'sell_price', title: '单价', width:100}
+      ,{field: 'color', title: '颜色', width:80}
+      ,{field: 'erp_code', title: 'SKU', width:120, templet: function(row){
+        return '<span id="'+row.sku_sn+'">'+row.sku_sn+'</span>';
+        // return row.sku_sn;
+      }}
+      ,{field: 'image', title: '图片', width:120, templet: '#photoTpl'} 
+      ,{field: 'stocks', title: '库存', width: 385, templet: '#stockTpl', style: 'height:100px'}
+    ]]
+  });
+}
+
+/**
+ * [remarksHandle 提交框处理]
+ * @return {[type]} [description]
+ */
+function remarksHandle(){
+  // 获取店铺列表
+  request.setHost(CENTER_DATA).get('/merchant/shop/all', function(res){
+    // 添加店铺列表数据
+    for (let i = 0; i < shopList.length; i++) {
+      let shop = shopList[i];
+      $('#shop_list').append('<option value="'+shop.id+'">'+shop.name+'</option>');
+    }
+    form.render(null,'shop_list_form');
+  })
+
+  // 神奇的设置元素属性，就可以解决视图不渲染问题
+  $('#shop_list').attr('id', 'abc');
+
+  // 如果是进货类型
+  if (preSelectTag.type == '1') {
+    $('#purchase_type').show();
+  } else {
+    $('#purchase_type').hide();
+  }
+  // 如果是调货类型
+  if (preSelectTag.type == '4') {
+    $('#shop_list_div').show();
+  } else {
+    $('#shop_list_div').hide();
+  }
+
+  // 如果有子节点
+  if ($(".layui-layer-content").length && $(".layui-layer-content")[0].childNodes.length) {
+    // 删除无厘头的[object Object]
+    let oo = $($(".layui-layer-content")[0].childNodes[0]);
+    if ( oo.text() == '[object Object]') {
+      oo.remove();
+    }              
+  }
+}
+
+/**
+ * [setPreSelect 设置预选标签]
+ */
+function setPreSelect(data){
+  // 保存数据
+  preSelectTag = data;
+
+  // 设置保存标记名称
+  $('#pre_select_tag').html('云端标记：' + preSelectTag.tag);
+
+  // 关闭弹窗
+  layer.close(preSelectTagLayer);
+
+  // 重新初始化工作
+  initTable();
+}
+
+
+/**
+ * [selectPurchaseQuantity 选择进货数量]
+ * @return {[type]} [description]
+ */
+function selectPurchaseQuantity(){
+  $('.purchase_quantity').bind('input propertychange', function()
+  {
+    // 添加
+    preSelectCtrl.add(PURCHASE, $(this));
+  })
+}
+
+/**
+ * [delItem 删除选项]
+ * @return {[type]} [description]
+ */
+function delItem(){
+  $('.del-item').on('click', function(){
+    let $this = $(this);
+
+    console.info($this.parent().parent().siblings().length);
+
+    // console.info(preSelectTag);
+    preSelectCtrl.del($(this).attr('id'), preSelectTag.id, function(res){
+      if (res.code == 0) {
+
+        // 判断当前元素的商品是否只有一个
+        if ($this.parent().parent().siblings().length == 0) {
+          $this.parent().parent().parent().parent().parent().parent().parent().parent().remove();
+        } else {
+          // 删除当前行
+          $this.parent().parent().remove();
+        }
+        
+      } else {
+        layer.alert(res.msg);
+      }
+    });
+
+  })
+}
+
+</script>

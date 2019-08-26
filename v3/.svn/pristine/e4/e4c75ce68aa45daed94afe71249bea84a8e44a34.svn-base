@@ -1,0 +1,25 @@
+<?php
+
+/**
+ *  商品标签
+ */
+
+namespace app\goods\validate;
+
+class Category extends Base
+{
+
+    /**
+     * [getGoodsTagSingle 获取单个标签信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getGoodsCateList($data){
+        $rule = [
+            'cate_id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+}

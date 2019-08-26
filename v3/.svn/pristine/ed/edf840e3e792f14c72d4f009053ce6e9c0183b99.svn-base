@@ -1,0 +1,64 @@
+<?php
+
+/**
+ *  商品销售参数组规格
+ */
+
+namespace app\goods\validate;
+
+class AttributeGroup extends Base
+{
+    /**
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getAttrGroupList($data){
+        $rule = [
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getGoodsTagSingle 获取单个信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getGoodsAttrGroupInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function add($data){
+        $rule = [
+            'group_name' => 'require',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function saveAttrGroupInfo($data){
+        $rule = [
+            'id'            => 'require|integer',
+            'group_name'    => 'require',
+            'attr'          => 'require|array'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function deleted($data){
+        $rule = [
+            'id' => 'require',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+
+}

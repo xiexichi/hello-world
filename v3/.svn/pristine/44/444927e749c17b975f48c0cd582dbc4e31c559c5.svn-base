@@ -1,0 +1,89 @@
+<style type="text/css">
+	.layui-form-pane .layui-form-checkbox{margin:4px 0 0 10px;}
+</style>
+<div class="p-1" id="app">
+	<form class="layui-form layui-form-pane" lay-filter="form">
+		<input type="hidden" name="status" value="1">
+		<div class="layui-form-item">
+			<label class="layui-form-label">角色名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" placeholder="角色名称" required lay-verify="required" class="layui-input" v-model="row.title">
+			</div>
+		</div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea name="note" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+		<div class="layui-form-item" pane>
+			<label class="layui-form-label">选择权限</label>
+			<div class="layui-input-block p-1">
+				<div id="LAY-auth-tree-index"></div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn layui-btn-normal" lay-submit lay-filter="submitBtn">立即提交</button>
+				<button class="layui-btn layui-btn-primary" type="button" onclick="closeSelfLayer()">关闭</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+
+layui.config({
+	base: '/static/layui/module/authtree/'
+}).extend({
+	authtree: 'authtree'
+})
+
+$(document).ready(function(){
+    layui.use(['jquery', 'authtree', 'form', 'layer'], function(){
+		var form = layui.form
+		var authtree = layui.authtree
+        var $ = layui.jquery;
+        var layer = layui.layer;
+		form.render()
+
+        request.setHost(SHOP_DATA).get('/power/power_role/getAddData',{}, function(res){
+            if( res.code == 0 ){
+                //角色权限
+                var trees = res.data.trees;
+                //如果后台返回的不是树结构，请使用 authtree.listConvert 转换
+                authtree.render('#LAY-auth-tree-index', trees, {
+                    inputname: 'authids[]', 
+                    layfilter: 'lay-check-auth', 
+                    autowidth: true,
+                });
+                form.render();
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(submitBtn)', function(data){
+        	const loadLayer = layer.load()
+            request.setHost(SHOP_DATA).post('/power/power_role/add', data.field, function(res){
+                if (res.code == 0) {
+					layer.msg(res.msg, {
+						icon: 1,
+						time: 1000
+					}, function() {
+						// 刷新父页面
+						parent.location.reload()
+					})
+                } else {
+					layer.close(loadLayer)
+					layer.alert(res.msg, function(index) {
+						layer.close(index)
+					})
+                }
+            });
+            return false;
+        });
+        
+    });
+});
+</script>

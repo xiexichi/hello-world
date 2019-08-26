@@ -1,0 +1,37 @@
+
+<!-- 商品表格 -->
+<table id="demo" lay-filter="test">
+</table>
+
+<!-- 图片模板 -->
+<script type="text/html" id="photoTpl">
+  <div>
+    <a href="/depot/depot_pre_select/detail.html?id={{ d.id }}" class="layui-table-link">详情</a>
+  </div>
+</script>
+
+<script type="text/javascript">
+	
+var table = layui.table;
+  
+//第一个实例
+table.render({
+elem: '#demo'
+,height: 312
+,url: '/depot/shop_depot_pre_select' //数据接口
+,page: true //开启分页
+,headers: {
+	ctrl: SHOP_DATA
+}
+,cols: [[ //表头
+  {field: 'id', title: 'ID', width:80, fixed: 'left'}
+  ,{field: 'tag', title: '标记', width:120}
+  ,{field: 'type', title: '预选类型', width: 120}
+  ,{field: 'create_time', title: '创建时间', width: 180}
+  ,{field: 'remarks', title: '备注', width: 280}
+  ,{field: 'remarks', title: '备注', width: 280}
+  ,{field: 'id', title: '操作', width: 280, templet: '#ctrlTpl'}
+]]
+});
+
+</script>

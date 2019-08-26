@@ -1,0 +1,25 @@
+<style>
+    .table-box{margin-top:20px;}
+    .layui-form-label{width:100px;}
+    .star{color:#FB5A5C;}
+</style>
+<link rel="stylesheet" href="/static/jwt/style/cj.css" media="all">
+<form class="layui-form table-box" action="" id="form" id="upload_main" >
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                </div>
+            </div>
+            <include file="../application/goods/view/goods/set_sku.html" />
+        </div>
+    </div>
+</form>
+<hea:js src="/static/js/vue.js" />
+<hea:js src="/static/js/goods/sales_update.js" />
+<script>
+    const url = "<?php echo url('/handlePhoto.html','','',true);?>";
+    const token = "<?php echo session('photojwttoken');?>";
+    const photoSpaceUrl = 'http://photo.25boy.com/?token='+token+'&url='+url+'&showconfirm=1';
+</script>

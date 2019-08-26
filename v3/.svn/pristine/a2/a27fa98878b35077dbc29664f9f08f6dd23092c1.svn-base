@@ -1,0 +1,24 @@
+<?php
+
+namespace app\cart\validate;
+
+class Cart extends Base
+{
+    public function getCartList($data){
+        $rule = [
+            'user_id' => 'require|integer',
+            'channel_id' => 'integer',
+            'shop_id' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function userParam($data){
+        $rule = [
+            'user_id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+}

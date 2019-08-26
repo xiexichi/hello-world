@@ -1,0 +1,317 @@
+<style type="text/css">
+	.del-item{
+		height:25px;
+		line-height: 25px;
+	}
+</style>
+
+<div class="layui-collapse" lay-filter="search-filter">
+  <div class="layui-colla-item">
+    <h2 class="layui-colla-title">查找条件</h2>
+    <div class="layui-colla-content layui-show">
+    	<form class="layui-form" action="">
+		  <div class="layui-form-item">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" lay-submit lay-filter="formDemo">查找</button>
+		      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		    </div>
+		  </div>
+		  
+		  <div class="layui-form-item">
+			<label class="layui-form-label">商品货号</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="item_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+				
+			<label class="layui-form-label">商品规格</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="sku_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+
+		    <!-- 商品项 -->
+		    <label class="layui-form-label only_differ_ele" style="display: none;">只查差异项</label>
+		    <div class="layui-input-block only_differ_ele" style="display: none;">
+		      <input type="radio" name="is_only_differ" value="0" title="否" checked>
+		      <input type="radio" name="is_only_differ" value="1" title="是">
+		    </div>
+
+		  </div>	
+
+		</form>
+    </div>
+  </div>
+</div>
+
+<div>
+	<!-- 進貨單表格 -->
+	<table id="list" lay-filter="list"></table>
+</div>
+
+<!-- 申请数量 -->
+<script type="text/html" id="applyQuantityTpl">
+	<div class="fled-flex-start">
+	  {{#  if(d.order_status == 0){ }}
+		<input type="number" item_id="{{ d.id }}" name="apply_quantity" boy_quantity="{{ d.salable_qty }}" stock_id="{{ d.stock_id }}" min="0" max="{{ d.salable_qty }}" class="purchase_quantity layui-input" style="height: 25px;" value="{{ d.apply_quantity }}">
+	  {{#  } }} 
+	  
+	  {{#  if(d.order_status != 0){ }}
+		{{ d.apply_quantity }}
+	  {{#  } }}
+	</div>
+</script>
+
+
+<!-- 工具栏 -->
+<script type="text/html" id="ctrlTpl">
+  <button class="layui-btn layui-btn-primary layui-btn-sm del-item" item_id="{{ d.id }}">
+    <i class="layui-icon">&#xe640;</i>
+  </button>
+</script>
+
+
+<!-- 商品图片 -->
+<script type="text/html" id="itemImgTpl">
+  <img src="{{ d.item_img }}" style="width: 100%;">
+</script>
+
+
+<!-- 差异数量 -->
+<script type="text/html" id="differQuantityTpl">
+	<div class="fled-flex-start">
+	  <input type="number" name="" class="layui-input differ_quantity" item_id="{{ d.id }}" max="{{ d.real_quantity }}" 
+			
+	  {{#  if(differStatus == 2){ }}
+	  		value="{{ d.differ_real_quantity }}" 
+	  		readonly="true" 
+	  {{#  } }}
+
+	  {{#  if(differStatus != 2){ }}
+	  		value="{{ d.differ_apply_quantity }}" 
+	  {{#  } }}
+	  >
+	</div>
+</script>
+
+
+<!-- 引入公共模块js -->
+<include file="depot@base/actual_select" />
+
+<!-- 引入查找条件操作的js -->
+<include file="depot@base/collapse_ctrl" />
+
+<script type="text/javascript">
+	
+	// 差异单状态
+	var differStatus;
+	
+	// 获取进货单id
+	var purchaseId = getUrlParam('purchase_id');
+
+	// 是否差异
+	var isDiffer =  getUrlParam('is_differ');
+
+	// 获取进货单数据
+	request.setHost(SHOP_DATA).get('/depot/shop_purchase_order/one?id='+purchaseId, function(res){
+
+	  	if (res.code == 0) {
+	  		// 设置差异单状态
+	  		differStatus = res.data.differ_status;
+
+	  		// 如果是已收货
+	  		if (res.data.status == 4) {
+	  			// 强制设置为差异模式
+	  			isDiffer = 1;
+	  		}
+
+	  		// 隐藏只查差异项
+	  		if (isDiffer) {
+	  			$('.only_differ_ele').show();
+	  		}
+	  	}
+
+	  	// 初始化表格
+		initTable();
+	})
+
+	// 表单提交
+    var form = layui.form;
+    form.on('submit(formDemo)', function(data){
+	  // layer.msg(JSON.stringify(data.field));
+	  // 重新获取表格数据
+	  initTable(data.field);
+	  return false;
+	});
+
+
+	
+
+	// 初始化表格
+	function initTable(params){
+
+	  var table = layui.table;
+
+	  // 链接url
+	  let url = '/depot/shop_purchase_item/index?shop_purchase_order_id='+purchaseId+'&';
+
+	  // 列数据
+	  let cols;
+
+
+	  console.info(isDiffer);
+
+	  // 判断是否申请差异
+	  if (isDiffer) {
+	  	cols = [ //表头
+	      {field: 'goods_name', title: '商品', width:280}
+	      ,{field: 'item_img', title: '图片', width:100, templet: '#itemImgTpl'}
+	      ,{field: 'item_code', title: '商品代码', width:120}
+	      ,{field: 'item_price', title: '单价', width:80}
+	      ,{field: 'sku_name', title: '规格', width:180}
+	      ,{field: 'apply_quantity', title: '申请数量', width: 120, templet: '#applyQuantityTpl'}
+	      ,{field: 'real_quantity', title: '实发数量', width: 120}
+	      ,{field: 'differ_quantity', title: '差异数量', width: 120, templet: '#differQuantityTpl'}
+	      ,{field: 'availavle_quantity', title: '可用数量', width: 120}
+	    ];
+	  } else {
+	  	cols = [ //表头
+	      {field: 'goods_name', title: '商品', width:280}
+	      ,{field: 'item_img', title: '图片', width:100, templet: '#itemImgTpl'}
+	      ,{field: 'item_code', title: '商品代码', width:120}
+	      ,{field: 'item_price', title: '单价', width:80}
+	      ,{field: 'sku_name', title: '规格', width:180}
+	      ,{field: 'apply_quantity', title: '申请数量', width: 120, templet: '#applyQuantityTpl'}
+	      ,{field: 'real_quantity', title: '实发数量', width: 120}
+	      ,{field: 'availavle_quantity', title: '可用数量', width: 120}
+	      ,{field: 'id', title: '操作', width: 120, templet: '#ctrlTpl'}
+	    ];
+	  }
+
+	  // 拼接参数
+	  if (undefined !== params) {
+		for (let i in params) {
+		  if (params[i] !== '') {
+		  	url += i + '=' + params[i] + '&';
+		  }
+		}	  	
+	  }
+
+	  //第一个实例
+	  table.render({
+	    elem: '#list'
+	    ,height: tableNormalHeight + 'px'
+	    ,url: url //数据接口
+	    ,toolbar: '#toolbar'
+	    // ,defaultToolbar: ['filter', 'print', 'exports']
+	    ,page: true //开启分页
+	    ,headers: {
+	      ctrl: SHOP_DATA
+	    }
+	    ,done: function (res, curr, count) {
+	    	// 监听进货数量
+	    	selectPurchaseQuantity();
+
+	    	// 差异数量
+	    	selectDifferQuantity();
+
+	    	$('tr').height(70);
+	    	$('tr').find('div').height(70).css('line-height', '70px');
+	    	$('td').css('vertical-align', 'middle');
+	    }
+	    ,cols: [cols]
+	  });
+
+	}
+
+
+	/**
+	 * [selectPurchaseQuantity 选择进货数量]
+	 * @return {[type]} [description]
+	 */
+	function selectPurchaseQuantity(){
+	  // 修改进货数量
+	  $('.purchase_quantity').bind('input propertychange', function()
+	  {
+
+	  	let params = {
+	  		url : '/depot/shop_purchase_item/edit',
+	  		id: $(this).attr('item_id'),
+	  		apply_quantity: $(this).val()
+	  	}
+
+	    // 保存
+	    actualSelectCtrl.save(params, $(this));
+	  })
+
+	  // 删除进货商品项
+	  $('.del-item').on('click', function(){
+		
+		let $this = $(this);
+
+		// 询问
+	  	layer.confirm('确认删除?', function(index){
+	  	  // 关闭弹出
+		  layer.close(index);
+
+		  let params = {
+	  		url : '/depot/shop_purchase_item/delete',
+	  		ids: $this.attr('item_id')
+		  }
+		  
+		  // 删除
+		  actualSelectCtrl.del(params, function(res){
+		    // 删除行
+		    $this.parent().parent().parent().remove();
+		  });
+
+		});
+
+	  })
+
+	}
+
+
+	/**
+	 * [selectDifferQuantity 选择差异数量]
+	 * @return {[type]} [description]
+	 */
+	function selectDifferQuantity(){
+		$(".differ_quantity").bind("input propertychange",function(event){
+
+			// 获取最大值
+			let max = parseInt($(this).attr('max'));
+
+			let quantity = $(this).val();
+
+			// 如果输入内容为空，则退出（负号也被识别为空）
+			if (!quantity) {
+				return;
+			}
+
+			// 如果小于0
+			if (parseInt(quantity) < 0) {
+				// 限制最大值
+				if (parseInt(quantity) * -1 > max) {
+					$(this).val(max * -1);
+				}
+			}
+
+			// 提交数据
+			let data = {
+				shop_purchase_item_id: $(this).attr('item_id'),
+				apply_quantity: $(this).val()
+			};
+
+			// 保存到服务器中
+			request.post('/depot/shop_differ_item/saveDifferItem', data, function(res){
+				if (res.code != 0) {
+					layer.alert(res.msg);
+				}
+
+				console.info(res);
+
+			});
+
+		});
+	}
+
+</script>

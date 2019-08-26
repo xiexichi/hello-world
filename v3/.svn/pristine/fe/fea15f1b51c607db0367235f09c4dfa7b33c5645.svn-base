@@ -1,0 +1,45 @@
+<?php
+
+namespace app\goods\model;
+
+use think\Exception;
+
+class Evaluation extends Base
+{
+    protected $name = 'goods_evaluation';
+    //显示类型
+    const VERIFY_WAIT= 0;  //待审核
+    const VERIFY_PAST= 1;  //通过
+    const VERIFY_UNPAST = 2;   //不通过
+
+    public static $map_verify = array(
+        self::VERIFY_WAIT => array(
+            'desc' => '待审核'
+        ),
+        self::VERIFY_PAST => array(
+            'desc' => '已审核'
+        ),
+        self::VERIFY_UNPAST => array(
+            'desc' => '不通过'
+        ),
+    );
+
+    public function indexBefore(){
+        $this->field('e.*,g.goods_name')
+            ->alias('e')
+            ->join('goods g','g.id = e.goods_id')
+            ->order('e.create_time','desc');
+    }
+
+    public function indexAfter(){
+        if( !empty($this->data) ){
+            foreach($this->data as $k => $v ){
+                $v['verify_desc'] = self::$map_verify[$v['verify']]['desc'];
+                $v['images_list'] = json_decode($v['images_list'],true);
+                $v['has_img'] = empty($v['images_list']) ? '无图' : '有图';
+                $this->data[$k] = $v;
+            }
+        }
+    }
+
+}

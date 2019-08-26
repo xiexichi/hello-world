@@ -1,0 +1,57 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">单独发放</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="user_id" value="" placeholder="会员id" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">所有会员统一配发</label>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">使用范围</label>
+                <div class="layui-input-inline">
+                    <select name="is_goods" >
+                        <option value="" >全部</option>
+                        <option value="0" >所有商品</option>
+                        <option value="1" >部分商品</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">有效时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="start_time" id="start_time" value="" placeholder="开始时间" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline">
+                    <input type="text" name="end_time" id="end_time" value="" placeholder="结束时间" autocomplete="off" class="layui-input" >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">确认</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var id = getUrlParam('id');
+    if( id == null ) {
+        parent.window.callback();
+    }
+    function ready(){
+        request.setHost(SHOP_DATA).post('/activity/coupon/one',param, function(res){
+            if (res.code == 0) {
+                console.log(res.code);
+            } else {
+                // 错误提示
+                layer.msg(res.msg);
+            }
+        });
+    },
+</script>

@@ -1,0 +1,203 @@
+<?php
+namespace app\order\controller;
+
+use app\common\controller\Service;
+use think\Exception;
+
+class Order extends Base{
+
+    //创建单号
+    public function createSn($channel = 0)
+    {
+        //下单渠道+时间戳后5位+随机数4位 总长度10位-11位
+        $sn = $channel . substr(time(), -5, 5) . rand(1000, 9999);
+        return $sn;
+    }
+
+    /**
+     * 获取下单商品列表
+     */
+    public function getBuyGoodsList(){
+        if( !$param = $this->validate->getTotal(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $shop_id = empty($param['shop_id']) ? 0 : $param['shop_id'];
+        $channel = empty($param['channel']) ? '' : $param['channel'];
+        $shop_list = $this->model->getBuyGoodsList($user_id,$shop_id,$channel);
+        if( $shop_list === false ){
+            return errorJson(000010, $this->model->getError());
+        }
+        return successJson($shop_list);
+    }
+
+    public function getTotal(){
+        if( !$param = $this->validate->getTotal(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $channel = empty($param['channel']) ? 0 : $param['channel'];
+        $shop_id = empty($param['shop_id']) ? 0 : $param['shop_id'];
+        //获取统计信息
+        $address_id = empty($param['address_id']) ? 0 : $param['address_id'];//收货地址
+        $delivery_id = empty($param['delivery_id']) ? 0 : $param['delivery_id'];//物流类型
+        $shop_list = $this->model->getBuyGoodsList($user_id,$shop_id,$channel);
+        $order_total = $this->model->getTotal($user_id,$shop_list,$address_id,$delivery_id,$channel);
+        if( $order_total === false ){
+            return errorJson(000010, $this->model->getError());
+        }
+        return successJson($order_total);
+    }
+
+    //使用优惠券
+    public function useCoupon(){
+
+    }
+
+    //使用积分
+    public function usePoint(){
+
+    }
+
+    /**
+     * 下单生成订单
+     */
+    public function createOrder(){
+        if( !$param = $this->validate->createOrder(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        //信息准备and处理
+        $user_id = $param['user_id'];
+        $address_id = $param['address_id'];
+        $delivery_id = $param['delivery_id'];
+        $shop_id = $param['shop_id'];
+        $channel = empty($param['channel']) ? $this->model::CHANNEL_PC : $param['channel'];
+        //check channel 预留用于活动使用
+        if( in_array($channel,$this->model::$map_channel) ){
+//            return [];
+        }
+        $remark = empty($param['remark']) ? '' : $param['remark'];
+        $coupon_ids = empty($param['coupon_ids']) ? '' : $param['coupon_ids'];
+        $point = empty($param['point']) ? 0 : $param['point'];
+        $code = 000010;
+        //检查用户信息
+        $server = new Service();
+        $user_info = $server->setHost('center_data')->post('user/user/one',['id'=>$user_id]);
+        if( empty($user_info) ){
+            return errorJson($code, '用户信息获取失败');
+        }
+        //检查收货地址信息
+        $address_info = $server->setHost('center_data')->post('user/address/one', ['id' => $address_id, 'user_id' => $user_id]);
+        if( empty($address_info) ){
+            return errorJson($code, '收货地址信息获取失败');
+        }
+        //检查物流公司
+        $deliveryModel = new \app\system\model\Delivery();
+        $delivery_info = $deliveryModel->where('id',$delivery_id)->find();
+        if( empty($delivery_info) ){
+            return errorJson($code, '物流公司信息获取失败');
+        }
+        //检查店铺参数
+        if( !empty($shop_id) ){
+            //获取店铺信息
+            $shop_info = $server->setHost('center_data')->post('merchant/shop/one',['id'=>$shop_id]);
+            if( empty($shop_info) ){
+                return errorJson($code, '店铺信息获取失败');
+            }
+        }
+        //获取预购商品列表
+        $shop_list = $this->model->getBuyGoodsList($user_id,$shop_id,$channel);
+        if( empty($shop_list) ){
+            return errorJson($code, '需购商品不能为空');
+        }
+        //获取订单合计信息
+        $order_total = $this->model->getTotal($user_id,$shop_list,$address_id,$delivery_id,$channel);
+        $this->model->startTrans();
+        $order_list = [];
+        try{
+            $masterModel = new \app\order\model\OrderMaster();
+            $orderGoodsModel = new \app\order\model\OrderGoods();
+            //创建主订单
+            $t = date(' Y-m-d H:i:s');
+            $masterData = [];
+            $masterData['order_master_sn'] = $this->createSn($channel);
+            $masterData['create_time'] = $t;
+            $master_id = $masterModel->insertGetId($masterData);
+            if( empty($master_id) ){
+                $code = 000011;
+                throw new Exception('订单创建失败');
+            }
+            //创建子订单
+            foreach( $shop_list as $shop ){
+                $orderInfoData = [];
+                $orderInfoData['order_master_id'] = $master_id;
+                $orderInfoData['order_sn'] = $this->createSn($channel);
+                $orderInfoData['user_id'] = $user_id;
+                $orderInfoData['goods_price'] = $shop['goods_price'];
+                $orderInfoData['coupon_price'] = $shop['coupon_price'];
+                $orderInfoData['discount_price'] = $shop['discount_price'];
+                $orderInfoData['ship_price'] = $shop['ship_price'];
+                $orderInfoData['order_price'] = bcadd($shop['ship_price'],
+                    bcsub(
+                        $shop['goods_price'],
+                        bcadd(
+                            $shop['coupon_price'],
+                            $shop['discount_price'],
+                            2
+                        ),
+                        2
+                    ),
+                    2
+                );
+                $orderInfoData['remark'] = $remark;
+                $orderInfoData['shop_id'] = $shop['shop_id'];
+                //这里之后再处理 自提订单
+//                $orderInfoData['order_type'] = $shop['shop_type'];
+                $orderInfoData['delivery_id'] = $delivery_info['id'];
+                $orderInfoData['add_channel'] = $channel;
+                $orderInfoData['create_time'] = $t;
+                $orderInfoData['update_time'] = $orderInfoData['create_time'];
+                $order_info_id = $this->model->insertGetId($orderInfoData);
+                if( empty($order_info_id) ){
+                    $code = 000012;
+                    throw new Exception('店铺订单创建失败');
+                }
+                $order_list[] = $order_info_id;
+                foreach( $shop['goods_list'] as $goods ){
+                    //检查商品库存
+                    //配置添加参数
+                    $goodsData = [];
+                    $goodsData['order_id'] = $order_info_id;
+                    $goodsData['goods_id'] = $goods['item_info']['goods_id'];
+                    $goodsData['goods_item_id'] = $goods['item_info']['id'];
+                    $goodsData['item_images'] = $goods['item_info']['item_img'];
+                    $goodsData['erp_code'] = $goods['item_info']['erp_code'];
+                    $goodsData['num'] = $goods['num'];
+                    $goodsData['item_price'] = $goods['item_info']['item_price'];
+                    $goodsData['coupon_price'] = $goods['coupon_price'];
+                    $goodsData['discount_price'] = $goods['discount_price'];
+                    $goodsData['create_time'] = $orderInfoData['create_time'];
+                    $goodsData['update_time'] = $goodsData['create_time'];
+                    $insertGoodsData[] = $goodsData;
+                }
+                //创建商品单
+                if( !$orderGoodsModel->insertAll($insertGoodsData) ){
+                    $code = 000013;
+                    throw new Exception('商品单创建失败');
+                }
+            }
+            //清空购物车已下单商品
+            $cartModel = new \app\cart\model\Cart();
+            if( !$cartModel->cartOrderClear($user_id) ){
+                $code = 000014;
+                throw new Exception('购物车初始化失败');
+            }
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($code, $e->getMessage());
+        }
+        return successJson($order_list,'下单成功');
+    }
+}
+?>

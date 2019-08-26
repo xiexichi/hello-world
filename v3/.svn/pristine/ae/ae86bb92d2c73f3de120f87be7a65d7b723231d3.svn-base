@@ -1,0 +1,27 @@
+---------------------------------------------------------------
+[ 2019-01-07T10:51:37+08:00 ] 127.0.0.1 GET control-shop.25boy.com/
+[运行时间：0.397023s] [吞吐率：2.52req/s] [内存消耗：3,174.98kb] [文件加载：42]
+[ info ] [ LANG ] E:\APMServ5.2.6\www\htdocs\25boyV3\control\control-shop\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => '',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'host' => 'control-shop.25boy.com',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'cookie' => 'UM_distinctid=1674ea7a29259b-0f0e0d96573d7f-4446062d-1fa400-1674ea7a2935aa; Hm_lvt_80360653ae2f506a1a158ec1bc5a5f20=1545561133; pgv_pvi=1528111104; pgv_si=s5898216448; ci_session=bdnhq6lksnhst161q5d29ikg034b4bnu',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\index\controller\Index->index[ E:\APMServ5.2.6\www\htdocs\25boyV3\control\control-shop\application\index\controller\Index.php ]
+[ info ] [ LOG ] INIT File

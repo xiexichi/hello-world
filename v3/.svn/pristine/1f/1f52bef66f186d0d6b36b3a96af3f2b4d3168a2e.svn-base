@@ -1,0 +1,161 @@
+<div class="p-1" id="app">
+	<form class="layui-form layui-form-pane" id="openAddForm" lay-filter="layer">
+    <div class="layui-form-item">
+      <label class="layui-form-label">名称</label>
+      <div class="layui-input-block">
+        <input type="text" name="name" placeholder="应用名称" required lay-verify="required" class="layui-input" v-model="row.name">
+      </div>
+    </div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">类型</label>
+			<div class="layui-input-block">
+        <select name="type" required lay-verify="required">
+          <option :value="key" v-for="(val, key) in appType" :key="key" v-bind:selected="key==row.type">{{val}}</option>
+        </select>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">APPID</label>
+			<div class="layui-input-block">
+				<input type="text" name="appid" placeholder="第三方应用APPID" required lay-verify="required" class="layui-input" v-model="row.appid">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">应用密钥 Secret</label>
+			<div class="layui-input-block">
+				<input type="text" name="secret" placeholder="第三方应用密钥SECRET" class="layui-input" v-model="row.secret">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">商户ID</label>
+			<div class="layui-input-block">
+				<input type="text" name="mch_id" placeholder="第三方商户号MCH_ID" class="layui-input" v-model="row.mch_id">
+			</div>
+		</div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">应用KEY</label>
+      <div class="layui-input-block">
+        <input type="text" name="key" placeholder="第三方应用KEY" class="layui-input" v-model="row.key">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">签名类型</label>
+      <div class="layui-input-block">
+        <input type="text" name="sign_type" placeholder="第三方SIGN_TYPE" class="layui-input" v-model="row.sign_type">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">交易类型</label>
+      <div class="layui-input-block">
+        <input type="text" name="trade_type" placeholder="第三方TRADE_TYPE" class="layui-input" v-model="row.trade_type">
+      </div>
+    </div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">CERT证书路径</label>
+			<div class="layui-input-block">
+				<input type="text" name="cert_pem_path" placeholder="请填写绝对路径" class="layui-input" v-model="row.cert_pem_path">
+			</div>
+		</div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">KEY证书路径</label>
+      <div class="layui-input-block">
+        <input type="text" name="key_pem_path" placeholder="请填写绝对路径" class="layui-input" v-model="row.key_pem_path">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">后台备注</label>
+      <div class="layui-input-block">
+        <textarea class="layui-textarea" name="desc" placeholder="用于后台辨识应用" v-model="row.desc"></textarea>
+      </div>
+    </div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" v-if="id" v-model="id">
+				<button class="layui-btn" lay-submit lay-filter="edit-layer">立即提交</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<style type="text/css">
+.layui-form-pane .layui-form-label{width:150px;}
+.layui-form-pane .layui-input-block{margin-left:150px;}
+</style>
+<hea:js src="/static/js/vue.js" />
+<script type="text/javascript">
+const id = "{$Request.param.id}"
+var app = new Vue({
+  el: '#app',
+  data: {
+    row: {},
+  	appType: {
+      weixin: '微信公众号',
+      weapp: '微信小程序',
+      alipay: '支付宝',
+      aliapp: '支付宝小程序',
+      qq: '腾讯QQ',
+      weibo: '新浪微博',
+      paypal: 'Paypal'
+    }
+  },
+  mounted: function () {
+  	if (id && id != 0) this.getOne()
+  },
+	computed: {
+		idDisabled: function () {
+			return this.id ? true : false
+		}
+	},
+  methods: {
+  	// 获取数据
+  	getOne: function() {
+  		let _this = this
+  		_this.id = id
+  		request.setHost('center_data').get('/apps/app_third/one?id='+id, function (json) {
+  			if (json.code === 0){
+  				_this.row = json.data
+          // layui表单赋值
+          layui.form.val('layer', {
+            'type': _this.row.type
+          })
+  			} else {
+  				layer.alert(json.msg)
+  			}
+  		})
+  	}
+  }
+})
+
+// layui
+layui.use('form', function () {
+  const form = layui.form
+  form.render()
+
+  //监听添加层提交
+  form.on('submit(edit-layer)', function (data) {
+  	const loadLayer = layer.load()
+  	let url = '/apps/app_third/add'
+  	if (id && id !=0){
+  		url = '/apps/app_third/edit'
+  	}
+    request.setHost('center_data').post(url, data.field, function (json){
+    	if (json.code === 0) {
+    		layer.msg(json.msg, {
+    			icon: 1,
+    			time: 2000
+    		}, function () {
+    			// 刷新父页面
+    			parent.location.reload()
+    		})
+    	}else{
+	    	layer.close(loadLayer)
+    		layer.alert(json.msg, function (index) {
+    			layer.close(index)
+    		})
+    	}
+    })
+    return false
+  })
+
+})
+</script>

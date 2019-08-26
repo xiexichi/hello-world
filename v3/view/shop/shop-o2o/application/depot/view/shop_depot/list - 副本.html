@@ -1,0 +1,467 @@
+<style type="text/css">
+  .embed-table{
+    background: #e6e6e6;
+  }
+  .embed-table th{
+    text-align:center;
+  }
+</style>
+
+
+<!-- 引入查找条件 -->
+<include file="depot@base/search" />
+
+
+<!-- 商品表格 -->
+<table id="demo" lay-filter="test">
+</table>
+
+<!-- 库存模板 -->
+<script type="text/html" id="stockTpl">
+  <div class="p-1 text-center embed-table">
+    
+    <table class="layui-table" lay-skin="line">
+    <colgroup>
+      <col width="250">
+      <col width="300">
+      <col width="400">
+      <col width="400">
+    </colgroup>
+    <thead class="text-center">
+      <tr>
+        <th>规格</th>
+        <th class="depot_type_name">店铺库存</th>
+        <th>总店库存</th>
+        <th class="ctrl_name">进货数量</th>
+      </tr> 
+    </thead>
+    <tbody>
+
+    {{#  layui.each(d.stocks, function(index, item){ }}
+      <tr>
+        <td>{{ item.sku_code }}</td>
+        <td>{{ item.shop_quantity }}</td>
+        <td>{{ item.salable_qty }}</td>
+        <td>
+          <div class="p-0-5">
+            <input type="number" class="layui-input purchase_quantity pre-select" min="0" 
+            max="{{  isShopStock ? item.shop_quantity : item.salable_qty }}"
+             shop_quantity="{{ item.shop_quantity }}" boy_quantity="{{ item.salable_qty }}" stock_id="{{ item.stock_id }}" value="{{ item.pre_select_quantity }}" depot_id="{{ item.depot_id }}" 
+            {{#  if(item.salable_qty <= 0){ }}
+              disabled="true" placeholder="缺货"
+            {{# } }}
+            >
+          </div>
+        </td>
+      </tr>
+    {{#  }); }}
+    {{#  if(d.stocks.length === 0){ }}
+      无数据
+    {{#  } }} 
+      </tbody>
+    </table>
+  </div>
+
+</script>
+
+<!-- 图片模板 -->
+<script type="text/html" id="photoTpl">
+  <div>
+    <img src="{{ d.image }}">
+  </div>
+</script>
+
+<!-- 工具栏 -->
+<script type="text/html" id="toolbar">
+
+  <div class="layui-form-item">
+    
+    <div class="layui-inline" title="查看商品" lay-event="" id="see-select">
+      <i class="layui-icon layui-icon-cart"></i>
+    </div>
+      
+  </div>
+</script>
+
+<!-- <label class="layui-form-label">SKU</label>
+<div class="layui-input-inline">
+  <select id="sku-select" ></select>
+</div> -->
+
+<!-- 分类选择样式 -->
+<style type="text/css">
+.layui-form-pane .layui-form-label{width:150px;}
+.layui-form-pane .layui-input-block{margin-left:150px;}
+.selectTable{overflow:auto;}
+.selectTable table{margin:0;}
+.selectTable .layui-icon-close{position:absolute;top:7px;right:10px;border-radius:50%;border:1px solid #ddd;font-size:14px;width:20px;height:20px;display:block;text-align:center;line-height:20px;cursor:pointer;}
+</style>
+<hea:css src="/static/layui/module/formSelects/formSelects-v4.css" />
+
+<!-- 引入公共模块js -->
+<include file="depot@base/pre_select" />
+
+<!-- 引入查找条件操作的js -->
+<include file="depot@base/collapse_ctrl" />
+
+<script>
+
+// 显示保存到云端
+$('#save-cloud-div').show();
+
+// 店铺库存类型
+var shopDepotType;
+
+// 操作类型
+var type = getUrlParam('type');
+if (type) {
+  // 转正数
+  type = parseInt(type);
+
+  // 改变标签文字颜色
+  $('#depot_type_select_label').css('color', 'red');
+
+  // 删除库存类型中的全部选项
+  $('#depot_type_select').children().first().remove();
+
+  // 设置店铺库存类型
+  shopDepotType = $('#depot_type_select').val();
+}
+
+// 最大库存限制标记
+var isShopStock = false;
+
+// 退货或调整
+if (type == 6 || type == 8) {
+  // 设置最大限制库存数量标记不是总店库存 
+  isShopStock = true;
+}
+
+//注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+var element = layui.element;
+
+//Demo
+// 预选标签
+var preSelectTagLayer;
+
+var form = layui.form;
+
+//监听提交
+form.on('submit(formDemo)', function(data){
+  // layer.msg(JSON.stringify(data.field));
+  // 重新初始化表格
+  initTable(data.field);
+  return false;
+});
+
+// 渲染表单
+form.render();
+
+// 监听选择店铺库存类型
+form.on('select(depot_type_select)', function(data){
+  console.log($(data.elem).html()); //得到select原始DOM对象
+  console.log(data.value); //得到被选中的值
+
+  // 设置店铺库存类型
+  shopDepotType = data.value;
+
+  // 如果是不是进货单，并且有保存云端的数据
+  if (type != 1 && preSelectTag) {
+
+    // 弹出确认窗口
+    layer.confirm('确认切换库存类型吗,切换后会清除所有已选择的产品?', function(index){
+      // 关闭弹窗
+      layer.close(index);
+      // 提交数据
+      var preSelect = {
+        id : preSelectTag.id,
+        shop_depot_type: data.value
+      };
+      // 修改库存类型
+      request.setHost(SHOP_DATA).post('/depot/shop_depot_pre_select/edit', preSelect, function(res){
+        console.info(res);
+        // 重新获取数据
+        initTable();
+      })
+    }, function(index){
+      console.info('取消确认');
+      // 回退类型
+      let backType;
+
+      // 库存类型就2种： 1和2
+      if (data.value == 1) {
+        backType = 2;
+      } else {
+        backType = 1;
+      }
+
+      console.info("backType : ", backType);
+
+      // 设置回退
+      $('#depot_type_select').val(backType);
+      shopDepotType = backType;
+      // 刷新表单
+      form.render();
+
+      // 关闭弹窗
+      layer.close(index);
+    });
+
+    
+  } else {
+
+    // 重新获取数据
+    initTable();    
+  
+  }
+
+});
+
+
+
+// 监听开启云端保存选择商品
+form.on('switch(save-cloud)', function(data){
+
+  if ($(data.elem).prop('checked')) {
+
+    // 选择页面url
+    let url = '/depot/depot_pre_select/list.html?';
+    
+    switch (type){
+      case 6:
+        // 退货类型 
+        url += "type=2";
+        break;
+      case 7:
+        // 调货（调拨）类型 
+        url += "type=4";
+        break;
+      case 8:
+        // 调整类型
+        url += "type=3";
+        break;
+    }
+
+    // 打开弹窗
+    //通过这种方式弹出的层，每当它被选择，就会置顶。
+    preSelectTagLayer = layer.open({
+      type: 2,
+      shade: false,
+      title: '编辑库存预选标签',
+      moveOut: true,
+      area: ['60%', '65%'],
+      maxmin: true,
+      content: url,
+      zIndex: layer.zIndex, //重点1
+      success: function(layero){
+        layer.setTop(layero); //重点2
+      }
+    });
+  } else {
+    // 关闭云端储存
+    // 将云端储存标记关闭
+    preSelectTag = null
+
+    // 清空预选标签
+    $('#pre_select_tag').html();
+
+    // 关闭弹窗
+    layer.close(preSelectTagLayer);
+  }
+});
+
+
+// 配置分类选择
+setCateAndBrand();
+
+// 初始化表格
+initTable();
+
+// 初始化表格
+function initTable(params){
+
+  var table = layui.table;
+
+  // 链接url
+  let url = '/depot/shop_depot/index?';
+
+  // 如果有选中的标记
+  if (preSelectTag) {
+    url += 'shop_depot_pre_select_id='+preSelectTag.id;
+  }
+
+  // 如果有库存类型
+  if (type) {
+    // 获取库存选择类型
+    url += '&type=' + $('#depot_type_select').val();
+    console.info('type:',$('#depot_type_select').val());
+  }
+
+  // 拼接参数
+  if (params) {
+    for (let i in params) {
+      if (params[i]) {
+        url += '&' + i + '=' + params[i];
+      }      
+    }
+  } 
+
+  //第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: tableNormalHeight + 'px'
+    ,url: url //数据接口
+    ,toolbar: '#toolbar'
+    // ,toolbar: true
+    // ,defaultToolbar: ['filter', 'print', 'exports']
+    ,page: true //开启分页
+    ,headers: {
+      ctrl: SHOP_DATA
+    }
+    ,done: function (res, curr, count) {
+      $('.layui-table-cell').css('height', 'auto');
+      $('.embed-table .layui-input').height('25px');
+      $('th').css('text-align', 'center');
+
+      // 查看选择商品
+      $('#see-select').on('click', function(){
+        
+        // 跳转页面
+        location.href = '/depot/depot_pre_select_item/list.html?shop_depot_pre_select_id='+preSelectTag.id;
+
+      })
+
+      // 颜色
+      let colors = ['', 'layui-btn-primary', 'layui-btn-normal', 'layui-btn-warm', 'layui-btn-danger', 'layui-btn-disabled'];
+
+      // 
+      for (let i = 0; i < res.data.length; i++) {
+        let skuSn = res.data[i].sku_sn;
+        let btn = "<a href='#"+skuSn+"' class='layui-btn layui-btn-sm layui-btn-radius "+colors[random(0, colors.length - 1)]+"'>"+skuSn+'-'+res.data[i].color+"</a>";
+        let option = "<option>"+btn+"</option>";
+        $('#sku-select').append(option);
+      }
+
+      // 重新渲染表单
+      form.render();
+
+      let ctrlName = '进货数量';
+
+      // 判断是否退货操作
+      if (type == 6) {
+        // 退货类型
+        ctrlName = '退货数量';
+      }       
+
+      // 判断是否调货（调拨）操作
+      if (type == 7) {
+        // 退货类型
+        ctrlName = '调货数量';
+      }      
+
+      if (type == 8) {
+        // 退货类型
+        ctrlName = '调整后数量';
+      }
+
+      // 设置操作名称
+      $('.ctrl_name').html(ctrlName);
+
+      // 判断当前选择的库存类型
+      if (shopDepotType == 1) {
+        $('.depot_type_name').html('商品库存');
+      } else if (shopDepotType == 2) {
+        $('.depot_type_name').html('物料库存');
+      } else {
+        $('.depot_type_name').html('全部库存');
+      }
+
+      // 选择进货数量
+      selectPurchaseQuantity();
+    }
+    ,cols: [[ //表头
+      {field: 'goods_name', title: '商品', width:180, sort: true}
+      ,{field: 'sell_price', title: '单价', width:100}
+      ,{field: 'color', title: '颜色', width:80}
+      ,{field: 'erp_code', title: 'SKU', width:120, templet: function(row){
+        return '<span id="'+row.sku_sn+'">'+row.sku_sn+'</span>';
+        // return row.sku_sn;
+      }}
+      ,{field: 'image', title: '图片', width:120, templet: '#photoTpl'} 
+      ,{field: 'stocks', title: '库存', width: 385, templet: '#stockTpl', style: 'height:100px'}
+    ]]
+  });
+}
+
+
+/**
+ * [setPreSelect 设置预选标签]
+ */
+function setPreSelect(data){
+  // 保存数据
+  preSelectTag = data;
+
+  // 设置保存标记名称
+  $('#pre_select_tag').html('云端标记：' + preSelectTag.tag);
+
+  // 关闭弹窗
+  layer.close(preSelectTagLayer);
+
+  // 设置库存类型
+  $('#depot_type_select').val(data.shop_depot_type);
+
+  // 重新渲染表单
+  form.render();
+
+  // 重新初始化工作
+  initTable();
+}
+
+
+/**
+ * [selectPurchaseQuantity 选择进货数量]
+ * @return {[type]} [description]
+ */
+function selectPurchaseQuantity(){
+  $('.purchase_quantity').bind('input propertychange', function()
+  {
+
+    console.info('selectPurchaseQuantity');
+
+    // 默认最大操作数量
+    var maxQuantity = parseInt($(this).attr('boy_quantity'));
+
+    // 默认为进货类型
+    var selectType = PURCHASE;
+
+    // 判断操作类型
+    switch (type) {
+      case 6:
+        // 退货类型
+        selectType = RETURN;
+        // 店铺库存为最大操作数量
+        var maxQuantity = parseInt($(this).attr('shop_quantity'));
+        break;
+      case 8:
+        // 调整类型
+        selectType = ADJUST;
+        // 店铺库存为最大操作数量
+        var maxQuantity = parseInt($(this).attr('shop_quantity'));
+        break;
+    }
+
+    console.info('selectType:', selectType);
+
+    // 检测是否超出最大数
+    if ( parseInt($(this).val()) > maxQuantity ) {
+      // 强制设置最大值
+      $(this).val(maxQuantity);
+    }
+
+    // 添加
+    preSelectCtrl.add(selectType, $(this));
+  })
+}
+
+
+</script>

@@ -1,0 +1,546 @@
+<?php
+
+/**
+ *
+ * 公共模型中缺失参数统一以1开头的5位数状态码
+ * 
+ * 公告控制器
+ */
+
+namespace app\common\controller;
+
+use think\Controller;
+use \think\Db;
+use \think\Config;
+use think\Request;
+
+class Common extends Controller
+{
+	// 请求对象
+	// protected $request;
+	protected $model;
+
+	// 是否退出
+	protected $isExit;
+
+	protected $data;
+
+	// 助手类
+	protected $helper;
+
+	// 状态码
+	protected $code;
+	// 错误信息
+	protected $error;
+
+	// 是否允许获取全部数据（默认禁止，如某些控制器需要操作，则设置此属性为true）
+	protected $allowAll = true;
+	// 是否允许删除数据（默认禁止，如某些控制器需要操作，则设置此属性为true）
+	protected $allowDel = true;
+	protected $allowAdd = true;
+	protected $allowEdit = true;
+
+	// 图片根目录
+	// const PHOTO_ROOT = 'http://192.168.2.230:8870/upload/';
+	const PHOTO_ROOT = '';
+
+	// 客栈api请求名称
+	const HOTEL_API = 'hotel-api';
+
+	// 25后台请求的名称
+	const BOY_API = '25admin-api';
+
+
+	/**
+	 * override
+     * 构造方法
+     * @access public
+     * @param Request $request Request 对象
+     */
+    public function __construct(Request $request = null)
+    {	
+    	// 调用父级构造方法
+    	parent::__construct();
+
+        $this->request = is_null($request) ? Request::instance() : $request;
+
+        // 检测登录
+        $this->checkLogin();
+
+        // 实例助手类
+		$this->helper = new Helper($this->request);
+
+        // 创建服务类
+        $this->service = new Service();
+
+        // 添加固定参数
+        if (session('shop')) {
+        	$shop = session('shop');
+        	// 添加固定参数店铺id
+        	$this->service->addFiexdParams(['shop_id' => $shop['id']]);
+        }
+        
+    }
+
+    /**
+     * [checkLogin 检测登录]
+     * @return [type] [description]
+     */
+    protected function checkLogin(){
+
+    	// 判断是否ajax的请求
+    	if ($this->request->isAjax()) {
+
+    		if (!session('shop')) {
+				// 返回json数据
+	    		$data = [
+	    			'code' => 10000,
+	    			'status' => 'ERROR',
+	    			'msg' => '请先登录'
+	    		];
+	    		echoJson($data);
+	    		exit;
+    		}
+
+    		
+    	} else {
+    		if (!session('shop')) {
+	    		// 直接跳转到登录页
+	    		header('Location:/index/index/login');
+	    		exit;
+	    	}
+    	}
+
+    	return true;
+    }
+
+
+	public function _initialize(){
+		parent::_initialize();
+
+		// 实例助手类
+		$this->helper = new Helper($this->request);
+
+		// 初始化模型
+		$this->init();
+	}
+
+	/**
+	 * [init 自定义初始化方法]
+	 * @return [type] [description]
+	 */
+	protected function init(){}
+
+
+	/**
+	 * [_empty 使用空方法直接寻找视图]
+	 * @return [type] [description]
+	 */
+	public function _empty() {
+
+		// 获取当前url
+    	$url = $_SERVER['REQUEST_URI'];
+
+        // 获取当前请求方法名称
+        $action = $this->request->action();
+
+		// 如果控制器是orders       	
+       	$controller = $this->request->controller();
+
+       	// 模型名称
+       	$module = $this->request->module();
+
+        // pe($action);
+
+       	/*============= ★Andy自定义新增，如果方法不存在，则判断视图模板是否存在 ==========*/
+        // 模板名称
+        $tplName = APP_PATH.'/'.$module.'/view/'.humpToLine($controller).'/'.$action.'.html';
+        
+        if (file_exists($tplName)) {
+
+            // 添加公共头部
+            $headerContent = file_get_contents(APP_PATH.'common/view/common/header.html');
+
+            // 视图
+            $view = \think\View::instance(Config::get('template'), Config::get('view_replace_str'));
+		
+			// 输出视图
+            echo $headerContent . $view->fetch($tplName, input());exit;
+
+            // 存在则输出
+            // echo $headerContent . file_get_contents($tplName);exit;
+        }
+        /*============= 自定义新增，如果方法不存在，则判断视图模板是否存在 ==========*/
+
+        // 转发操作
+        $forward = new Forward();
+        return $forward->go($this->request);
+
+	}
+
+
+	/**
+	 * [index 列表页面]
+	 * @return [type] [description]
+	 */
+	public function index(){
+		// 执行前置操作
+		$this->execBeforeMethods();
+
+		if ($this->isExit) {
+			// 返回错误信息
+			return errorJson($this->code,$this->error);
+		}
+
+		// 查找数据
+		$this->data = $this->model->index();
+
+		// pe($data);
+
+		// 执行后置操作
+		$this->execAfterMethods();
+
+		// 如果有limit参数提交，就返回layui需要的
+		if (input('limit')) {
+
+			$count = 0;
+			if (!empty($this->data['page']['count'])) {
+				$count = $this->data['page']['count'];
+			}
+
+			// 返回json数据
+        	return successJson($this->data['items'], '' ,$count);
+		}
+
+
+		// 返回json数据
+        return successJson($this->data);
+	}
+
+	/**
+	 * [select 提供]
+	 * @return [type] [description]
+	 */
+	public function all()
+    {
+
+    	if (!$this->allowAll) {
+    		return errorJson(10086,'禁止操作');
+    	}
+
+    	// 执行前置操作
+		$this->execBeforeMethods();
+
+		if ($this->isExit) {
+			// 返回错误信息
+			return errorJson($this->code,$this->error);
+		}
+
+        // $this->data = $this->model->select();
+        $this->data = $this->model->getAll();
+
+        // pe($this->model->getLastSql());
+
+        // 执行前置操作
+        $this->execAfterMethods();
+
+        return successJson($this->data);
+    }
+
+
+	/**
+	 * [add 添加post数据方法]
+	 */
+	
+	public function add(){
+
+		if (!$this->allowAdd) {
+    		return errorJson(10086,'禁止操作');
+    	}
+
+    	// 限定post操作
+    	// if (!$this->request->isPost()) {
+    	// 	return errorJson(10086,'禁止操作');
+    	// }
+
+		// 执行前置操作
+		$this->execBeforeMethods();
+
+		if ($this->isExit) {
+			// 返回错误信息
+			return errorJson($this->code,$this->error);
+		}
+
+		// 如果没有模型数据
+		if (empty($this->model->getData())) {
+			// 则获取post数据
+			if (!$data = input()) {
+				return errorJson(10006,'请提交数据');
+			}
+			// 设置模型数据
+			$this->model->data($data);
+		}
+
+		// 添加数据
+		$res = $this->model->add();
+
+		// 添加失败
+		if (!$res) {
+			return errorJson(10005,$this->model->getError());
+		}
+
+		// 执行后置操作
+		$this->execAfterMethods();
+
+		// 如果有数据，则直接返回
+		if (!empty($this->data)) {
+			return successJson($this->data);
+		}
+
+		// 添加成功
+		return successJson('添加成功!');
+	}
+	
+
+	/**
+     * [one 获取单条数据]
+     */
+    public function oneBefore(){
+    	$id = input('param.id',0,'int');
+
+    	// 输出错误提示
+    	if (empty($id)) {
+    		$this->code = 10001;
+    		$this->error = '缺失参数id';
+    		$this->isExit = true;
+    	} else {
+    		// 如果有其他参数
+    		$params = input();
+
+    		// 表存在字段
+    		$tableFields = $this->model->getTableFields();
+
+    		foreach ($params as $k => $v) {
+    			if ($k != 'id') {
+    				if ($k == 'login_id') {
+    					continue;
+    				}
+    				if (!is_array($v) && in_array($k, $tableFields)) {
+    					$this->model->where($k, $v);
+    				}
+    			}
+    		}
+
+	    	// 查找数据
+	    	$this->model->where($this->model->getTable().'.'.$this->model->getPkName(), input('param.id'));    		
+    	}
+    }
+
+	/**
+	 * [查找单条数据]
+	 */
+	public function one(){
+		// 执行前置操作
+		$this->execBeforeMethods();
+
+		if ($this->isExit) {
+			return errorJson($this->code, $this->error);
+		}
+
+		// 查找单条数据
+    	$this->data = $this->model->one();
+    	if (!$this->data) {
+    		return errorJson(10003, '数据不存在');
+    	}
+
+		// 执行后置操作
+		$this->execAfterMethods();
+
+		if ($this->isExit) {
+			return errorJson($this->code, $this->error);
+		}
+
+		// 返回数据
+    	return successJson($this->data);
+	}
+
+	/**
+	 * [edit 修改方法]
+	 * @return [type] [description]
+	 */
+	public function edit(){
+		if (!$this->allowEdit) {
+    		return errorJson(10086,'禁止操作');
+    	}
+
+    	// 限定post操作
+    	// if (!$this->request->isPost()) {
+    	// 	return errorJson(10086,'禁止操作');
+    	// }
+
+		// 执行前置操作
+		$this->execBeforeMethods();
+
+		if ($this->isExit) {
+			return;
+		}
+
+		// 如果没有模型数据
+		if (empty($this->model->getData())) {
+			// 则获取post数据
+			if (!$data = input()) {
+				return errorJson(10006,'请提交数据');
+			}
+			// 设置模型数据
+			$this->model->data($data);
+		}
+
+		// 修改数据
+		if (!$this->model->edit()) {
+			$modelData = $this->model->getData();
+			return errorJson(10006 ,$this->model->getError());
+		}
+
+		// 执行后置操作
+		$this->execAfterMethods();
+
+		// 添加成功
+		// $this->success('更新成功!', url('index'));
+		return successJson($this->model->getData(),'保存成功');
+	}
+	
+
+	/**
+	 * [deleteBefore description]
+	 * @return [type] [description]
+	 */
+	protected function deleteBefore(){
+		$ids = input('param.ids');
+    	// 输出错误提示
+    	if (empty($ids)) {
+    		$this->code = 10001;
+    		$this->error = '缺失参数ids';
+    		$this->isExit = true;
+    	} else {
+    		// 设置多个删除条件
+    		$this->model->where('id','in', $ids);
+    	}
+	}
+
+	// 删除数据
+	
+	public function delete(){
+
+		if (!$this->allowDel) {
+    		return errorJson(10086,'禁止操作');
+    	}
+
+    	// 执行前置操作
+    	$this->execBeforeMethods();
+
+    	if ($this->isExit) {
+    		return errorJson($this->code, $this->error);
+    	}
+    	
+    	// 删除数据
+//		if ($this->model->delete()) {
+		if ($this->model->del()) {
+			return successJson();
+		} else {
+			return errorJson(10002, $this->model->getError('删除失败'));
+		}
+	}
+	
+
+	/**
+	 * [execBeforeMethods 执行自定义前置方法]
+	 */
+	protected function execBeforeMethods($action = ''){
+		if (empty($action)) {
+			// 当前请求方法名称
+			$action = $this->request->action();
+		}
+		$beforeAction = $action.'Before';
+
+		if (objHasMethod($this, $beforeAction)) {
+			// 执行前置方法
+			$this->$beforeAction();
+		}
+	}
+
+	/**
+	 * [execAfterMethods 执行自定义后置方法]
+	 */
+	protected function execAfterMethods($action = ''){
+		if (empty($action)) {
+			// 当前请求方法名称
+			$action = $this->request->action();
+		}
+
+		$afterAction = $action.'After';
+
+		if (objHasMethod($this, $afterAction)) {
+			// 执行后置方法
+			$this->$afterAction();
+		}
+	}
+
+	/**
+	 * [getHeader 获取请求头参数]
+	 * @param  string $param [单个参数名称: 不传入则返回全部请求头参数]
+	 * @return [type]        [description]
+	 */
+	protected function getHeader($param = ''){
+		if (empty($param)) {
+			return $this->request->header();
+		}
+
+		$header = $this->request->header();
+
+		if (isset($header[$param])) {
+			return $header[$param];
+		}
+
+		return null;
+	}	
+
+
+    /**
+     * [getClientTime 获取客户端时间戳]
+     * @return [type] [description]
+     */
+    protected function getClientTime(){
+    	// 目前直接返回系统时间，待后续完善
+    	return time();
+    }
+
+    /**
+     * [setExitErrorInfo 设置退出错误信息]
+     * @param [type] $error [错误信息]
+     * @param [type] $code  [错误码]
+     */
+    protected function setExitErrorInfo($error,$code = NULL){
+    	if ($code) {
+    		$this->code = $code;
+    	}
+    	
+    	$this->error = $error;
+    	$this->isExit = true;
+    }
+
+    /**
+     * [getCode 获取状态码]
+     * @param  [type] $default_code [默认状态码]
+     * @return [type]               [description]
+     */
+    protected function getCode($default_code){
+    	if ($this->model) {
+    		if ($code = $this->model->getCode()) {
+    			return $code;
+    		}
+    	}
+
+    	return $default_code;
+    }
+
+}

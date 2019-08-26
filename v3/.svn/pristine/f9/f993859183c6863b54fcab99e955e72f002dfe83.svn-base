@@ -1,0 +1,150 @@
+<template>
+	<div class="container">
+		<goods-filter :filter="filter" :show="show_filter" :dot="has_filter" placeholder="搜索商品名称、商品编码" @toggle="toggleFilter"
+		 @change="setFilter" @search="onSearch" />
+		<div class="goods">
+			<div class="goodsCol pl--2 pr--2 pt--1">
+				<goods-item v-for="(item, index) in items" :key="index" :item="item"></goods-item>
+			</div>
+			<uni-load-more status="loading" v-if="loading=='loading'"></uni-load-more>
+		</div>
+	</div>
+</template>
+
+<script>
+import UTIL from '@/utils/util'
+import GoodsItem from '../../components/goods-item'
+import GoodsFilter from '../../components/goods-filter'
+import {uniLoadMore} from '@dcloudio/uni-ui'
+import '../../static/styles/font.css'
+
+export default {
+	components: {
+	  GoodsItem, GoodsFilter, uniLoadMore
+	},
+	data() {
+		return {
+			items: [],
+      // 加载中
+      loading: 'more',
+      page: 0,
+      pages: {},
+      // 筛选
+      show_filter: false,
+      search: '',
+      // 已选数据
+      filter: {
+        min_price: '',
+        max_price: '',
+        brands: [],
+        categorys: []
+      }
+		}
+	},
+	computed: {
+    // 是否有已选筛选项
+    has_filter () {
+      if (this.filter.min_price) return true
+      if (this.filter.max_price) return true
+      if (this.filter.brands.length > 0) return true
+      if (this.filter.categorys.length > 0) return true
+      return false
+    }
+  },
+	methods: {
+    // 清空参数重新加载
+    clearParams () {
+      this.items = []
+      this.loading = 'more'
+      this.page = 0
+      this.pages = {}
+    },
+    // 商品列表
+    getProductList () {
+      let _this = this
+      let items = this.items
+      let page = this.page
+
+      // 检查是否可以加载
+      if (_this.loading === 'loading' || _this.loading === 'noMore') {
+        return false
+      } else {
+        page += 1
+      }
+      // loading
+      _this.loading = 'loading'
+      uni.showLoading({
+      	title: '加载中'
+      })
+
+      // ajax获取产品列表
+      let params = {
+        pageNo: page,
+        search: _this.search,
+        min_price: _this.filter.min_price,
+        max_price: _this.filter.max_price,
+        brands: _this.filter.brands,
+        categorys: _this.filter.categorys
+      }
+      _this.$http.get('product/productList', params).then(res => {
+        uni.hideLoading()
+				uni.stopPullDownRefresh()
+        if (res.code === 0 && res.rs.data.length > 0) {
+          _this.items = [...items, ...res.rs.data]
+          _this.pages = res.rs.pageList
+        } else {
+          uni.showToast({
+          	title: res.msg
+          })
+        }
+				// 处理分页
+        _this.page = page
+				UTIL.pages(_this.pages, function (res) {
+					if (res) {
+						_this.loading = 'more'
+					} else {
+						_this.loading = 'noMore'
+					}
+				})
+      })
+    },
+    // 打开筛选区
+    toggleFilter (type) {
+			console.log('toggleFilter2', type)
+      if (type === 'right') {
+        this.clearParams()
+        this.getProductList()
+      }
+      this.show_filter = !this.show_filter
+    },
+    // 设置筛选项
+    setFilter (detail) {
+      const type = detail.type
+      const data = detail.value
+      this.filter[type] = data
+    },
+    // 搜索
+    onSearch (value) {
+      console.log(value)
+      this.search = value
+      this.clearParams()
+      this.getProductList()
+    }
+  },
+	onLoad () {
+		this.getProductList()
+	},
+	onReachBottom () {
+	  this.getProductList()
+	},
+	onPullDownRefresh () {
+		this.clearParams()
+		this.getProductList()
+	}
+}
+</script>
+
+<style lang="less">
+.container{padding-top:80upx;}
+.goods{padding-bottom:80upx;}
+</style>

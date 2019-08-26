@@ -1,0 +1,52 @@
+<script type="text/javascript">
+
+console.info('actual-select')
+
+
+// 库存预选对象
+const actualSelectCtrl = {}
+
+/**
+ * [save 保存方法]
+ * @param {[type]} params [请求参数]
+ * @param {[type]} $input [input]
+ */
+actualSelectCtrl.save = function (params, $input){
+	// 判断是否达到最大值
+	let max = $input.attr('max') ? $input.attr('max') : 0;
+	// 限制最大值
+	if ( parseInt($input.val()) > max) {
+		$input.val(max);
+	}
+
+	// 发送修改请求
+	request.post(params['url'], params, function(res){
+		if (res.code != 0) {
+			layer.alert(res.msg);
+		}
+	})
+}
+
+
+/**
+ * [del 删除方法]
+ * @param {[type]} params   [删除参数]
+ * @param {[type]} callback [回调函数]
+ */
+actualSelectCtrl.del = function (params, callback){
+
+	request.post(params['url'], params, function(res){
+		if (res.code == 0) {
+			if ( undefined != callback ) {
+				callback(res);
+			}
+		} else {
+			// 删除失败弹出提示信息
+			layer.alert(res.msg);			
+		}
+	});
+}
+
+
+
+</script>

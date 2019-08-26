@@ -1,0 +1,36 @@
+// layui
+layui.use('form', function (){
+  const form = layui.form
+  form.render()
+
+  //监听页面提交
+  form.on('submit(submit-system)', function (data){
+    const params = data.field
+    layer.load()
+    request.setHost('shop_data').post('/system/system/edit', params, function (json){
+    	if (json.code === 0) {
+    		layer.msg(json.msg, {
+    			icon: 1,
+    			time: 2000
+    		}, function (){
+    			location.reload()
+    		})
+    	} else {
+    		layer.alert(json.msg)
+    	}
+    })
+    return false
+  })
+
+  // 添加参数层
+  $('#J-add').on('click', function(){
+  	layer.open({
+  		title: '添加参数',
+  		type: 2,
+  		content: '/system/index/add',
+  		area: ['500px', '620px'],
+  		btn: false
+  	})
+  });
+  
+})

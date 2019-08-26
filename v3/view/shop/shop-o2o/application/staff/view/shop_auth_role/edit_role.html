@@ -1,0 +1,103 @@
+
+<div class="p-1">
+
+  <form id="form" class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+      
+    <div class="layui-form-item fled-flex-end">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+        <!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+        <!-- 角色id -->
+        <input type="hidden" name="id">
+      </div>
+    </div>
+
+    <div class="layui-tab">
+      <ul class="layui-tab-title">
+        <li class="layui-this">基本信息</li>
+        <li>选择权限</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-block">
+              <input type="text" name="role_name" placeholder="请输入" autocomplete="off" class="layui-input" lay-verify="required">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">账号级别</label>
+            <div class="layui-input-block">
+              <select name="role_level" lay-filter="aihao" lay-verify="required">
+                <option value="2">店铺员工</option>
+                <option value="1">店铺主账号</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">角色描述</label>
+            <div class="layui-input-block">
+              <textarea placeholder="请输入内容" name="descript" class="layui-textarea"></textarea>
+            </div>
+          </div>
+          
+        </div>  
+        
+        <!--  -->
+        <div class="layui-tab-item">选择权限</div>
+      </div>
+    </div>
+
+
+
+    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+  </form>
+
+</div>
+
+<script>
+  
+  // 角色id
+  var id = getUrlParam('id');
+
+  // 获取角色信息
+  request.get('/staff/shop_auth_role/one?id='+id, function(res){
+    console.info(res);
+
+    if (res.code == 0) {
+      for (let i in res.data) {
+        $('#form').find('input[name="'+i+'"]').val(res.data[i]);
+        $('#form').find('textarea[name="'+i+'"]').val(res.data[i]);
+      }
+    }
+
+  });
+
+  var form = layui.form;
+  
+  form.render();
+
+  //各种基于事件的操作，下面会有进一步介绍
+
+  // 提交表单
+  form.on('submit(*)', function(data){
+    
+    // 提交表单
+    request.post('/staff/shop_auth_role/edit', data.field, function(res){
+      if (res.code == 0) {
+
+        layer.alert('修改成功', function(){
+          // 跳转到列表
+          location.href = '/staff/shop_auth_role/list';
+        });
+
+      } else {
+        layer.alter(res.msg);
+      }
+    });
+
+    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+  });
+
+</script>

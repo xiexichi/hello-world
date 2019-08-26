@@ -1,0 +1,66 @@
+<?php
+
+namespace app\activity\controller;
+
+use think\Exception;
+
+class Coupon extends Base
+{
+    public function createCoupon(){
+        $code = 050101;
+        if( !$param = $this->validate->detailCoupon(input('post.')) ){
+            return errorJson($code,$this->validate->getError());
+        }
+        //创建优惠券
+        $t = date('Y-m-d H:i:s');
+        $this->model->startTrans();
+        try{
+            //创建券主题信息
+            $insertData = [];
+            $insertData['title'] = $param['title'];
+            $insertData['description'] = $param['description'];
+            $insertData['type'] = $param['type'];
+            $insertData['is_goods'] = $param['is_goods'];
+            $insertData['limit_price'] = $param['limit_price'];
+            $insertData['discount_value'] = $param['discount_value'];
+            $insertData['start_time'] = $param['start_time'];
+            $insertData['end_time'] = $param['end_time'];
+            $insertData['create_time'] = $t;
+            if( !$coupon_id = $this->model->insertGetId($insertData) ){
+                $code = 050110;
+                throw new Exception('优惠券创建失败');
+            }
+            //检查是否指定商品
+            if( $insertData['is_goods'] == 1 ){
+                $couponGoodsModel = new \app\activity\model\CouponGoods();
+                if( empty($param['goods_list']) ){
+                    $code = 050111;
+                    throw new Exception('缺少指定商品');
+                }
+                $goodsData = [];
+                foreach( $param['goods_list'] as $key => $val ){
+                    $goodsData[] = [
+                        'coupon_id' => $coupon_id,
+                        'goods_id' => $val
+                    ];
+                }
+                if( !$couponGoodsModel->insertAll($goodsData) ){
+                    throw new Exception('商品信息处理失败');
+                }
+            }
+            actionLogs('创建优惠券id:'.$coupon_id,$this->model);
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($e->getMessage());
+        }
+        return successJson('success','创建成功');
+    }
+
+    public function saveCoupon(){
+        if( !$param = $this->validate->detailCoupon(input('post')) ){
+            return errorJson(050101,$this->validate->getError());
+        }
+    }
+
+}

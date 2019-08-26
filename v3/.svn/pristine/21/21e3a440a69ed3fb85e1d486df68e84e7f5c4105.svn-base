@@ -1,0 +1,112 @@
+<?php
+
+namespace app\goods\model;
+
+class GoodsProp extends Base
+{
+    protected $name = 'goods_prop';
+
+    //显示类型
+    const SHOW_TYPE_TXT = 0;  //文字
+    const SHOW_TYPE_ALL = 1;   //图文
+    const SHOW_TYPE_IMG = 2;   //图片
+    const SHOW_TYPE_COLOR = 3;   //颜色
+
+    //阅读类型描述映射
+    public static $map_show_type = array(
+        self::SHOW_TYPE_TXT => array(
+            'desc' => '文字'
+        ),
+        self::SHOW_TYPE_ALL => array(
+            'desc' => '图文'
+        ),
+        self::SHOW_TYPE_IMG => array(
+            'desc' => '图片'
+        ),
+        self::SHOW_TYPE_COLOR => array(
+            'desc' => '颜色'
+        )
+    );
+
+    //必选参数
+    const OFF_CHANGED = 0;  //否
+    const ON_CHANGED = 1;   //是
+
+    public static $map_changed = array(
+        self::OFF_CHANGED => array(
+            'desc' => '否'
+        ),
+        self::ON_CHANGED => array(
+            'desc' => '是'
+        )
+    );
+
+    public function getPropAll($page=1,$limit=10,$getCount=false){
+        $pageSize = ( $page - 1 ) * $limit.','.$limit;
+        if($limit=0){
+            $pageSize = '';
+        }
+        $data['list'] = $this->limit($pageSize)->order('sort','desc')->select();
+        if( !empty($data['list']) ){
+            foreach( $data['list'] as $key => $val ){
+                $val['show_type_desc'] = self::$map_show_type[$val['show_type']]['desc'];
+                $val['is_changed_desc'] = self::$map_changed[$val['is_changed']]['desc'];
+                $data['list'][$key] = $val;
+            }
+        }
+        if($getCount){
+            $info = $this->field('count(*) as num')->find();
+            $data['count'] = $info['num'];
+        }
+        return $data;
+    }
+
+    public function getPropInfo($ids){
+        $info = $this->where('id',$ids)->find();
+        if(empty($info)){
+            $this->code = 200304;
+            $this->error = "属性类型不存在";
+            return false;
+        }
+        $info['show_type_desc'] = self::$map_show_type[$info['show_type']]['desc'];
+        $info['is_changed_desc'] = self::$map_changed[$info['is_changed']]['desc'];
+        return $info;
+    }
+
+    public function addBefore(){
+        $this->data['create_time'] = date('Y-m-d H:i:s');
+        $this->data['update_time'] = $this->data['create_time'];
+        if(!$this->checkRepeatPropName()){
+            return false;
+        }
+        return true;
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        $where['id'] = ['<>',$this->data['id']];
+        if(!$this->checkRepeatPropName($where)){
+            return false;
+        }
+        return true;
+    }
+
+    public function checkRepeatPropName($where=[]){
+        if(!empty($this->data['prop_name'])){//前置方法使用
+            $this->where('prop_name',$this->data['prop_name']);
+        }
+        if( !empty($where) ){
+            foreach( $where as $key => $val ) {
+                $this->where($key,$val[0],$val[1]);
+            }
+        }
+        $info = $this->find();
+        if($info){
+            $this->code = 200302;
+            $this->isExit = true;
+            $this->error = "属性名已存在！";
+            return false;
+        }
+        return true;
+    }
+}

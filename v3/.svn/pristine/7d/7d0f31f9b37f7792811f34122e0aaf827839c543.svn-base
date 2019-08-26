@@ -1,0 +1,14 @@
+<?php
+
+namespace app\depot\model;
+
+use app\common\model\CommonModel;
+
+class Base extends CommonModel
+{
+
+	// 商品仓代码
+	const PRODUCT_WAREHOUSE_CODE = '001';
+	
+
+}

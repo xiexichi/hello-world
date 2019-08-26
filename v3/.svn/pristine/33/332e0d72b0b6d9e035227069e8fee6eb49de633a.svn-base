@@ -1,0 +1,25 @@
+<?php
+
+namespace app\system\validate;
+
+use app\common\validate\CommonValidate;
+
+class System extends CommonValidate
+{
+
+	/**
+	 * [edit 修改]
+	 * @param [type] $data [验证数据]
+	 */
+	public function edit($data){
+
+		$rule = [
+			'id' => 'require|number',
+			'group' => 'number',
+		];
+
+		// 返回验证结果
+		return $this->validate($rule, $data);
+	}
+
+}

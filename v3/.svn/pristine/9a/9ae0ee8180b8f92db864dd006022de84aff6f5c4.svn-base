@@ -1,0 +1,161 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form" action="" id="form" >
+                <input type="hidden" name="state" value="<?=isset($_GET['state']) ? $_GET['state'] : '';?>">
+                <input type="hidden" name="delete" value="<?=isset($_GET['delete']) ? $_GET['delete'] : '';?>">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">券类型</label>
+                    <div class="layui-input-inline">
+                        <select name="type" >
+                            <option value="" >全部</option>
+                            <option value="0" >代金券</option>
+                            <option value="1" >折扣券</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">发放状态</label>
+                    <div class="layui-input-inline">
+                        <select name="status" >
+                            <option value="" >全部</option>
+                            <option value="0" >不可发放</option>
+                            <option value="1" >发放中</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">使用范围</label>
+                    <div class="layui-input-inline">
+                        <select name="is_goods" >
+                            <option value="" >全部</option>
+                            <option value="0" >所有商品</option>
+                            <option value="1" >部分商品</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">有效时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="start_time" id="start_time" value="" placeholder="开始时间" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid">至</div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="end_time" id="end_time" value="" placeholder="结束时间" autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--数据列表-->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="coupon" lay-filter="test"></table>
+        </div>
+    </div>
+</div>
+<!-- 操作模板 -->
+<script type="text/html" id="toolbarTpl">
+    <button class="layui-btn layui-btn-sm" lay-event="add" >创建优惠券</button>
+</script>
+<script type="text/html" id="ctrlTpl">
+    {{# if( d.status == 1 ){ }}
+    <button class="layui-btn layui-btn-xs layui-bg-red" style="margin:0;" lay-event="close" >关闭发放</button>
+    {{# }else{ }}
+    <button class="layui-btn layui-btn-xs layui-bg-red" style="margin:0;" lay-event="open" >开启发放</button>
+    {{# } }}
+    <button class="layui-btn layui-btn-xs layui-bg-red" style="margin:0;" lay-event="updte_qty" >修改发放量</button>
+    <button class="layui-btn layui-btn-xs layui-bg-red" style="margin:0;" lay-event="sand" >主动发放</button>
+    <button class="layui-btn layui-btn-xs" style="margin:0;" lay-event="detail" >详情</button>
+</script>
+<script>
+    var table = layui.table;
+    var form = layui.form;
+    //执行渲染
+    table.render({
+        id:'coupon'
+        ,elem: '#coupon' //
+        ,height: 'auto' //容器高度
+        ,url: '/activity/coupon/index'
+        ,page: true
+        ,toolbar: '#toolbarTpl'
+        ,headers: {
+            ctrl: SHOP_DATA
+        }
+        ,cols: [[
+            {field: 'id', title: 'id', width:80}
+            ,{field: 'title', title: '标题'}
+            ,{field: 'qty', title: '可发放量', width:100}
+            ,{field: 'type_desc', title: '优惠类型', width:100}
+            ,{field: 'status_desc', title: '发放状态', width:100}
+            ,{field: 'goods_area', title: '使用范围', width:100}
+            ,{field: 'start_time', title: '开始时间', width:180}
+            ,{field: 'end_time', title: '结束时间', width:180}
+            ,{field: 'id', title: '操作', templet: '#ctrlTpl'}
+        ]]
+    });
+    //头部按钮事件
+    table.on('toolbar(test)', function(obj) {
+        var data = obj.data;
+        var layEvent = obj.event;
+        switch( layEvent ){
+            case 'add' :
+                layer.open({
+                    title:'添加优惠券',
+                    type:2,
+                    shadeClose: true,
+                    closeBtn:1,
+                    area:['90%','90%'],
+                    content:'/activity/coupon/detail.html'
+                });
+                break;
+            default :
+                return false;
+                break;
+        }
+        return false;
+    });
+    layui.use('form', function(){
+        form.on('submit', function(data){
+            searchData = data.field;
+            //上述方法等价于
+            table.reload('coupon', {
+                where: searchData,
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+        form.render();
+    });
+
+    table.on('tool(test)', function(obj) {
+        var data = obj.data;
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+        switch (layEvent) {
+            case 'detail' ://查看订单详情
+                layer.open({
+                    title:'评论详情',
+                    type:2,
+                    shadeClose: true,
+                    closeBtn:1,
+                    area:['90%','90%'],
+                    content:"/activity/coupon/detail.html?id="+data.id
+                });
+                break;
+            default :
+                break;
+        }
+    });
+
+    function callback(){
+        table.reload('coupon');
+        layer.closeAll();
+    }
+</script>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+	<meta charset="utf-8"> 
+	<title>25BOY图片空间跨域转接页</title> 
+	<script> 
+		window.onload = function(){ 
+			var content = window.location.href.split('=')[1];
+			var json = decodeURI(content);
+			parent.parent.handlePhoto(json);
+		}
+	</script> 
+</head> 
+<body> 
+</body> 
+</html> 

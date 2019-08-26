@@ -1,0 +1,30 @@
+<div class="layui-form-item">
+    <label class="layui-form-label"></label>
+    <div class="layui-input-inline" >
+        <select lay-filter="attrGroup"  lay-search>
+            <option value="0" >使用参数组</option>
+            <option :value="group.id" v-for="(group,index) in show_list.attr_group_list" >{{group.group_name}}</option>
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">商品参数项：</label>
+    <div class="layui-input-block" >
+        <input type="checkbox" class="attr_list" :value="index" name="attr[]" v-for="(attr,index) in set_content.attr_list" lay-filter="attr" :checked="attr.checked" :title="attr.attr_name">
+    </div>
+</div>
+<div class="layui-form-item">
+    <div style="float:left; overflow:hidden; margin:5px 0;" v-for="(attr,index) in set_content.attr_list" v-if="attr.checked">
+        <label class="layui-form-label" >{{attr.attr_name}}</label>
+        <div class="layui-input-inline">
+            <input type="text" :name="'attr_list['+attr.id+']'" required  lay-verify="required" v-model="attr.content" autocomplete="off" class="layui-input" >
+        </div>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">商品详情：</label>
+    <div class="layui-input-block">
+        <div id="goods_content" style="width:75%; height:300px; margin-left:20px;"></div>
+    </div>
+</div>
+

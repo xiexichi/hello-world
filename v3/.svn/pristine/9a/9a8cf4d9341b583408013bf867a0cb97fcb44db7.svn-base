@@ -1,0 +1,407 @@
+<style>
+    .table-box{margin-top:20px;}
+    [v-cloak]{display:none;}
+    .layui-form-item .goods-input{width:90px; margin-right:5px;}
+</style>
+<div class="layui-fluid" id="vue_main" >
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form table-box" lay-filter="form-table" action="" v-cloak >
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">活动标题：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" v-model="coupon_info.title" >
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">活动描述：</label>
+                    <div class="layui-input-block">
+                        <textarea name="description" style="resize:none;"  placeholder="请输入内容" class="layui-textarea">{{coupon_info.description}}</textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">优惠类型：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="type" value="0" v-model="coupon_info.type" title="代金券"  lay-filter="type" >
+                        <input type="radio" name="type" value="1" v-model="coupon_info.type" title="折扣券"  lay-filter="type" >
+                    </div>
+                    <label class="layui-form-label">商品类型：</label>
+                    <div class="layui-input-inline" style="width:380px;">
+                        <input type="radio" name="use_goods_type" value="0" v-model="coupon_info.use_goods_type" title="全商品" lay-filter="use_goods_type"  >
+                        <input type="radio" name="use_goods_type" value="1" v-model="coupon_info.use_goods_type" title="指定商品" lay-filter="use_goods_type"  >
+                        <input type="radio" name="use_goods_type" value="2" v-model="coupon_info.use_goods_type" title="排除商品" lay-filter="use_goods_type"  >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">金额要求：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="limit_price"   lay-verify="required" placeholder="使用要求" autocomplete="off" class="layui-input" style="width:auto;" v-model="coupon_info.limit_price" v-on:blur="validateFloatEmpty(coupon_info.limit_price,'limit_price')" v-on:keyup="validateFloat(coupon_info.limit_price,'limit_price')" >
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">（元）</div>
+                    <label class="layui-form-label">优惠额：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="discount_value" required  lay-verify="required" placeholder="额度" autocomplete="off" class="layui-input" style="width:auto;" v-model="coupon_info.discount_value" v-on:blur="validateFloatEmpty(coupon_info.discount_value,'discount_value')" v-on:keyup="validateFloat(coupon_info.discount_value,'discount_value')">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux" >（{{ coupon_info.type == 1 ? '折扣 0.8 = 8折、0.88 = 88折' : '元' }}）</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">时间：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="start_time" id="start_time" v-model="coupon_info.start_time" placeholder="开始时间" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid">至</div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="end_time" id="end_time" v-model="coupon_info.end_time" autocomplete="off" class="layui-input" placeholder="结束时间" >
+                    </div>
+                    <div class="layui-form-mid layui-word-aux" >（结束时间为空则为不会过期，开始时间为空则为结束时间前可用，两个时间都为空则不限时间）</div>
+                </div>
+            </form>
+            <div class="layui-form-item" id="goods_box" v-if="coupon_info.use_goods_type > 0">
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            <form class="layui-form" action="" id="goods-form" >
+                                <label class="layui-form-label">选择商品：</label>
+                                <div class="layui-input-inline goods-input">
+                                    <input type="text" name="keyword" value="" placeholder="关键词" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline goods-input">
+                                    <input type="text" name="erp_code" value="" placeholder="商品货号" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline goods-input">
+                                    <select name="cate_id" id="cate_box" lay-search >
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline goods-input">
+                                    <select name="brand_id" id="brand_box" lay-search >
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline goods-input">
+                                    <button class="layui-btn" lay-submit lay-filter="goods_form" >确认</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-body">
+                            <table id="goods_list" lay-filter="goods_all"></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">已选中商品：</div>
+                        <div class="layui-card-body">
+                            <table id="goods_changed" lay-filter="goods_changed"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 操作模板 -->
+<script type="text/html" id="tabLeftTpl">
+    <button type="button" class="layui-btn layui-btn-xs" style="margin:0;" lay-event="add_goods" >添加</button>
+</script>
+<script type="text/html" id="tabRightTpl">
+    <button type="button" class="layui-btn layui-btn-xs" style="margin:0;" lay-event="del_goods" >去除</button>
+</script>
+<hea:js src="/static/js/vue.js" />
+<script>
+    var id = getUrlParam('id');
+    var form = layui.form;
+    var table = layui.table;
+    var laydate = layui.laydate;
+
+    var Vue = new Vue({
+        el: '#vue_main',
+        data:{
+            'coupon_id' : id,
+            'coupon_info' : {
+                'title' : '',
+                'description' : '',
+                'type' : 0,
+                'use_goods_type' : 0,
+                'limit_price' : '0.00',
+                'discount_value' : '0.00',
+                'start_time' : '',
+                'end_time' : ''
+            },
+            'goods_list' : {},
+            'goods_checked_list' : Array(),
+            'goods_checked_id_list' : Array()
+        },
+        mounted:function(){
+            var that = this;
+            if( that.coupon_id != null ){
+                that.getCouponInfo();
+            }
+            form.on('radio(type)', function(data){
+                that.coupon_info.type = data.value;
+            });
+            form.on('radio(use_goods_type)', function(data){
+                that.coupon_info.use_goods_type = data.value;
+                console.log(that.coupon_info.use_goods_type);
+                if( that.coupon_info.use_goods_type > 0 ){
+                    setTimeout(function(){
+                        that.getGoodsList();
+                        that.setGoodsCheckedList();
+                    },600);
+                }
+            });
+            //列表项事件
+            table.on('tool(goods_all)', function(obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+                switch(layEvent) {
+                    case 'add_goods' : //添加商品
+                        if( that.goods_checked_id_list.indexOf(data.id) < 0 ){
+                            that.goods_checked_list.push(data);
+                            that.goods_checked_id_list.push(data.id);
+                        }else{
+                            layer.msg('商品已选中了');
+                        }
+                        table.reload('goods_changed',{
+                            data : that.goods_checked_list
+                        });
+                        break;
+                    default :
+                        return false;
+                        break;
+                }
+                return false;
+            });
+            table.on('tool(goods_changed)', function(obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+                switch(layEvent) {
+                    case 'del_goods' : //添加商品
+                        var keys = that.goods_checked_id_list.indexOf(data.id);
+                        that.goods_checked_list.splice(keys,1);
+                        that.goods_checked_id_list.splice(keys,1);
+                        table.reload('goods_changed',{
+                            data : that.goods_checked_list
+                        });
+                        break;
+                    default :
+                        return false;
+                        break;
+                }
+                return false;
+            });
+            layui.use('form', function(){
+                //监听提交
+                form.on('submit(formDemo)', function(data){
+                    var apiUrl = '/activity/coupon/createCoupon';
+                    data.field.coupon_id = 0;
+                    if( that.coupon_id != null ){
+                        data.field.coupon_id = that.coupon_id;
+                        apiUrl = '/activity/coupon/saveCoupon';
+                    }
+                    if( data.field.is_goods > 0 && that.goods_checked_id_list.length == 0 ){
+                        layer.msg('缺少指定商品');
+                        return false;
+                    }
+                    data.field.goods_list = that.goods_checked_id_list;
+                    request.setHost(SHOP_DATA).post(apiUrl, data.field, function(res){
+                        if (res.code == 0) {
+                            // 成功提示
+                            layer.msg(res.msg);
+                            setTimeout(function(){
+                                parent.window.callback();
+                            },1500);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                    return false;
+                });
+                //监听提交
+                form.on('submit(goods_form)', function(data){
+                    searchData = data.field;
+                    //上述方法等价于
+                    table.reload('goods_list', {
+                        where: searchData,
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+                    return false;
+                });
+            });
+            laydate.render({
+                elem: '#start_time', //指定元素
+                type: 'datetime'
+            });
+            laydate.render({
+                elem: '#end_time', //指定元素
+                type: 'datetime'
+            });
+            form.render();
+        },
+        methods:{
+            getCouponInfo:function(){
+                var that = this;
+                var param = {};
+                param.id = that.coupon_id;
+                request.setHost(SHOP_DATA).post('/activity/coupon/one',param, function(res){
+                    if (res.code == 0) {
+                        that.coupon_info = {
+                            'title' : res.data.title,
+                            'description' : res.data.description,
+                            'type' : res.data.type,
+                            'use_goods_type' : res.data.use_goods_type,
+                            'limit_price' : res.data.limit_price,
+                            'discount_value' : res.data.discount_value,
+                            'start_time' : res.data.start_time,
+                            'end_time' : res.data.end_time
+                        };
+                        that.goods_checked_list = res.data.goods_list;
+                        var id_list = Array();
+                        for( var i in res.data.goods_list ){
+                            id_list.push(res.data.goods_list[i].id);
+                        }
+                        that.goods_checked_id_list = id_list;
+                        that.$nextTick().then (function () {
+                            form.render();
+                            if( res.data.use_goods_type > 0 ){
+                                that.getGoodsList();
+                                that.setGoodsCheckedList();
+                            }
+                        });
+                        form.render();
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            },
+            getGoodsList:function(){
+                var that = this;
+                //执行渲染
+                table.render({
+                    id : 'goods_list',
+                    elem: '#goods_list'
+                    ,height: '300' //容器高度
+                    ,url: '/goods/goods/index?status=1'
+                    ,page: true
+                    ,defaultToolbar: false
+                    ,headers: {
+                        ctrl: SHOP_DATA
+                    }
+                    ,cols: [[
+                        {field: 'goods_name', title: '商品名'},
+                        {field: 'sku_sn', title: '货号', width:120},
+                        {field: 'status_desc', title: '商品状态',width:100},
+                        {field: 'id', title: '操作', width:100, templet: '#tabLeftTpl'}
+                    ]]
+                });
+                request.setHost(SHOP_DATA).get('/goods/category/getCateAll/',{'showType':'tree_list'}, function(res){
+                    if( res.code == 0 ){
+                        var cate_list = setTreeGrid(res.data);
+                        var cate_html = '<option value="" >分类</option>';
+                        for( var c = 0; c < cate_list.length; c++ ){
+                            cate_html += '<option value="'+cate_list[c].id+'" >'+cate_list[c].cate_name+'</option>';
+                        }
+                        $('#cate_box').html(cate_html);
+                        form.render();
+                    }
+                });
+                request.setHost(SHOP_DATA).get('/goods/goods_brands/all',{'limit':'0'}, function(res){
+                    if( res.code == 0 ){
+                        var brand_list = res.data;
+                        var brand_html = '<option value="" >品牌</option>';
+                        for( var b = 0; b < brand_list.length; b++ ){
+                            brand_html += '<option value="'+brand_list[b].id+'" >'+brand_list[b].brand_name+'</option>';
+                        }
+                        $('#brand_box').html(brand_html);
+                        form.render();
+                    }
+                });
+            },
+            setGoodsCheckedList:function(){
+                var that = this;
+                table.render({
+                    id : 'goods_changed',
+                    elem: '#goods_changed'
+                    ,height: '300' //容器高度
+                    ,data: that.goods_checked_list
+                    ,page: true
+                    ,headers: {
+                        ctrl: SHOP_DATA
+                    }
+                    ,cols: [[
+                        {field: 'goods_name', title: '商品名'},
+                        {field: 'sku_sn', title: '货号', width:120},
+                        {field: 'status_desc', title: '商品状态',width:100},
+                        {field: 'id', title: '操作', width:100, templet: '#tabRightTpl'}
+                    ]]
+                });
+            },
+            updateDesc:function(){
+                var that = this;
+                layer.confirm('是否确认保存备注信息', {
+                    btn: ["确定","取消"] //按钮
+                }, function(){
+                    var param = {};
+                    param.order_id = that.order_id;
+                    param.description = that.order_desc;
+                    request.setHost(SHOP_DATA).post('/order/order/edit',param, function(res){
+                        layer.msg(res.msg);
+                    });
+                });
+            },
+            validateFloatEmpty:function(num,type){
+                var that = this;
+                if( num.trim() == '' || isNaN(num) ){
+                    num = 0;
+                }else{
+                    num = String(parseFloat(num));//防止多余小数点 或 字母字符 残留
+                }
+                switch( type ){
+                    case 'limit_price' :
+                        that.coupon_info.limit_price = num;
+                        break;
+                    case 'discount_value' :
+                        that.coupon_info.discount_value = num;
+                        break;
+                    default :
+                        return false;
+                        break;
+                }
+            },
+            validateFloat:function(num,type){
+                var that = this;
+                num = String(num);
+                if( num < 0 ){
+                    num = 0;
+                }else{
+                    var arr = num.split(".");
+                    if( arr.length == 2){
+                        num = arr[0]+'.'+arr[1].slice(0,2);
+                    } else if( arr.length > 2){
+                        num = arr[0]+'.'+arr[1].slice(0,2);
+                    }
+                }
+                switch( type ){
+                    case 'limit_price' :
+                        that.coupon_info.limit_price = num;
+                        break;
+                    case 'discount_value' :
+                        that.coupon_info.discount_value = num;
+                        break;
+                    default :
+                        return false;
+                        break;
+                }
+                return true;
+            }
+        }
+    });
+</script>
+

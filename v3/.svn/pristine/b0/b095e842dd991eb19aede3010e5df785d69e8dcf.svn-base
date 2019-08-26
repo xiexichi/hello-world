@@ -1,0 +1,40 @@
+<?php
+
+/**
+ *  商品标签
+ */
+
+namespace app\activity\validate;
+
+class Coupon extends Base
+{
+    public function detailCoupon($data){
+        $rule = [
+            'coupon_id' => 'require',
+            'title' => 'require',
+            'description' => 'max:255',
+            'type' => 'require|integer',
+            'is_goods' => 'require|integer',
+            'limit_price' => 'require|float|>=:0',
+            'discount_value' => 'require|float|>:0',
+            'start_time' => 'date',
+            'end_time' => 'date',
+            'goods_list' => 'array'
+        ];
+        // 错误提示信息
+        $message = [
+            'coupon_id' => '缺少id',
+            'title' => '标题不能为空',
+            'type' => '券类型参数错误',
+            'is_goods' => '是否制定商品参数错误',
+            'limit_price' => '金额要求不能为空',
+            'discount_value' => '优惠额度必须为数字且大于0',
+            'start_time' => '请填写时间格式',
+            'end_time' => '请填写时间格式',
+            'goods_list' => '商品参数格式错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+}

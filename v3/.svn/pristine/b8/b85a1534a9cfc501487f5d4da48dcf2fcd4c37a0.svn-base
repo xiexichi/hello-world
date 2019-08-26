@@ -1,0 +1,31 @@
+<ul id="cate"></ul>
+<script>
+    var table = layui.table;
+    // request.setHost(SHOP_DATA);
+    //执行渲染
+    layui.use('tree', function(){
+        layui.tree({
+            elem: '#cate', //传入元素选择器
+            nodes: cateJson,
+            skin: 'shihuang',
+            click: function(node){
+                var toUrl = "{:url('index/goods_prop/edit',['id'=>'cate_id'])}";
+                toUrl = toUrl.replace('cate_id', node.id);
+                layer.open({
+                    title: '分类'+node.id,
+                    type: 2,
+                    closeBtn: 1,
+                    area: ['50%', '50%'],
+                    content: toUrl
+                });
+            }
+        });
+    });
+
+</script>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+    <a href="/goods/prop/detail_val.html?id={{d.id}}" class="layui-table-link">设置属性值</a>
+    <a href="/goods/prop/detail.html?id={{d.id}}" class="layui-table-link">详情</a>
+</script>

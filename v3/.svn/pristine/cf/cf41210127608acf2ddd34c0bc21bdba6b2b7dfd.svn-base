@@ -1,0 +1,19 @@
+<?php
+
+namespace app\cart\controller;
+
+class Cart extends Base
+{
+    public function getCartList(){
+        if( !$cartParam = $this->validate->getCartList(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $user_id = $cartParam['user_id'];
+        $channel = empty($cartParam['channel_id']) ? '' : $cartParam['channel_id'];
+        $shop_id = empty($cartParam['shop_id']) ? 0 : $cartParam['shop_id'];
+        $this->model->cartReset($user_id);
+        $list = $this->model->getCartList($user_id,$shop_id,$channel);
+        return successJson($list);
+    }
+
+}

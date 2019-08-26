@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * 店铺
+ */
+
+namespace app\merchant\controller;
+
+use think\Db;
+
+class Shop extends Base
+{
+
+	public function indexBefore(){
+
+		pe($this->model->getData());
+
+		$this->model->data(input());
+	}
+
+	/**
+	 * [getShopTypes 获取店铺类型]
+	 * @return [type] [description]
+	 */
+	public function getShopTypes(){
+		$data = Db::table('shop_type')->order('id')->select();
+		return successJson($data);
+	}	
+
+	/**
+	 * [getShopSaleTypes 获取店铺销售类型]
+	 * @return [type] [description]
+	 */
+	public function getShopSaleTypes(){
+		$data = Db::table('shop_sale_type')->order('id')->select();
+		return successJson($data);
+	}
+
+
+
+	public function addBefore(){
+		// 1. 验证数据
+		if (!$checkData = $this->validate->add(input())) {
+			// 设置错误信息和错误码
+			$this->setExitErrorInfo($this->validate->getError(), 10001);
+			return false; 
+		}
+
+		// 2. 设置模型数据
+		$this->model->data($checkData);
+	}
+
+
+
+	public function editBefore(){
+
+		// 1. 验证数据
+		if (!$checkData = $this->validate->edit(input())) {
+			// 设置错误信息和错误码
+			$this->setExitErrorInfo($this->validate->getError(), 10001);
+			return false; 
+		}
+
+		// 2. 设置模型数据
+		$this->model->data($checkData);
+	}
+
+
+}

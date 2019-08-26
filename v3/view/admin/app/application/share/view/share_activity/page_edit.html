@@ -1,0 +1,226 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form" action="" id="form" lay-filter="form">
+            <input type="hidden" name="id">
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="submitBtn">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                    </div>
+                </div>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">活动标题</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" lay-verify="required" type="text" name="title" placeholder="请输入真实姓名(必填)" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">活动描述</label>
+                            <div class="layui-input-block">
+                                <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">活动状态</label>
+                            <div class="layui-input-block">
+                                <select name="status" lay-verify="required">
+                                    <option value="1">待启动</option>
+                                    <option value="2">启动中</option>
+                                    <option value="3">已关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">开始时间</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" lay-verify="required" id="start_time" type="text" name="start_time" placeholder="开始时间" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">结束时间</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" lay-verify="required" id="end_time" type="text" name="end_time" placeholder="结束时间" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">活动类型</label>
+                            <div class="layui-input-block">
+                                <select id="typeSelector" name="type" lay-verify="required" lay-filter="selectType">
+                                    <option value=""></option>
+                                    <option value="1">赠送优惠券</option>
+                                    <option value="2">赠送积分</option>
+                                    <option value="3">赠送礼品</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="type_view"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/html" id="select_integral_tpl">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">赠送积分</label>
+        <div class="layui-input-block">
+            <input class="layui-input" lay-verify="required" value="0" type="number" id="integral" name="integral" placeholder="晒图赠送的积分" />
+        </div>
+    </div>
+</script>
+<script type="text/html" id="select_coupon_tpl">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">赠送优惠券</label>
+        <div class="layui-input-block">
+            <input style="cursor: pointer;" readonly="" class="layui-input" lay-verify="required" id="coupon" type="text" placeholder="请选择晒图赠送的优惠券" />
+            <input type="hidden" lay-verify="required" name="coupon_id" id="coupon_id">
+        </div>
+    </div>
+</script>
+<script type="text/html" id="select_good_tpl">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">赠送礼品</label>
+        <div class="layui-input-block">
+            <input style="cursor: pointer;" readonly="" class="layui-input" lay-verify="required" id="good" type="text" placeholder="请选择晒图赠送的礼品" />
+            <input type="hidden" lay-verify="required" name="good_id" id="good_id">
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+var shareActivityID = getUrlParam('id');
+var nowType = 0;
+var $ = layui.jquery,
+    form = layui.form,
+    layer = layui.layer,
+    laytpl = layui.laytpl,
+    laydate = layui.laydate;
+$(document).ready(function() {
+    layui.use(['jquery', 'form', 'layer', 'laytpl', 'laydate'], function() {
+        var integralTpl = select_integral_tpl.innerHTML;
+        var couponTpl = select_coupon_tpl.innerHTML;
+        var goodTpl = select_good_tpl.innerHTML;
+        var typeView = document.getElementById('type_view');
+
+        laydate.render({
+            elem: '#start_time',
+            type: 'datetime'
+        });
+        laydate.render({
+            elem: '#end_time',
+            type: 'datetime'
+        });
+
+        form.render();
+
+        $(document).on('click', '#coupon', function(data) {
+            //弹出选择优惠券列表
+            parent.layer.open({
+                title: '选择赠送优惠券',
+                type: 2,
+                area: ['90%', '90%'],
+                scrollbar: false,
+                shadeClose: true,
+                content: '/share/share_activity/select_coupon'
+            });
+            return false;
+        });
+        $(document).on('click', '#good', function(data) {
+            //弹出选择礼品列表（商品）
+            parent.layer.open({
+                title: '选择赠送的礼品',
+                type: 2,
+                area: ['90%', '90%'],
+                scrollbar: false,
+                shadeClose: true,
+                content: '/share/share_activity/select_good'
+            });
+            return false;
+        });
+
+        request.setHost(SHOP_DATA).post('/share/share_activity/getEditData', { 'id': shareActivityID }, function(res) {
+            if (res.code == 0) {
+                $('#typeSelector').next().find('.layui-anim').children('dd[lay-value="'+res.data.type+'"]').click();
+                form.val("form", {
+                    "id": res.data.id,
+                    "title": res.data.title,
+                    "content": res.data.content,
+                    "status": String(res.data.status),
+                    "start_time": res.data.start_time,
+                    "end_time": res.data.end_time,
+                    "type": String(res.data.type),
+                    "good_id": res.data.good_id,
+                    "coupon_id": res.data.coupon_id,
+                    "integral": res.data.integral
+                });
+                nowType = res.data.type;
+                if(nowType == 1){
+                    setCoupon(res.data.couponInfo);
+                }else if(nowType == 3){
+                    setGood(res.data.goodInfo);
+                }
+                
+                form.render();
+            } else {
+                layer.msg(res.msg);
+            }
+        });
+
+        //监听提交
+        form.on('submit(submitBtn)', function(data) {
+            request.setHost(SHOP_DATA).post('/share/share_activity/edit', data.field, function(res) {
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    setTimeout(function() {
+                        parent.window.callback();
+                    }, 1000);
+                } else {
+                    layer.msg(res.msg);
+                }
+            });
+            return false;
+        });
+
+        form.on('select(selectType)', function(data) {
+            if(nowType == data.value){
+                return;
+            }
+            nowType = data.value;
+            switch (data.value) {
+                case '1'://赠送优惠券
+                    laytpl(couponTpl).render([], function(html) {
+                        typeView.innerHTML = html;
+                    });
+                    break;
+                case '2'://赠送积分
+                    laytpl(integralTpl).render([], function(html) {
+                        typeView.innerHTML = html;
+                    });
+                    break;
+                case '3'://赠送礼品
+                    laytpl(goodTpl).render([], function(html) {
+                        typeView.innerHTML = html;
+                    });
+                    break;
+                default:
+                    return false;
+                    break;
+            }
+            form.render();
+        });
+
+    });
+});
+function setCoupon(data){
+    $('#coupon').val(data.title);
+    $('#coupon_id').val(data.id);
+}
+function setGood(data){
+    $('#good').val(data.goods_name);
+    $('#good_id').val(data.id);
+}
+</script>

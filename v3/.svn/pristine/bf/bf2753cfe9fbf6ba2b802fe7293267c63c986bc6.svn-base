@@ -1,0 +1,112 @@
+<?php
+
+namespace app\goods\model;
+
+class GoodsTag extends Base
+{
+    protected $name = 'goods_tag';
+
+    public function getTagAll($page=1,$limit=10,$getCount=false){
+        $pageSize = ( $page - 1 ) * $limit.','.$limit;
+        if($limit=0){
+            $pageSize = '';
+        }
+        $data['list'] = $this->order('sort','desc')
+            ->limit($pageSize)
+            ->select();
+        if($getCount){
+            $info = $this->field('count(*) as num')->find();
+            $data['count'] = $info['num'];
+        }
+        return $data;
+    }
+
+    public function getTagInfo($ids){
+        $info = $this->where('id',$ids)->find();
+        if(empty($info)){
+            $this->code = 020604;
+            $this->error = "标签不存在";
+            return false;
+        }
+        return $info;
+    }
+
+    public function addBefore(){
+        $this->data['create_time'] = date('Y-m-d H:i:s');
+        $this->data['update_time'] = $this->data['create_time'];
+        //检查唯一
+        if(!$this->checkRepeatTagName()){
+            return false;
+        }
+        return true;
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        //检查是否存在
+        $info = $this->where("id = {$this->data['id']}")->find();
+        if(empty($info)){
+            $this->code = 020604;
+            $this->isExit = true;
+            $this->error = "标签不存在！";
+            return false;
+        }
+        //检查是否重复
+        $where['id'] = ['<>',$this->data['id']];
+        if( !$this->checkRepeatTagName($where) ){
+            return false;
+        }
+        return true;
+    }
+
+    public function checkRepeatTagName($where=[]){
+        if(!empty($this->data['tag_name'])){//前置方法使用
+            $this->where('tag_name',$this->data['tag_name']);
+        }
+        if( !empty($where) ){
+            foreach( $where as $key => $val ) {
+                $this->where($key,$val[0],$val[1]);
+            }
+        }
+        $info = $this->find();
+        if($info){
+            $this->code = 020602;
+            $this->isExit = true;
+            $this->error = "标签名已存在！";
+            return false;
+        }
+        return true;
+    }
+
+    public function deleted($ids)
+    {
+        $this->startTrans();
+        try {
+            //检查是否存在
+            $info = $this->where('id', $ids)->find();
+            if (empty($info)) {
+                $this->code = 020604;
+                throw new Exception('删除项不存在');
+            }
+            if (!$this->where('id', $ids)->delete()) {
+                $this->code = 020610;
+                throw new Exception('网络错误，删除失败');
+            }
+            //清除关联绑定
+            $tagBindModel = new \app\goods\model\GoodsTagBind();
+            $num = $tagBindModel->getTagBindNum($ids);
+            if (!empty($num)) {
+                if (!$tagBindModel->where('tag_id', $ids)->delete()) {
+                    $this->code = 020611;
+                    throw new Exception('网络错误，删除失败');
+                }
+            }
+            $this->commit();
+        } catch (Exception $e) {
+            $this->rollback();
+            $this->error = $e->getMessage();
+            return false;
+        }
+        return true;
+    }
+}

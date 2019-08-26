@@ -1,0 +1,70 @@
+<?php
+/**
+ * 文章分类
+ */
+namespace app\article\controller;
+use think\Db;
+
+
+class Categorys extends Base
+{
+	//获取所有分类
+	public function getCateAll()
+	{
+		if( !$checkData = $this->validate->getCateAll(input()) ){
+            return errorJson(200201, $this->validate->getError());
+        }
+        $list = $this->model->getCateAll($checkData);
+        return successJson($list,$msg="success");
+	}
+
+	public function checkRepeatCateName()
+    {
+		$param = input("post.");
+		if( empty($param['name']) ){
+            return errorJson(200201, '参数错误');
+        }
+        if( isset($param['id']) ){
+            $where['id'] = ['<>',$param['id']];
+        }
+        $where['name'] = ['=',$param['name']];
+        return successJson(!$this->model->checkRepeatCateName($where));
+	}
+
+    public function getCateInfo()
+    {
+        if (!$checkData = $this->validate->getCateInfo(input())) {
+            return errorJson(200201, $this->validate->getError());
+        }
+        $info = $this->model->getCateInfo($checkData['id']);
+        
+        //     return errorJson(200201, '分类不存在');
+        return successJson($info);
+    }
+
+
+    public function cateDel(){
+        if (!$checkData = $this->validate->cateDel(input()) ) {
+            return errorJson(200201, $this->validate->getError());
+        }
+        // 先判断删除的分类下是否有文章,更新删除状态is_deleted
+       // (['is_deleted'=>1])
+        $where['is_deleted'] = 0;
+        $where['categorys_id'] = array('in',$checkData['ids']);
+
+        $res = Db::table('article')->where($where)->select();
+        if ($res) {
+            return errorJson(200201,'分类下有文章不能删除');
+        }
+
+        $updateCateState = Db::table('article_categorys')->where('id',$checkData['ids'])->update(['is_deleted'=>1]);
+        if (!$updateCateState) {
+            return errorJson(200201,'参数错误');
+        }
+        return successJson($code=0,$msg="success");
+        
+    }
+
+}
+
+?>

@@ -1,0 +1,255 @@
+<div class="p-1" id="app">
+  <div class="layui-card">
+  	<div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">订单信息</li>
+        <li>商品明细</li>
+        <li>发货信息</li>
+        <li>订单历史</li>
+      </ul>
+
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-card-body box-shadow fled-flex-start">
+            <div class="layui-form-item mb-0">
+              <label class="layui-form-label">订单编号</label>
+              <div class="layui-text-block">
+                {{order.order_sn}}
+              </div>
+            </div>
+            <div class="layui-form-item mb-0">
+              <label class="layui-form-label">订单类型</label>
+              <div class="layui-text-block">
+                {{order.orderTypeDesc}}
+              </div>
+            </div>
+            <div class="layui-form-item mb-0">
+              <label class="layui-form-label">订单状态</label>
+              <div class="layui-text-block">
+                {{order.orderStatusDesc}}
+              </div>
+            </div>
+            <div class="layui-form-item mb-0">
+              <label class="layui-form-label">支付状态</label>
+              <div class="layui-text-block">
+                {{order.pay_status == 1 ? '已支付' : '未支付'}}
+              </div>
+            </div>
+            <div class="layui-form-item mb-0">
+              <label class="layui-form-label">订单金额</label>
+              <div class="layui-text-block">
+                {{order.order_price}}
+              </div>
+            </div>
+            <div class="layui-form-item mb-0">
+              <label class="layui-form-label">实付金额</label>
+              <div class="layui-text-block">
+                {{order.pay_price}}
+              </div>
+            </div>
+            <div class="layui-form-item mb-0">
+              <label class="layui-form-label">买家备注</label>
+              <div class="layui-text-block">
+                {{order.remark}}
+              </div>
+            </div>
+          </div>
+
+          <div class="layui-card-body box-shadow fled-flex-start mt-1" v-if="discountList && discountList.length > 0">
+            <table class="layui-table" lay-skin="line">
+              <tbody>
+                <tr v-for="(item, index) in discountList" :key="index">
+                  <td>{{item.discount_title}}</td>
+                  <td>{{item.discount_content}}</td>
+                  <td>{{item.discount_price}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 商品明细 -->
+        <div class="layui-tab-item">
+          <div class="layui-card-body box-shadow">
+            <table class="layui-table">
+              <colgroup>
+                <col width="30">
+                <col width="60">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>图片</th>
+                  <th>状态</th>
+                  <th>商品规格</th>
+                  <th>ERP货号</th>
+                  <th>单价</th>
+                  <th>数量</th>
+                  <th>操作</th>
+                </tr> 
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in goodsList" :key="index">
+                  <td>{{index+1}}</td>
+                  <td><img :src="item.item_images" width="60" /></td>
+                  <td>
+                    <p>{{item.goods_status_desc}}</p>
+                    <p>
+                      <span class="layui-badge" v-if="item.packageNum > 0">物流包裹{{item.packageNum}}</span>
+                      <span class="layui-badge" v-if="item.gift_id > 0">赠品</span>
+                    </p>
+                  </td>
+                  <td>{{item.item_info.pv_name}}</td>
+                  <td>{{item.item_info.sku_sn}}</td>
+                  <td>{{item.item_price}}</td>
+                  <td>{{item.num}}</td>
+                  <td>
+                    <button class="layui-btn layui-btn-xs layui-btn-primary">退款</button>
+                    <button class="layui-btn layui-btn-xs layui-btn-primary">退换货</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 收货信息 -->
+        <div class="layui-tab-item">
+          <div class="layui-card-body box-shadow">
+            <div class="layui-form fled-flex-start">
+              <div class="layui-form-item mb-0">
+                <label class="layui-form-label">收货人</label>
+                <div class="layui-text-block">
+                  {{consignee.consignee_name}}
+                </div>
+              </div>
+              <div class="layui-form-item mb-0">
+                <label class="layui-form-label">联系电话</label>
+                <div class="layui-text-block">
+                  {{consignee.mobile}}
+                </div>
+              </div>
+              <div class="layui-form-item mb-0">
+                <label class="layui-form-label">收货地址</label>
+                <div class="layui-text-block">
+                  {{consignee.prov_name}},{{consignee.city_name}},{{consignee.area_name}},{{consignee.address}}
+                </div>
+              </div>
+            </div>
+            <table class="layui-table">
+              <colgroup>
+                <col width="80">
+                <col>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>包裹号</th>
+                  <th>物流公司</th>
+                  <th>物流单号</th>
+                  <th>备注</th>
+                  <th>操作</th>
+                </tr> 
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in packages" :key="index">
+                  <td>{{index+1}}</td>
+                  <td>{{item.name}}</td>
+                  <td>{{item.express_sn}}</td>
+                  <td>{{item.remark}}</td>
+                  <td><a :href="'//www.kuaidi100.com/?nu=' + item.express_sn" target="_blank" style="color:#1E9FFF">查物流</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 订单历史 -->
+        <div class="layui-tab-item">
+          <div class="layui-card-body box-shadow">
+            <table class="layui-table">
+              <colgroup>
+                <col width="200">
+                <col>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>发生时间</th>
+                  <th>操作用户</th>
+                  <th>操作内容</th>
+                </tr> 
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in logs" :key="index">
+                  <td>{{item.create_time}}</td>
+                  <td>{{item.operator_id}}</td>
+                  <td>{{item.content}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hea:js src="/static/js/vue.js" />
+<script type="text/javascript">
+const id = getUrlParam('id')
+var app = new Vue({
+  el: '#app',
+  data: {
+  	id: '',
+    orderInfo: {}
+  },
+  mounted: function () {
+  	if (id && id != 0) this.getOrder()
+  },
+  computed: {
+    order: function () {
+      return this.orderInfo.order_info || {}
+    },
+    discountList: function () {
+      return this.orderInfo.discount_list || []
+    },
+    goodsList: function () {
+      return this.orderInfo.goods_list || []
+    },
+    logs: function () {
+      return this.orderInfo.log || {}
+    },
+    packages: function () {
+      return this.orderInfo.order_package || {}
+    },
+    consignee: function () {
+      return this.orderInfo.consignee || {}
+    }
+  },
+  methods: {
+  	// 获取数据
+  	getOrder: function() {
+  		let _this = this
+  		_this.id = id
+  		request.setHost('shop_data').post('/order/order/getOrderInfo', {order_id: id}, function (json) {
+  			if (json.code === 0) {
+          _this.orderInfo = json.data
+          _this.$nextTick().then (function () {
+            layui.form.render()
+          })
+  			} else {
+  				layer.alert(json.msg)
+  			}
+  		})
+  	}
+  }
+})
+
+// layui
+layui.use('form', function () {
+  const form = layui.form
+  form.render()
+
+})
+</script>

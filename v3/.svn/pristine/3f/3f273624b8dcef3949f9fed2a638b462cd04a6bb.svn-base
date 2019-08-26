@@ -1,0 +1,33 @@
+    //选择商品
+    function goodsClass(goods_id,goods_name,goods_image){
+        var goodsEdit = $('.default-goods').clone(true);
+        goodsEdit.removeClass('default-goods');
+        goodsEdit.addClass('goods-list');
+
+        goodsEdit.find("input").attr('value',goods_id);
+        goodsEdit.find("input").attr('name','goods_list[]');
+
+        goodsEdit.find("img").attr('src',goods_image);
+
+        goodsEdit.find(".upload_box").addClass('goodsBackImage'+goods_id);
+        goodsEdit.find(".upload-title").empty();
+        goodsEdit.find(".upload-title").append(goods_name);
+
+        goodsEdit.find("#goodsBack").attr('onClick','');
+        goodsEdit.find("#delGoods").removeAttr('hidden');
+
+        var id = goods_id;
+
+        goodsEdit.find("#delGoods").attr('onClick','delGoods('+id+')');
+
+        $('#uploadGoods').append(goodsEdit);
+    }  
+    //删除选择商品
+    function delGoods(id){
+        $('.goodsBackImage'+id).parent().remove();
+        for (var i = 0; i < checked_list.length; i++) {
+               if(checked_list[i] == id){
+                    checked_list.splice(i,1);
+               }
+        }
+    }

@@ -1,0 +1,23 @@
+<div class="layui-fluid">
+
+	<div class="layui-tab layui-tab-brief" lay-filter="systemTab">
+		<ul class="layui-tab-title">
+			<li class="layui-this">全局参数</li>
+			<li>后台参数</li>
+			<li>移动端</li>
+			<li>PC端</li>
+			<li>o2o系统</li>
+		</ul>
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">全局参数</div>
+			<div class="layui-tab-item">后台参数</div>
+			<div class="layui-tab-item">移动端</div>
+			<div class="layui-tab-item">PC端</div>
+			<div class="layui-tab-item">o2o系统</div>
+		</div>
+	</div>
+
+</div>
+
+<hea:js src="" />
+<hea:css src="" />

@@ -1,0 +1,49 @@
+// layui;
+	layui.use('form', function (){
+	  	const form = layui.form;
+	 	form.render();
+	  	loadShop();
+	  	// var data = new FormData();
+
+	  	//监听添加层提交
+	  	form.on('submit(formAdd)', function (data) {
+	  	console.log(data);
+	    // adddoc
+	    request.setHost(CENTER_DATA).post('/document/shop_document/add',data.field,function(res){
+    		if (res.code == 0) {
+    				layer.msg(res.msg);
+	                setTimeout(function(){
+	                    parent.location.reload();
+	                },1500);
+    			}else{
+    				layer.msg(res.msg);
+    			}
+    		});
+
+	    	return false;
+	    	form.render();
+	  	})
+	  	// 店铺信息
+	  	function loadShop(){
+	        request.setHost(CENTER_DATA).get('/merchant/shop/all/', function(res){
+		        if( res.code == 0 ){
+		            var shop_list = res.data;
+		            var shop_html = '<option value="" >选择店铺</option>';
+		            for( var i = 0; i < shop_list.length; i++ ){
+		                shop_html += '<option value="'+shop_list[i].id+'" >'+shop_list[i].name+'</option>';
+		            }
+		            $('#shop_box').html(shop_html);
+		            form.render();
+		        }
+		    });
+    	}
+
+	});
+
+
+
+
+
+
+
+    

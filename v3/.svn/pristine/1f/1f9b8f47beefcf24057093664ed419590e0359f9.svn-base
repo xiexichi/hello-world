@@ -1,0 +1,210 @@
+// layui
+	var upload_obj = '';
+	var goods_list = [];
+	layui.use('form', function (){
+	  	const form = layui.form;
+	  	const id = getUrlParam('id');
+	 	form.render();
+	  	request.setHost(SHOP_DATA).post('/article/special/one/',{'ids':id}, function(res) {
+            if( res.code == 0 ){
+                info = res.data;
+                form.val("edit", {
+                    "id": info.id,
+                    "title": info.title, // "name": "value"
+                    "desc": info.desc,
+                    "sort":info.sort,
+                    "image":info.image,
+                    // "categorys_id":info.categorys_id,
+                    "content": info.content,
+                })
+                goods_list = info['special_goods'];
+                editSelectGoods(goods_list);
+                loadCate();
+                uploadImg(info);
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+        
+        form.on('submit(formEdit)', function(data){
+            var id = data['field'].id;
+            request.setHost(SHOP_DATA).post('/article/special/checkSpecialName',data.field, function(res){
+                if (res.code == 0) {
+                    if( res.data ){
+                        layer.confirm("文章名已存在，是否继续添加", {
+                            btn: ["确定","取消"] //按钮
+                        }, function() {
+                            editSubmit(data.field);
+                        });
+                    }else{
+                        editSubmit(data.field);
+                    }
+                } else {
+                    layer.msg(res.msg);
+                }
+            });
+
+            return false; 
+        });
+
+	  	// 获取分类信息
+	  	function loadCate(){
+	        request.setHost(SHOP_DATA).get('/article/special_categorys/getCateAll/',{'showType':'tree'}, function(res){
+	            if( res.code == 0 ){
+	                res.data = setTreeList(res.data,'children');
+	                //分层标题处理
+	                res.data = setTreeGrid(res.data);
+	                for( var l = 0; l < res.data.length; l++ ){
+                        selected = '';
+                        if( info.categorys_id == res.data[l].id ){
+                            selected = 'selected';
+                        }
+	                    $('select[name=categorys_id]').append('<option value="'+res.data[l].id+'" '+selected+' >'+res.data[l].name+'</option>');
+	                }
+	                form.render();
+	            }
+	        });
+    	}
+
+	});
+
+		//编辑专题
+		function editSubmit(data){
+			request.setHost(SHOP_DATA).post('/article/special/edit',data,function(res){
+    			if (res.code == 0) {
+    				layer.msg(res.msg);
+	                setTimeout(function(){
+	                    parent.location.reload();
+	                },1500);
+    			}else{
+    				layer.msg(res.msg);
+    			}
+    		});
+    		return false;
+		}
+
+		function openUEPhotoSpace(){
+			upload_obj = 'article_content';
+		    layer.open({
+		        type: 2,
+		        title : '选择图片',
+		        content: photoSpaceUrl,
+		        shadeClose: true,
+                moveOut:true,
+		        area: ['80%', '80%'],
+		        success: function(layero){
+		            layer.setTop(layero);
+		            // console.log(upload_obj);
+		        }
+		    })
+		}
+	    function openPhotoSpace(){
+	    	upload_obj = 'article_image';
+		    layer.open({
+		        type: 2,
+		        title : '选择图片',
+		        content: photoSpaceUrl,
+		        shadeClose: true,
+                moveOut:true,
+		        area: ['80%', '80%'],
+		        success: function(layero){
+		            layer.setTop(layero);
+		            // console.log(upload_obj);
+		        }
+		    })
+		}
+
+		function handlePhoto(content){
+    		if(content == 'close'){
+		        // 关闭窗口
+		        layer.closeAll();
+		    }else{
+		    	var json = JSON.parse(content);
+
+		    	uploadImgBack(json);
+		        layer.closeAll();
+		    }
+    	}
+
+    	function uploadImgBack(data){
+    		var that = this;
+    		// console.log(that.upload_obj);
+    		if (that.upload_obj == "article_image") {
+    			var imageBack = document.getElementById('imageBack');
+		    	var image_input = document.getElementById('article_image_input');
+				imageBack.src = data[0]['image'];
+				image_input.value = data[0]['image'];
+    		}else if (that.upload_obj == "article_content") {
+    			var src_list = [];
+                for( var i = 0; i < data.length; i++){
+                    src_list.push({
+	                    src:data[i].image,
+	                    width:'100%'
+	                });
+	            }
+	            ue.execCommand( 'insertimage',src_list);
+
+    		}
+    	}
+   	
+   		// 商品选择
+    	function openGoodsSelect(){
+    		layer.open({
+                title: '选择关联商品',
+                type: 2,
+                // goods_list:goods_list,
+                moveOut:true,
+                shadeClose:true,
+                area: ['90%', '90%'],
+                content: '/article/special/goods_list',
+            })
+    	}
+
+    	function uploadImg(data){ 
+    		// console.log(data);
+    		imageBack.src = data.image;
+    		ue.ready(function(){
+                ue.setContent(data.content);
+            });
+    	}
+
+    	// editInfo
+        var checked_list = new Array();//已选参数集
+
+
+        //获取文章内容内容
+        function getArticleContent(){
+            var html = '';
+            ue.ready(function () {
+                html = ue.getContent();
+            });
+            return html;
+        }
+
+
+        function getSelectGoods(data) {
+
+            if (data != "") { 
+                for (var i = 0; i < data.length; i++) {
+                    if( checked_list.indexOf(data[i].id) >= 0){
+                        // alert("商品已添加");
+                        continue;
+                    }else{
+                        checked_list.push(data[i].id);
+                    }   
+                        goodsClass(data[i].id,data[i].goods_name,data[i].image);
+
+                }
+
+            }
+        }
+
+        function editSelectGoods(data){
+            list = data;
+            if (list != '') {
+                for (var i = 0; i < list.length; i++) {
+                    checked_list.push(list[i]['goods_id']);
+                    goodsClass(list[i]['goods_id'],list[i]['goods_name'],list[i]['image']);
+                }
+            }
+        }   

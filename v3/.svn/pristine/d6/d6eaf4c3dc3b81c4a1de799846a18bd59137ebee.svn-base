@@ -1,0 +1,118 @@
+
+<!-- 商品表格 -->
+<table id="demo" lay-filter="test">
+</table>
+
+<!-- 控制模板 -->
+<script type="text/html" id="ctrlTpl">
+  <div>
+    <a href="/depot/depot_pre_select/detail.html?id={{ d.id }}" class="layui-table-link">编辑</a>
+    &nbsp;&nbsp;
+    <a href="/depot/depot_pre_select/select_list.html?id={{ d.id }}" class="layui-table-link">预选详情</a>
+  </div>
+</script>
+
+<!-- 表格模板 -->
+<script type="text/html" id="toolbarTpl">
+  <div>
+    <div id="add-select" class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+    <div id="del-select" class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div>
+  </div>
+</script>
+
+<script type="text/javascript">
+	
+var table = layui.table;
+  
+// 初始化
+init();
+
+// 初始化方法
+function init(){
+
+  //第一个实例
+  table.render({
+  elem: '#demo'
+  ,height: 422
+  ,url: '/depot/shop_depot_pre_select' //数据接口
+  ,page: true //开启分页
+  ,toolbar: '#toolbarTpl'
+  // ,toolbar: 'default'
+  ,headers: {
+  	ctrl: SHOP_DATA
+  }
+  ,done: function(res, curr, count){
+    tableDoneCallback(res, curr, count);
+  }
+  ,cols: [[ //表头
+    {type: 'radio', fixed: 'left'}
+    ,{field: 'tag', title: '标记', width:120}
+    ,{field: 'type', title: '预选类型', width: 120, templet: function(row){
+      if (row.type == 1) {
+        return '进货';
+      }
+      if (row.type == 2) {
+        return '退货';
+      }
+      if (row.type == 3) {
+        return '调整';
+      }
+      if (row.type == 4) {
+        return '调拨';
+      }
+    }}
+    ,{field: 'create_time', title: '创建时间', width: 180}
+    ,{field: 'remarks', title: '备注', width: 280}
+    ,{field: 'id', title: '操作', width: 280, templet: '#ctrlTpl'}
+  ]]
+  });
+
+  table.on('radio(test)', function(obj){
+    console.log(obj.checked); //当前是否选中状态
+    console.log(obj.data); //选中行的相关数据
+
+    if (obj.checked) {
+      // 调用父页面的方法
+      window.parent.setPreSelect(obj.data);
+    }
+
+  });
+
+}
+
+/**
+ * [tableDoneCallback 表格初始化完成回调方法]
+ * @param  {[type]} res   [description]
+ * @param  {[type]} curr  [description]
+ * @param  {[type]} count [description]
+ * @return {[type]}       [description]
+ */
+function tableDoneCallback(res, curr, count){
+  $('#add-select').on('click', function(){
+    // 打开创建预选窗口
+    openLayer('/depot/depot_pre_select/add_select');
+  })
+}
+
+
+/**
+ * [closeLayer 关闭弹窗]
+ * @param  {[type]} tipType [提示类型]
+ * @return {[type]}         [description]
+ */
+function closeLayer(tipType){
+  // 关闭全部弹窗
+  layer.closeAll();
+  if (tipType == 'add') {
+    layer.alert('添加成功');
+  }
+
+  if (tipType == 'edit') {
+    layer.alert('修改成功');
+  }
+
+  // 重新初始化
+  init();
+}
+
+</script>

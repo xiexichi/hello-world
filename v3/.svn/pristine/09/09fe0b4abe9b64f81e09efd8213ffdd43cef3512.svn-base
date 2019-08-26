@@ -1,0 +1,55 @@
+<?php
+namespace app\power\controller;
+
+class PowerRole extends Base
+{  
+    public function getRoleGroupTree(){
+        $inputData = input();
+        if(!isset($inputData['role_pid'])){
+            return errorJson(123, '请选择父级角色');
+        }
+        
+        //...........一堆操作之后
+        
+        
+        //超级管理员直接获取所有
+        
+        return successJson(['trees'=>$this->model->getRoleGroupTree()]);
+    }
+    
+    public function addBefore(){
+        if (!$checkData = $this->validate->add(input())) {
+            $this->setExitErrorInfo($this->validate->getError(), 10001);
+            return false;
+        }
+        
+        //.....一堆操作，只能设置自己拥有的权限
+        
+        
+        
+        //只保存group_id？不保存moudle和controller
+        if(!empty($checkData['authids'])){
+            $tempList = [];
+            foreach ($checkData['authids'] as $v){
+                if(!empty($v) && !in_array($v, $tempList)){
+                    array_push($tempList, $v);
+                }
+            }
+            $checkData['authids'] = $tempList;
+        }
+        
+        $this->model->data($checkData);
+    }
+    
+    public function getParentRoles(){
+        //根据自己的角色身份来获取二级角色，超级管理员追加顶层
+        //......自己的角色身份判断
+        
+        $roles = $this->model->getParentRoles();
+        if(1==1){//超级管理员可以创建父级角色身份
+            array_unshift($roles, ['id'=>0,'pid'=>0,'title'=>'顶级角色']);
+        }
+
+        return successJson($roles);
+    }
+}

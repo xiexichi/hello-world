@@ -1,0 +1,12 @@
+<?php
+
+namespace app\depot\controller;
+
+use app\common\controller\Common;
+
+class Base extends Common
+{
+
+	
+
+}

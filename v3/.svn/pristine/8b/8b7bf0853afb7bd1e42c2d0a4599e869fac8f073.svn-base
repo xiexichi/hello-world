@@ -1,0 +1,59 @@
+<?php
+/**
+ * 商品分类
+ */
+namespace app\goods\controller;
+use think\Db;
+
+class Category extends Base
+{
+    public function init(){
+        //商品分类模块model
+        $this->goodsCateModel = new \app\goods\model\Category();
+        //商品分类模块validate
+        $this->validate = new \app\goods\validate\Category();
+    }
+
+    //获取所有分类
+    public function getGoodsCates(){
+        $list = Db::table($this->goodsCateModel->getTable())->order('sort','desc')->select();
+        $list = $this->goodsCateModel->set_tree($list);
+        return successJson($list);
+    }
+
+    //获取单个分类信息
+    public function getGoodsCateInfo(){
+        $param = input('post.');
+        if( !$checkDate = $this->validate->getGoodsCateList($param) ){
+            return errorJson(10001, $this->validate->getError());
+        }
+        $CateInfo =  Db::table($this->goodsCateModel->getTable())
+            ->where('id',$checkDate['cate_id'])
+            ->find();
+        return successJson($CateInfo);
+    }
+
+    //获取单个分类的子分类
+    public function getGoodsCateChild()
+    {
+        $param = input('post.');
+        if (!$checkDate = $this->validate->getGoodsCateList($param)) {
+            return errorJson(10001, $this->validate->getError());
+        }
+        $cateInfo = Db::table($this->goodsCateModel->getTable())
+            ->where('id', $checkDate['cate_id'])
+            ->find();
+        if (empty($cateInfo)) {
+            return errorJson(10002, '分类不存在');
+        }
+        $where['pid'] = ['or', $checkDate['cate_id']];
+        $catelist = Db::table($this->goodsCateModel->getTable())
+            ->where('id',$checkDate['cate_id'])
+            ->whereOr('pid',$checkDate['cate_id'])
+            ->select();
+        $list = $this->goodsCateModel->set_tree($catelist);
+        return successJson($list);
+    }
+
+
+}

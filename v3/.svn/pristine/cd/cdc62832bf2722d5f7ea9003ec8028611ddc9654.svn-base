@@ -1,0 +1,43 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">市场价<span class="star">*</span></label>
+    <div class="layui-input-inline">
+        <input type="text" name="market_price" v-model="set_sales.market_price" required  lay-verify="required" placeholder="请输入市场价" autocomplete="off" class="layui-input" onblur="validateFloatEmpty(this)" onkeyup="validateFloat(this)" >
+    </div>
+    <div class="layui-form-mid layui-word-aux">RMB </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">基础售价<span class="star">*</span></label>
+    <div class="layui-input-inline">
+        <input type="text" name="sell_price" v-model="set_sales.sell_price" required  lay-verify="required" placeholder="请输入售价"  autocomplete="off" class="layui-input" onblur="validateFloatEmpty(this)" onkeyup="validateFloat(this)"  >
+    </div>
+    <div class="layui-form-mid layui-word-aux">RMB （没有设置sku时的售价）</div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">是否店铺商品</label>
+    <div class="layui-input-inline">
+        <input type="radio" name="is_shop_goods" v-model="set_sales.is_shop_goods" value="1" lay-filter="is_shop_goods" title="是">
+        <input type="radio" lay-filter="is_shop_goods" name="is_shop_goods" v-model="set_sales.is_shop_goods" value="0" title="否">
+    </div>
+    <label class="layui-form-label">是否会员商品</label>
+    <div class="layui-input-inline">
+        <input type="radio" name="is_user_goods" lay-filter="is_user_goods" v-model="set_sales.is_user_goods" value="1" title="是" >
+        <input type="radio" name="is_user_goods" lay-filter="is_user_goods" v-model="set_sales.is_user_goods" value="0" title="否" >
+    </div>
+    <label class="layui-form-label">是否物料</label>
+    <div class="layui-input-inline">
+        <input type="radio" name="is_materials" lay-filter="is_materials" v-model="set_sales.is_materials" value="1" title="是" >
+        <input type="radio" name="is_materials" lay-filter="is_materials" v-model="set_sales.is_materials" value="0" title="否" >
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">是否分销</label>
+    <div class="layui-input-inline">
+        <input type="radio" name="is_commission" lay-filter="is_commission" v-model="set_sales.is_commission" value="1" title="是" >
+        <input type="radio" name="is_commission" lay-filter="is_commission" v-model="set_sales.is_commission" value="0" title="否" >
+    </div>
+    <label class="layui-form-label">是否可销售</label>
+    <div class="layui-input-inline">
+        <input type="radio" name="is_sell_goods" lay-filter="is_sell_goods"  v-model="set_sales.is_sell_goods" value="1" title="是" >
+        <input type="radio" name="is_sell_goods" lay-filter="is_sell_goods"  v-model="set_sales.is_sell_goods" value="0" title="否" >
+    </div>
+</div>

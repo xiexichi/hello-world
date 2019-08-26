@@ -1,0 +1,168 @@
+<?php
+
+/**
+ *
+ * 公共模型中缺失参数统一以1开头的5位数状态码
+ * 
+ * 公告控制器
+ */
+
+namespace app\common\controller;
+
+use think\Controller;
+use \think\Db;
+use \think\Config;
+use think\Request;
+
+class Common extends Controller
+{
+	// 请求对象
+	// protected $request;
+	protected $model;
+
+	// 是否退出
+	protected $isExit;
+
+	protected $data;
+
+	// 助手类
+	protected $helper;
+
+    // 服务类
+    protected $service;
+
+	// 状态码
+	protected $code;
+	// 错误信息
+	protected $error;
+
+
+	// 图片根目录
+	// const PHOTO_ROOT = 'http://192.168.2.230:8870/upload/';
+	const PHOTO_ROOT = '';
+
+	// 客栈api请求名称
+	const HOTEL_API = 'hotel-api';
+
+	// 25后台请求的名称
+	const BOY_API = '25admin-api';
+
+
+	/**
+	 * override
+     * 构造方法
+     * @access public
+     * @param Request $request Request 对象
+     */
+    public function __construct(Request $request = null)
+    {	
+
+        $this->request = is_null($request) ? Request::instance() : $request;
+
+        // 设置固定参数
+        $this->setFixedParams();
+
+    	// 调用父类构造方法
+        parent::__construct();
+    }
+
+    /**
+     * [setFixedParams 设置固定参数]
+     */
+    protected function setFixedParams(){
+    }
+
+
+	public function _initialize(){
+		parent::_initialize();
+
+		// 实例助手类
+		$this->helper = new Helper($this->request);
+
+        // 创建服务类
+        $this->service = new Service();
+	}
+
+
+
+	/**
+	 * [_empty 使用空方法直接寻找视图]
+	 * @return [type] [description]
+	 */
+	public function _empty() {
+
+		// 获取当前url
+    	$url = $_SERVER['REQUEST_URI'];
+
+        // 获取当前请求方法名称
+        $action = $this->request->action();
+
+		// 如果控制器是orders       	
+       	$controller = $this->request->controller();
+
+       	// 模型名称
+       	$module = $this->request->module();
+
+        // pe($this->request);
+
+       	/*============= ★Andy自定义新增，如果方法不存在，则判断视图模板是否存在 ==========*/
+        // 模板名称
+        $tplName = APP_PATH.'/'.$module.'/view/'.humpToLine($controller).'/'.$action.'.html';
+        
+        if (file_exists($tplName)) {
+
+            // 添加公共头部
+            $headerContent = file_get_contents(APP_PATH.'common/view/common/header.html');
+            // 添加公共尾部
+            $footerContent = file_get_contents(APP_PATH.'common/view/common/footer.html');
+
+            // 视图
+            $view = \think\View::instance(Config::get('template'), Config::get('view_replace_str'));
+		
+			// 输出视图
+            echo $headerContent;
+            echo $view->fetch($tplName, input());
+            echo $footerContent;
+            exit;
+
+            // 存在则输出
+            // echo $headerContent . file_get_contents($tplName);exit;
+        }
+        /*============= 自定义新增，如果方法不存在，则判断视图模板是否存在 ==========*/
+	   
+        // 转发操作
+        $forward = new Forward();
+        return $forward->go($this->request);
+    }
+
+
+    /**
+     * [getHeader 获取请求头参数]
+     * @param  string $param [单个参数名称: 不传入则返回全部请求头参数]
+     * @return [type]        [description]
+     */
+    protected function getHeader($param = ''){
+        if (empty($param)) {
+            return $this->request->header();
+        }
+
+        $header = $this->request->header();
+
+        if (isset($header[$param])) {
+            return $header[$param];
+        }
+
+        return null;
+    }   
+
+
+    /**
+     * [getClientTime 获取客户端时间戳]
+     * @return [type] [description]
+     */
+    protected function getClientTime(){
+        // 目前直接返回系统时间，待后续完善
+        return time();
+    }
+
+}

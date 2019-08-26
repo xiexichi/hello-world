@@ -1,0 +1,64 @@
+<?php
+/**
+ * 商品属性
+ */
+namespace app\goods\controller;
+use think\Db;
+
+class GoodsProp extends Base
+{
+    public function init(){
+        //商品分类模块model
+        $this->goodsPropModel = new \app\goods\model\GoodsProp();
+        //商品分类模块validate
+        $this->validate = new \app\goods\validate\GoodsProp();
+    }
+
+    //获取所有属性
+    public function getGoodsPorps(){
+        $list = Db::table($this->goodsPropModel->getTable())->select();
+        return successJson($list);
+    }
+
+    //获取属性类型信息
+    public function getGoodsPropInfo(){
+        $param = input('post.');
+        if( !$checkData = $this->validate->getGoodsPropInfo($param) ){
+            return errorJson(200001, $this->validate->getError());
+        }
+        $info = Db::table($this->goodsPropModel->getTable())->where('id',$checkData['prop_id'])->find();
+        if( empty($info) ){
+            return errorJson(200002, '属性类型不存在');
+        }
+        return successJson($info);
+    }
+
+    //获取商品属性类型的所有值
+    public function getGoodsPropVal(){
+        $param = input('post.');
+        if( !$checkData = $this->validate->getGoodsPropInfo($param) ){
+            return errorJson(200001, $this->validate->getError());
+        }
+        $info = Db::table($this->goodsPropModel->getTable())->where('id',$checkData['prop_id'])->find();
+        if( empty($info) ){
+            return errorJson(200002, '属性类型不存在');
+        }
+        $list = Db::table($this->goodsPropModel->getTable('goods_prop_val'))->where('goods_prop_id',$checkData['prop_id'])->select();
+        return successJson($list);
+    }
+
+    //获取属性值信息
+    public function getGoodsPropValInfo(){
+        $param = input('post.');
+        if( !$checkData = $this->validate->getGoodsPropValInfo($param) ){
+            return errorJson(200001, $this->validate->getError());
+        }
+        $info = Db::table($this->goodsPropModel->getTable('goods_prop_val'))->where('id',$checkData['prop_val_id'])->find();
+        if( empty($info) ){
+            return errorJson(200002, '属性类型不存在');
+        }
+        return successJson($info);
+    }
+
+
+}

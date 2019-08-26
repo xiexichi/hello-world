@@ -1,0 +1,183 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form" action="" id="form" >
+                <div class="layui-form-item">
+                    <label class="layui-form-label">券号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="coupon_sn" placeholder="优惠券号码" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">会员id</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="user_id" placeholder="会员id" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">使用状态</label>
+                    <div class="layui-input-inline">
+                        <select name="use_status" >
+                            <option value="" >全部</option>
+                            <option value="0" >未使用</option>
+                            <option value="1" >已使用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--数据列表-->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="user_coupon" lay-filter="test"></table>
+        </div>
+    </div>
+</div>
+<!-- 操作模板 -->
+<script type="text/html" id="toolbarTpl">
+    <button class="layui-btn layui-btn-sm" lay-event="sand" >主动发放</button>
+</script>
+<script type="text/html" id="ctrlTpl">
+    {{# if( d.is_invalid == 0 && d.is_deleted == 0 ){ }}
+    <button class="layui-btn layui-btn-xs layui-bg-orange" style="margin:0;" lay-event="set_invalid" >
+        {{# if( d.user_invalid == 0 ){ }}
+        设为失效
+        {{# }else{ }}
+        设为可用
+        {{# } }}
+    </button>
+    {{# }else{ }}
+    不可操作
+    {{# } }}
+</script>
+<script>
+    var api = '/activity/coupon_user/index';
+    var coupon_id = getUrlParam('coupon_id');
+    if( coupon_id != null ){
+        api += '?coupon_id='+coupon_id;
+    }
+    var table = layui.table;
+    var form = layui.form;
+    //执行渲染
+    table.render({
+        id:'user_coupon'
+        ,elem: '#user_coupon' //
+        ,height: 'auto' //容器高度
+        ,url: api
+        ,page: true
+        ,toolbar: '#toolbarTpl'
+        ,headers: {
+            ctrl: SHOP_DATA
+        }
+        ,cols: [[
+            {field: 'user_coupon_id', title: 'id', width:50}
+            ,{field: 'user_name', title: '会员名'}
+            ,{field: 'coupon_sn', title: '优惠券码'}
+            ,{field: 'coupon_desc', title: '优惠券效益',width:200}
+            ,{field: 'status_desc', title: '状态', width:90}
+            ,{field: 'use_time', title: '使用时间', width:160}
+            ,{field: 'create_time', title: '领取时间', width:160}
+            ,{field: 'id', title: '操作', templet: '#ctrlTpl', width:100}
+        ]]
+    });
+    //头部按钮事件
+    table.on('toolbar(test)', function(obj) {
+        var data = obj.data;
+        var layEvent = obj.event;
+        switch( layEvent ){
+            case 'sand' :
+                if( coupon_id == null ){
+                    layer.msg('只可在对应优惠券列表发放');
+                    return false;
+                }
+                layer.prompt({
+                    title: '请输入会员id'
+                }, function(val, index){
+                    var param = {};
+                    param.coupon_id = coupon_id;
+                    param.user_id = val;
+                    request.setHost(SHOP_DATA).post('/activity/coupon/getCoupon',param, function(res) {
+                        if (res.code == 0) {
+                            // 成功提示
+                            layer.msg(res.msg);
+                            setTimeout(function () {
+                                table.reload('user_coupon');
+                                parent.table.reload('coupon');
+                            }, 1000);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                    layer.close(index);
+                });
+                break;
+            default :
+                return false;
+                break;
+        }
+        return false;
+    });
+
+    layui.use('form', function(){
+        form.on('submit', function(data){
+            searchData = data.field;
+            //上述方法等价于
+            table.reload('user_coupon', {
+                where: searchData,
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+        form.render();
+    });
+
+    table.on('tool(test)', function(obj) {
+        var data = obj.data;
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+        switch (layEvent) {
+            case 'set_invalid' :
+                var param = {};
+                param.id = data.user_coupon_id;
+                param.is_invalid = data.user_invalid ? 0 : 1;
+                msg = "是否确认关闭！";
+                if( param.status == 1 ){
+                    msg = "是否确认开启";
+                }
+                layer.confirm(msg, {
+                    btn: ["确定","取消"] //按钮
+                }, function(){
+                    request.setHost(SHOP_DATA).post('/activity/coupon_user/edit',param, function(res){
+                        if (res.code == 0) {
+                            // 成功提示
+                            layer.msg(res.msg);
+                            setTimeout(function(){
+                                table.reload('user_coupon');
+                            },1000);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                });
+                break;
+            default :
+                return false;
+                break;
+        }
+        return true;
+    });
+
+    function callback(){
+        table.reload('user_coupon');
+        layer.closeAll();
+    }
+</script>

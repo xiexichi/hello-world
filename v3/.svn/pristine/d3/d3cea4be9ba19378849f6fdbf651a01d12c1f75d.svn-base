@@ -1,0 +1,9 @@
+<?php
+
+namespace app\cart\model;
+use app\order\model\Order;
+
+class AllinPay extends Base
+{
+
+}

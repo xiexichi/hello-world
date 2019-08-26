@@ -1,0 +1,181 @@
+<?php
+
+/**
+ * 服务接口对象
+ */
+
+namespace app\common\controller;
+
+use think\Controller;
+
+class Service extends Controller{
+
+
+    protected $hots = [
+        // 'user' => 'http://user.25boy.cn/', // 线上用户模块主机地址
+        // 'user' => 'http://user.25boy.com/', // 本地用户模块主机地址
+    ];
+
+    // 使用主机地址
+    protected $useHots = '';
+
+    protected $fiexdParams = [];
+
+    // 初始化方法
+    public function _initialize(){
+        parent::_initialize();
+            
+        if (IS_WIN) {
+            $this->hots['user'] = 'http://user.25boy.com/'; // 本地用户模块主机地址
+            // $this->hots['user'] = 'http://user.25boy.cn/'; // 本地用户模块主机地址
+        } else {
+            $this->hots['user'] = 'http://user.25boy.cn/'; // 线上用户模块主机地址
+        }
+
+    }
+
+    /**
+     * [addFiexdParams 添加固定参数]
+     * @param array $params [必须是关联数组]
+     */
+    public function addFiexdParams($params = []){
+        // 添加固定参数
+        // user模块的秘钥
+        $this->fiexdParams['bsecret'] = 'asjhd25kajsdboyasd121888asdasd';
+
+        foreach ($params as $k => $v) {
+            $this->fiexdParams[$k] = $v;
+        }
+    }
+
+
+    /**
+     * [setHots 设置使用主机]
+     * @param [type] $hots_label [description]
+     */
+    public function setHots($hots_label) {
+        if (!in_array($hots_label, array_keys($this->hots))) {
+            pe('主机地址不存在');
+        }
+        $this->useHots = $this->hots[$hots_label];
+        return $this;
+    }
+
+
+	/**
+	 * [get GET方式的请求方法]
+	 * @param  [type] $url    [API地址]
+	 * @param  [type] $params [提交参数]
+	 * @return [type]         [description]
+	 */
+	public function get($url, $params = []){
+		// 组合参数
+		foreach ($params as $k => $v) {
+            if ($k == 0) {
+                $url .= '?';
+            }
+			$url .= '&'.$k.'='.$v;
+		}
+
+        // 添加固定参数
+        foreach ($this->fiexdParams as $k => $v) {
+            $url .= '&'.$k.'='.$v;
+        }
+
+		// 组合完整url
+		$url = $this->useHots . trim($url,'/');
+
+		return $this->curl_get($url);
+	}
+
+	/**
+	 * [post POST方式的请求方法]
+	 * @param  [type] $url    [description]
+	 * @param  [type] $params [description]
+	 * @return [type]         [description]
+	 */
+	public function post($url, $params){
+		// 组合完整url
+		$url = $this->useHots . trim($url,'/');
+
+        // 添加固定参数
+        foreach ($this->fiexdParams as $k => $v) {
+            $params[$k] =$v;
+        }
+
+        $url .= '/bsecret/asjhd25kajsdboyasd121888asdasd';
+        // pe($url);
+
+		return $this->curl_post($url, $params);
+	}
+
+	/**
+     * 自定义curl发送post数据方法
+     * @param string 上传的地址
+     * @param [array] [$data] [发送的数据]
+     * @return [type] [description]
+     */
+    protected function curl_post($url,$data){
+        //开启curl
+        $ch = curl_init();
+        //设置选项，包括URL
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //绕过权限验证
+        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch,CURLOPT_TIMEOUT,5);  //定义超时5秒钟  
+         // POST数据
+        curl_setopt($ch, CURLOPT_POST, 1);
+        // 把post的变量加上
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));    //所需传的数组用http_bulid_query()函数处理一下，就ok了
+        
+        //执行并获取url地址的内容
+        $output = curl_exec($ch);
+        $errorCode = curl_errno($ch);
+        //释放curl句柄
+        curl_close($ch);
+        if(0 !== $errorCode) {
+            // 记录curl错误日志
+            $info = [
+                'error' => 'curl请求错误：'.$errorCode,
+                'url'   => $url,
+                'data'  => $data
+            ];
+            \think\Log::write($info, 'error');
+            return false;
+        }
+
+        return $output; 
+    }
+
+    /**
+     * 自定义curl发送get数据方法
+     * @param string 上传的地址
+     * @return [type] [description]
+     */
+    protected function curl_get($url){
+        //开启curl
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL,$url);
+        //捕获内容，但不输出
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        //绕过权限验证
+        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+        //设置get请求
+		//curl_setopt($ch,CURLOPT_GET, 1);
+
+        //执行并获取url地址的内容
+        $output = curl_exec($ch);
+        $errorCode = curl_errno($ch);
+        //释放curl句柄
+        curl_close($ch);
+        if(0 !== $errorCode) {
+            return false;
+        }
+        return $output; 
+    }
+
+}

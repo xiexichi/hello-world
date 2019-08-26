@@ -1,0 +1,44 @@
+// layui
+layui.use(['table', 'form', 'laydate'], function (){
+  const table = layui.table
+  const form = layui.form
+  const laydate = layui.laydate
+  form.render()
+  laydate.render({
+    elem: '#start_date',
+    type: 'datetime'
+  })
+  laydate.render({
+    elem: '#end_date',
+    type: 'datetime'
+  })
+
+  // 数据表格
+  let url = '/system/logs/index'
+  const parseUrl = parseParams(params)
+  if(parseUrl){
+    url += '?' + parseUrl
+  }
+  table.render({
+    elem: '#logsDataTable',
+    height: 'auto',
+    url: url,
+    limit: 20,
+    headers: {
+      ctrl: CENTER_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:80},
+      {field: 'log_info', title: '日志说明'},
+      {field: 'log_ip', title: '客户端IP'},
+      {field: 'admin_id', title: '操作人'},
+      {field: 'log_url', title: '操作路径'},
+      {field: 'params', title: '提交参数', templet: function (d) {
+        return parseParams(d.params, false)
+      }},
+      {field: 'create_time', title: '操作时间'}
+    ]]
+  })
+
+})

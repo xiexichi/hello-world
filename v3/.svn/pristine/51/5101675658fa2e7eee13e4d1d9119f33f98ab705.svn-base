@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * 库存预选
+ */
+
+namespace app\depot\controller;
+
+class ShopDepotPreSelect extends Base
+{
+
+
+
+}
+
+

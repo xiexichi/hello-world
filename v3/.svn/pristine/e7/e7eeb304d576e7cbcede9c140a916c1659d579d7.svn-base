@@ -1,0 +1,37 @@
+// layui
+layui.use(['table', 'form', 'laydate'], function (){
+  const table = layui.table
+  const form = layui.form
+  const laydate = layui.laydate
+
+  form.render()
+
+  //执行laydate实例
+  laydate.render({
+    elem: '#start_order_time'
+  })
+  laydate.render({
+    elem: '#end_order_time'
+  })
+
+  // 数据表格
+  table.render({
+    elem: '#myDataTable',
+    height: 'auto',
+    url: '/picshow/module/index',
+    limit: 20,
+    toolbar: '#toolbarTpl',
+    defaultToolbar: false,
+    headers: {
+      ctrl: CENTER_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:80},
+      {field: 'module_name', title: '内容模块名称'},
+      {field: 'module_code', title: '内容模块代码'},
+      {field: 'desc', title: '描述'},
+      {field: 'ctrl', title: '操作', width:130, toolbar: '#ctrlTpl'}
+    ]]
+  })
+})

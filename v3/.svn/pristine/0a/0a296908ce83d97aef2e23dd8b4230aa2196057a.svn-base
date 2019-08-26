@@ -1,0 +1,99 @@
+<?php
+
+namespace app\goods\model;
+
+use think\Exception;
+
+class Goods extends Base
+{
+    protected $name = 'goods';
+
+    public function getGoodsAll($paramData,$getCount=false){
+        $page = isset($paramData['page']) ? intval($paramData['page']) : 1;
+        $limit = $paramData['limit'] ? intval($paramData['limit']) : 10;
+        $pageSize = ( $page - 1 ) * $limit.','.$limit;
+        if($limit=0){
+            $pageSize = '';
+        }
+        $where['g.is_deleted'] = ['=',0];
+        //是否删除
+        if( isset($paramData['delete']) && $paramData['delete'] != ''  ){
+            $where['g.is_deleted'] = ['=',intval($paramData['delete'])];
+        }
+        //上下架
+        if( isset($paramData['status']) && $paramData['status'] != ''  ){
+            $where['g.sales_status'] = ['=',intval($paramData['status'])];
+        }
+        //分类筛选
+        if( isset($paramData['cate_id']) && $paramData['cate_id'] != ''  ){
+            $where['g.cate_id'] = ['=',intval($paramData['cate_id'])];
+        }
+        //品牌筛选
+        if( isset($paramData['brand_id']) && $paramData['brand_id'] != '' ){
+            $where['g.brand_id'] = ['=',intval($paramData['brand_id'])];
+        }
+        //关键词筛选
+        if( isset($paramData['keyword']) && !empty($paramData['keyword']) ){
+            $where['g.goods_name'] = ['like',trim($paramData['keyword'])];
+        }
+        //关键词筛选
+        if( isset($paramData['erp_code']) && !empty($paramData['erp_code']) ){
+            $where['g.erp_code'] = ['=',trim($paramData['erp_code'])];
+        }
+        $data['list'] = $this->alias('g')
+            ->field('g.*,img.image')
+            ->where($where)
+            ->join('goods_images img','img.goods_id = g.id')
+            ->order('sort','desc')
+            ->limit($pageSize)
+            ->select();
+        if($getCount){
+            $info = $this->alias('g')
+                ->field('count(*) as num')
+                ->where($where)
+                ->find();
+            $data['count'] = $info['num'];
+        }
+        return $data;
+    }
+
+    //创建商品
+    public function createGoods($goodsData){
+        $data['goods_name'] = empty($goodsData['goods_name']) ? '' : trim($goodsData['goods_name']);
+        $data['adv_desc'] = empty($goodsData['adv_desc']) ? '' : trim($goodsData['adv_desc']);
+        $data['seo_keyword'] = empty($goodsData['seo_keyword']) ? '' : trim($goodsData['seo_keyword']);
+        $data['seo_description'] = empty($goodsData['seo_description']) ? '' : trim($goodsData['seo_description']);
+        $data['cate_id'] = empty($goodsData['cate_id']) ? 0 : intval($goodsData['cate_id']);
+        $data['brand_id'] = empty($goodsData['brand_id']) ? 0 : intval($goodsData['brand_id']);
+        $data['goods_code'] = empty($goodsData['goods_code']) ? '' : trim($goodsData['goods_code']);
+        $data['erp_code'] = empty($goodsData['erp_code']) ? '' : trim($goodsData['erp_code']);
+        $data['sku_sn'] = empty($goodsData['sku_sn']) ? $data['erp_code'] : trim($goodsData['sku_sn']);
+        $data['market_price'] = empty($goodsData['market_price']) ? '0.00' : bcadd($goodsData['market_price'],0,2);
+        $data['sell_price'] = empty($goodsData['sell_price']) ? '0.00' : bcadd($goodsData['sell_price'],0,2);
+        $data['is_shop_goods'] = empty($goodsData['is_shop_goods']) ? 0 : intval($goodsData['is_shop_goods']);
+        $data['is_user_goods'] = empty($goodsData['is_user_goods']) ? 0 : intval($goodsData['is_user_goods']);
+        $data['is_materials'] = empty($goodsData['is_materials']) ? 0 : intval($goodsData['is_materials']);
+        $data['is_commission'] = empty($goodsData['is_commission']) ? 0 : intval($goodsData['is_commission']);
+        $data['is_sell_goods'] = empty($goodsData['is_sell_goods']) ? 0 : intval($goodsData['is_sell_goods']);
+        $data['content'] = empty($goodsData['content']) ? '' : $goodsData['content'];
+        $data['ship_free'] = empty($goodsData['ship_free']) ? 0 : intval($goodsData['ship_free']);
+        $data['delivery_id'] = empty($goodsData['delivery_id']) ? 0 : intval($goodsData['delivery_id']);
+        $data['create_time'] = date('Y-m-d H:i:s');
+        $data['update_time'] = $data['create_time'];
+        if( getSystemSet('ADMIN_GOODS_VERIFY') == 'on' ){
+            $data['verify'] = 1;
+        }
+        //添加默认下架
+        $ids = $this->insertGetId($data);
+        if( !$this->setGoodsPriceLog($ids,0,0,$data['sell_price'],'创建商品基础售价',$data['create_time']) ){
+            return false;
+        }
+        return $ids;
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        return true;
+    }
+
+}

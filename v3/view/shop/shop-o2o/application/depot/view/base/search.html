@@ -1,0 +1,208 @@
+<div class="layui-collapse" lay-filter="search-filter">
+  <div class="layui-colla-item">
+    <h2 class="layui-colla-title">
+      <strong>查找条件</strong>
+    </h2>
+    <div class="layui-colla-content layui-show">
+    
+      <div class="site-text site-block">
+
+        <form class="layui-form" action="">
+          <div class="layui-form-item fled-space-between">
+            <div class="layui-input-inline">
+              <button class="layui-btn" lay-submit lay-filter="formDemo">查找</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+
+            <div class="layui-form-item" id="save-cloud-div" style="display: none;">
+              <label class="layui-form-label">同步云端</label>
+              <div class="layui-input-inline" style="width: 70px">
+                <input type="checkbox" name="switch" lay-text="开启|关闭" lay-skin="switch" lay-filter="save-cloud">
+              </div>
+              <div class="layui-form-mid layui-word-aux">
+                <span id="pre_select_tag"></span>
+              </div>
+            </div>
+            
+          </div>
+
+          <div class="layui-form-item">
+  
+            <label class="layui-form-label">单号</label>
+            <div class="layui-input-inline">
+              <input type="text" name="order_sn" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+
+            <label class="layui-form-label">SKU</label>
+            <div class="layui-input-inline" style="width: 100px;">
+              <input type="text" name="sku_sn" placeholder="SKU_SN" autocomplete="off" class="layui-input">
+            </div>
+
+            <label class="layui-form-label">规格</label>
+            <div class="layui-input-inline">
+              <input type="text" name="sku_code" placeholder="支持多个规格同时查找" autocomplete="off" class="layui-input">
+            </div>
+  
+            <label class="layui-form-label" id="depot_type_select_label">库存类型</label>
+            <div class="layui-input-inline">
+              <select name="type" id="depot_type_select" lay-filter="depot_type_select">
+                  <option value="">全部</option>
+                  <option value="1">商品</option>
+                  <option value="2">物料</option>
+              </select>
+            </div>
+
+          </div>
+          
+          <!-- 时间日期 -->
+          <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">日期范围</label>
+                <div class="layui-input-inline" >
+                  <input id="start_date" type="text" name="start_date" placeholder="开始时间" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid">-</div>
+                <div class="layui-input-inline" >
+                  <input id="end_date" type="text" name="end_date" placeholder="结束时间" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-inline" id="shop_depot_change_div" style="display: none;">
+                <label class="layui-form-label">变动类型</label>
+                <div class="layui-input-inline">
+                  <select name="shop_depot_change_type_id" id="change_types">
+                      <option value="">全部</option>
+                  </select>
+                </div>
+              </div>
+
+          </div>
+  
+          <div class="layui-form-item" id="category_id_div">
+            <label class="layui-form-label">分类</label>
+            <div class="layui-input-inline">
+              <select name="category_ids" xm-select="categorys">
+                  <option value="">请选择, 此处是联动多选</option>
+              </select>
+            </div>
+
+
+            <label class="layui-form-label">品牌</label>
+            <div class="layui-input-inline">
+              <select name="brand_ids" xm-select="brands">
+                  <option value="">请选择, 此处是联动多选</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- <div class="layui-form-item" id="brand_id_div">
+            <label class="layui-form-label">品牌</label>
+            <div class="layui-input-inline">
+              <select name="brand_ids" xm-select="brands">
+                  <option value="">请选择, 此处是联动多选</option>
+              </select>
+            </div>
+          </div> -->
+
+          <!-- <div class="layui-form-item">
+            <label class="layui-form-label">品牌</label>
+            <div class="layui-input-inline">
+              <select id="brand_id" name="brand_id">
+                <option value=""></option>
+              </select>
+            </div>
+          </div> -->
+
+        </form>
+
+      </div>
+    
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+  // 默认的开始日期
+  var defaultFirstDay = getMonthFirstAndLast().firstDay;
+  
+  var laydate = layui.laydate;
+  
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#start_date', //指定元素
+    value: defaultFirstDay
+  });  
+
+  laydate.render({
+    elem: '#end_date' //指定元素
+  });
+
+  /**
+   * [setCateAndBrand 设置分类和品牌]
+   */
+  function setCateAndBrand(){
+
+    // 配置分类选择
+    layui.config({
+        base: '/static/layui/module/formSelects/'
+    }).extend({
+        formSelects: 'formSelects-v4'
+    });
+
+    layui.use(['form', 'formSelects'], function () {
+      // 获取分类数据
+      request.get('/goods/category/getCateAll?showType=tree', function(res){
+        console.info(res);
+        // 分类数据设置
+        layui.formSelects.data('categorys', 'local', {
+            arr:res.data,
+            tree: {
+              //在点击节点的时候, 如果没有子级数据, 会触发此事件
+              nextClick: function(id, item, callback){
+                  //需要在callback中给定一个数组结构, 用来展示子级数据
+              },
+            }
+        });
+      });
+
+      // 商品品牌
+      request.setHost(SHOP_DATA).get('/goods/goods_brands/all', function(res) {
+        for (let i in res.data) {
+          res.data[i]['value'] = res.data[i]['id'];
+          res.data[i]['name'] = res.data[i]['brand_name'];
+        }
+
+        // 分类数据设置
+        layui.formSelects.data('brands', 'local', {
+            arr:res.data,
+            tree: {
+              //在点击节点的时候, 如果没有子级数据, 会触发此事件
+              nextClick: function(id, item, callback){
+                  //需要在callback中给定一个数组结构, 用来展示子级数据
+              },
+            }
+        });
+      })
+
+    });
+  }
+
+  /**
+   * [setShopChangeTypes 设置库存变动类型]
+   */
+  function setShopChangeTypes(){
+    // 显示变动类型div
+    $('#shop_depot_change_div').show();
+
+    request.setHost(SHOP_DATA).get('/depot/shop_depot_change/getChangeTypes', function(res) {
+      console.info('change_types:',res.data);
+      for (let i = 0; i < res.data.length; i++) {
+        let item = res.data[i];
+        $('#change_types').append('<option value="'+item.id+'">'+item.type+'</option>');
+      }
+      form.render();
+    })
+  }
+
+</script>

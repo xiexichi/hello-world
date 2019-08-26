@@ -1,0 +1,24 @@
+// layui
+layui.use('table', function (){
+  const table = layui.table
+
+  // 数据表格
+  table.render({
+    elem: '#deliveryDataTable'
+    ,height: 'auto'
+    ,url: '/system/delivery/index'
+    ,headers: {
+      ctrl: SHOP_DATA
+    }
+    ,page: true
+    ,cols: [[
+      {field: 'id', title: 'ID', width:80}
+      ,{field: 'delivery_name', title: '模板标题'}
+      ,{field: 'delivery_desc', title: '配送说明'}
+      ,{field: 'is_default', title: '默认', templet: function(d){
+        return d.is_default ==  1 ? '默认模板' : ''
+      }}
+      ,{field: 'ctrl', title: '操作', width:200, templet: '#ctrlTpl'}
+    ]]
+  })
+})

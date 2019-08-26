@@ -1,0 +1,83 @@
+<?php
+
+namespace app\goods\model;
+
+class Category extends Base
+{
+    protected $name = 'goods_categorys';
+
+    public function getCateAll($geType='list'){
+        $cateAll = $this->where('is_deleted',0)
+            ->order('sort','desc')
+            ->select();
+        if( !empty($cateAll) ){
+            foreach( $cateAll as $k => $v ){
+                $v['name'] = $v['cate_name'];
+                $cateAll[$k] = $v;
+            }
+        }
+        switch( $geType ){
+            case 'list' ://一维数组
+                $list = $cateAll;
+                break;
+            case 'tree' ://普通多维树状数组
+                $list = $this->setTree($cateAll);
+                break;
+            case 'tree_list' ://一维数组分层列表 (注意占用进程资源问题)
+                $list = $this->setTreeList($this->setTree($cateAll),'children');
+                break;
+            default :
+                $list = $cateAll;
+                break;
+        }
+        return $list;
+//        return $list = $this->setTreeList();
+    }
+
+    /**
+     * 递归处理树状结构数据集（多维数组）
+     * @param $arr_all      待处理数据集
+     * @param $parent_id    顶级父级id
+     * @param $relation     关联关系项 ['parent'=>'id','son'=>'pid']
+     * @return array        已处理的数据集
+     */
+    public function setTree($arr_all,$parent_id=0,$relation=['parent'=>'id','son'=>'pid']){
+        $tree_arr = [];
+        if( empty($relation) || empty($arr_all) ){
+            return $arr_all;
+        }
+        $parent = isset($relation['parent']) ? 'id' : $relation['parent'];
+        $son = isset($relation['son']) ? 'pid' : $relation['son'];
+        if( !empty($arr_all) ){
+            foreach( $arr_all as $tkey => $t ){
+                if( $t[$son] == $parent_id ){
+                    $t['children'] = $this->setTree($arr_all,$t[$parent],$relation);
+                    $tree_arr[] = $t;
+                }
+            }
+        }
+        return $tree_arr;
+    }
+
+    /**
+     * 递归处理树状结构多维数组转为层级列表(一维数组)
+     * @param $arr_all
+     */
+    public function setTreeList($list,$childField='children',$pNum=0,$return_list=[]){
+        foreach($list as $k => $v ){
+            $v['pNum'] = $pNum;
+            $return_list[] = $v;
+            if( !empty($v[$childField]) ){
+                $return_list = $this->setTreeList($v[$childField],$pNum+1,$return_list);
+            }
+        }
+        foreach( $return_list as $key => $val ){
+            if( isset($val['children'])){
+                unset($val['children']);
+            }
+            $return_list[$key] = $val;
+        }
+        return $return_list;
+    }
+
+}

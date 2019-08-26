@@ -1,0 +1,9 @@
+<?php
+
+namespace app\order\model;
+
+class OrderGoods extends Base
+{
+    protected $name = 'order_goods_info';
+
+}

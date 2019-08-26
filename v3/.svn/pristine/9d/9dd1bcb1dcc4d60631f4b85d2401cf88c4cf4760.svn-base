@@ -1,0 +1,37 @@
+<?php
+
+namespace app\order\model;
+
+class OrderReturn extends Base
+{
+    protected $name = 'order_return_info';
+
+    const RETURN_TYPE_CHANGE = 1;
+    const RETURN_TYPE_REFUND = 2;
+
+    public static $map_return_type = array(
+        self::RETURN_TYPE_CHANGE => array(
+            'desc' => '换货',
+            'code' => 'H',
+            'status_start' => 15,
+            'status_end' => 0
+        ),
+        self::RETURN_TYPE_REFUND => array(
+            'desc' => '退货',
+            'code' => 'T',
+            'status_start' => 15,
+            'status_end' => 35
+        )
+    );
+
+    //获取商品 已申请/申请中 退换的数量
+    public function getGoodsRefundNum($order_goods_id){
+        $where['order_goods_id'] = $order_goods_id;
+        $num = $this->where("order_goods_id = {$order_goods_id} and status <> 2")
+            ->value('sum(return_num)');
+        if( is_null($num) ){
+            $num = 0;
+        }
+        return $num;
+    }
+}

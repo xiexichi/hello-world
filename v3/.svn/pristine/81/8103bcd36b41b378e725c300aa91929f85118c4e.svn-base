@@ -1,0 +1,306 @@
+<style type="text/css">
+  .embed-table{
+    background: #e6e6e6;
+  }
+  .embed-table th{
+    text-align:center;
+  }
+</style>
+
+
+<!-- 引入查找条件操作的js -->
+<include file="checkout@index/search" />
+
+
+<!-- 商品表格 -->
+<table id="demo" lay-filter="test">
+</table>
+
+<!-- 库存模板 -->
+<script type="text/html" id="stockTpl">
+  <div class="p-1 text-center embed-table">
+    
+    <table class="layui-table" lay-skin="line">
+    <colgroup>
+      <col width="250">
+      <col width="300">
+      <col width="400">
+      <col width="400">
+    </colgroup>
+    <thead class="text-center">
+      <tr>
+        <th>规格</th>
+        <th>可销库存</th>
+        <th>总店库存</th>
+        <th>销售数量</th>
+      </tr> 
+    </thead>
+    <tbody>
+
+    {{#  layui.each(d.stocks, function(index, item){ }}
+      {{#  if(item.goods_item_id > 0){ }}
+      <tr>
+        <td>{{ item.sku_code }}</td>
+        <td>{{ item.shop_quantity }}</td>
+        <td>{{ item.salable_qty }}</td>
+        <td>
+          <div class="p-0-5">
+            <input type="number" class="layui-input sale_quantity pre-select" min="0" max="{{ item.salable_qty }}" boy_quantity="{{ item.salable_qty }}" stock_id="{{ item.stock_id }}" goods_item_id="{{ item.goods_item_id }}" value="{{ item.pre_select_quantity }}" depot_id="{{ item.depot_id }}" 
+            {{#  if(item.salable_qty <= 0){ }}
+              disabled="true" placeholder="缺货"
+            {{# } }}
+            >
+          </div>
+        </td>
+      </tr>
+      {{#  } }}
+    {{#  }); }}
+    {{#  if(d.stocks.length === 0){ }}
+      无数据
+    {{#  } }} 
+      </tbody>
+    </table>
+  </div>
+
+</script>
+
+<!-- 图片模板 -->
+<script type="text/html" id="photoTpl">
+  <div>
+    <img src="{{ d.image }}">
+  </div>
+</script>
+
+
+<!-- <label class="layui-form-label">SKU</label>
+<div class="layui-input-inline">
+  <select id="sku-select" ></select>
+</div> -->
+
+<!-- 分类选择样式 -->
+<style type="text/css">
+.layui-form-pane .layui-form-label{width:150px;}
+.layui-form-pane .layui-input-block{margin-left:150px;}
+.selectTable{overflow:auto;}
+.selectTable table{margin:0;}
+.selectTable .layui-icon-close{position:absolute;top:7px;right:10px;border-radius:50%;border:1px solid #ddd;font-size:14px;width:20px;height:20px;display:block;text-align:center;line-height:20px;cursor:pointer;}
+</style>
+<hea:css src="/static/layui/module/formSelects/formSelects-v4.css" />
+
+<!-- 引入公共模块js -->
+<include file="depot@base/pre_select" />
+
+<!-- 引入查找条件操作的js -->
+<include file="depot@base/collapse_ctrl" />
+
+<script>
+
+// 是否退货
+var isReturn = getUrlParam('is_return');
+
+console.info(isReturn);
+
+//注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+var element = layui.element;
+
+//Demo
+// 预选标签
+var preSelectTagLayer;
+
+var form = layui.form;
+
+//监听提交
+form.on('submit(formDemo)', function(data){
+  // layer.msg(JSON.stringify(data.field));
+  // 重新初始化表格
+  initTable(data.field);
+  return false;
+});
+
+// 渲染表单
+form.render();
+
+
+// 配置分类选择
+layui.config({
+    base: '/static/layui/module/formSelects/'
+}).extend({
+    formSelects: 'formSelects-v4'
+});
+
+layui.use(['form', 'formSelects'], function () {
+  // 获取分类数据
+  request.get('/goods/category/getCateAll?showType=tree', function(res){
+    console.info(res);
+    // 分类数据设置
+    layui.formSelects.data('categorys', 'local', {
+        arr:res.data,
+        tree: {
+          //在点击节点的时候, 如果没有子级数据, 会触发此事件
+          nextClick: function(id, item, callback){
+              //需要在callback中给定一个数组结构, 用来展示子级数据
+          },
+        }
+    });
+  });
+
+  // 商品品牌
+  request.setHost(SHOP_DATA).get('/goods/goods_brands/all', function(res) {
+
+
+    for (let i in res.data) {
+      res.data[i]['value'] = res.data[i]['id'];
+      res.data[i]['name'] = res.data[i]['brand_name'];
+    }
+
+    // 分类数据设置
+    layui.formSelects.data('brands', 'local', {
+        arr:res.data,
+        tree: {
+          //在点击节点的时候, 如果没有子级数据, 会触发此事件
+          nextClick: function(id, item, callback){
+              //需要在callback中给定一个数组结构, 用来展示子级数据
+          },
+        }
+    });
+
+    // console.info(res);
+    // for (let i in res.data) {
+    //   let item = res.data[i];
+    //   $('#brand_id').append('<option value="'+item.id+'">'+item.brand_name+'</option>');
+    // }; 
+    // form.render();
+  })
+
+});
+
+
+// 初始化表格
+initTable();
+
+// 初始化表格
+function initTable(params){
+
+  var table = layui.table;
+
+  // 链接url，type固定值为1
+  let url = '/depot/shop_depot/index?type=1';
+
+  // 如果有选中的标记
+  if (preSelectTag) {
+    url += 'shop_depot_pre_select_id='+preSelectTag.id;
+  }
+
+  // 拼接参数
+  if (params) {
+    for (let i in params) {
+      if (params[i]) {
+        url += '&' + i + '=' + params[i];
+      }      
+    }
+  }
+
+  //第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: tableNormalHeight + 'px'
+    ,url: url //数据接口
+    // ,toolbar: true
+    // ,defaultToolbar: ['filter', 'print', 'exports']
+    ,page: true //开启分页
+    ,headers: {
+      ctrl: SHOP_DATA
+    }
+    ,done: function (res, curr, count) {
+      $('.layui-table-cell').css('height', 'auto');
+      $('.embed-table .layui-input').height('25px');
+      $('th').css('text-align', 'center');
+
+      // 查看选择商品
+      $('#see-select').on('click', function(){
+        
+        // 跳转页面
+        location.href = '/depot/depot_pre_select_item/list.html?shop_depot_pre_select_id='+preSelectTag.id;
+
+      })
+
+      // 颜色
+      let colors = ['', 'layui-btn-primary', 'layui-btn-normal', 'layui-btn-warm', 'layui-btn-danger', 'layui-btn-disabled'];
+
+      // 
+      for (let i = 0; i < res.data.length; i++) {
+        let skuSn = res.data[i].sku_sn;
+        let btn = "<a href='#"+skuSn+"' class='layui-btn layui-btn-sm layui-btn-radius "+colors[random(0, colors.length - 1)]+"'>"+skuSn+'-'+res.data[i].color+"</a>";
+        let option = "<option>"+btn+"</option>";
+        $('#sku-select').append(option);
+      }
+
+      form.render();
+
+      // 选择进货数量
+      selectPurchaseQuantity();
+    }
+    ,cols: [[ //表头
+      {field: 'goods_name', title: '商品', width:180, sort: true}
+      ,{field: 'sell_price', title: '单价', width:100}
+      ,{field: 'color', title: '颜色', width:80}
+      ,{field: 'erp_code', title: 'SKU', width:120, templet: function(row){
+        return '<span id="'+row.sku_sn+'">'+row.sku_sn+'</span>';
+        // return row.sku_sn;
+      }}
+      ,{field: 'image', title: '图片', width:120, templet: '#photoTpl'} 
+      ,{field: 'stocks', title: '库存', width: 385, templet: '#stockTpl', style: 'height:100px'}
+    ]]
+  });
+}
+
+
+/**
+ * [setPreSelect 设置预选标签]
+ */
+function setPreSelect(data){
+  // 保存数据
+  preSelectTag = data;
+
+  // 设置保存标记名称
+  $('#pre_select_tag').html('云端标记：' + preSelectTag.tag);
+
+  // 关闭弹窗
+  layer.close(preSelectTagLayer);
+
+  // 重新初始化工作
+  initTable();
+}
+
+
+/**
+ * [selectPurchaseQuantity 选择进货数量]
+ * @return {[type]} [description]
+ */
+function selectPurchaseQuantity(){
+  $('.sale_quantity').bind('input propertychange', function()
+  {
+
+    let $input = $(this);
+
+    // 判断是否达到最大值
+    let max = $input.attr('max') ? $input.attr('max') : 0;
+    // 限制最大值
+    if ( parseInt($input.val()) > max) {
+      $input.val(max);
+    }
+
+    let data = {};
+
+    // 组合保存数据
+    data['num'] = $input.val();
+    data['stock_id'] = $input.attr('stock_id');
+    data['goods_item_id'] = $input.attr('goods_item_id');
+
+    // 添加
+    parent.addCart(data);
+  })
+}
+
+
+</script>

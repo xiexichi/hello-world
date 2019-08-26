@@ -1,0 +1,62 @@
+<?php
+
+/**
+ *  商品标签
+ */
+
+namespace app\goods\validate;
+
+class GoodsTag extends Base
+{
+
+    public function getTagAll($data){
+        $rule = [
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getGoodsTagSingle 获取单个标签信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getTagInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function addBefore($data){
+        $rule = [
+            'tag_name' => 'require',
+            'sort' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function editBefore($data){
+        $rule = [
+            'id' => 'require|integer',
+            'tag_name' => 'require',
+            'sort' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function deleted($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+
+}

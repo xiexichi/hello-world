@@ -1,0 +1,54 @@
+<style>
+    .layui-table-body .layui-table-cell{
+        height:105px;
+        line-height: 105px;
+    }
+    .layui-form-select dl { max-height:250px; }
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form" action="" id="form" style="margin:10px">
+                <div class="layui-form-item">
+                    
+                    <label class="layui-form-label">会员</label>
+                    <div class="layui-input-inline">
+                        <select name="seller_id" id="seller_box" lay-search >
+                        </select>
+                    </div>
+
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formList">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="seller" lay-filter="seller"></table>
+        </div>
+    </div>
+</div>
+
+
+<!-- 操作模板 -->
+<script type="text/html" id="toolbar">
+    <div>
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加合同</button>
+    </div>
+</script>
+
+<script type="text/html" id="ctrlTpl" >
+    <button class="layui-btn layui-btn-xs" style="margin:0;" lay-event="edit" >编辑</button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" style="margin:0;"  lay-event="del">删除</button>
+</script>
+
+<script src="/static/js/document/seller/doc_list.js"></script>
+
+

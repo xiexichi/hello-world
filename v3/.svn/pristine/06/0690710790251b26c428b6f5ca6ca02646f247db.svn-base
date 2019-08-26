@@ -1,0 +1,58 @@
+<?php
+
+namespace app\article\validate;
+
+class Article extends Base
+{
+    public function getArticleAll($data){
+        $rule = [
+            // 'title' => 'chsDash',
+            // 'categorys_id' => 'integer',
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        $message = [
+            'page' => '参数错误',
+            'limit' => '参数错误',
+            // 'title' => '参数错误',
+            // 'categorys_id' => '参数错误',
+
+        ];
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function checkArticleId($ids){
+    	$rule = [ 'ids' => 'require|integer|>:0'];
+        $message = ['ids' => '参数错误'];
+        return $this->validate($rule,$ids,$message);
+    }
+
+
+    // 添加编辑文章
+    public function checkArticleData($data){
+        $rule = [
+            'title' => 'require|chsDash',
+            'categorys_id' => 'require|integer',
+        ];
+
+        $message = [
+            'title.chsDash' => '文章名只允许汉字、字母、数字和“_”及“-”',
+            'title.require' => '文章名不能为空',
+            'categorys_id' => '参数错误',
+        ];
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function getArticleInfo($data){
+        $rule = [
+            'id' => 'require|integer|>:0'
+        ];
+        // 错误提示信息
+        $message = [
+            'id' => '参数错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+}

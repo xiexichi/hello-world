@@ -1,0 +1,39 @@
+<?php
+namespace app\power\model;
+
+class Admin extends Base
+{
+	// 自动时间
+	protected $autoWriteTimestamp = 'datetime';
+
+	protected $table = 'admin';
+	protected $createTime = 'create_time';
+	protected $updateTime = 'update_time';
+	
+	public function addAfter(){
+	    $adminID = $this->data['id'];
+	    if(empty($this->data['role_id'])){
+	        return true;
+	    }
+	    
+	    //设置管理员的角色
+	    $modelPowerRoleAdmin = new PowerRoleAdmin();
+	    $modelPowerRoleAdmin->data(['role_id'=>$this->data['role_id'],'admin_id'=>$adminID]);
+
+	    if(!$modelPowerRoleAdmin->add()){
+	        $this->setErrorAndCodeExit('更新角色组-管理员失败');
+	    }
+	}
+	
+	public static function makePassword($pwd,$salt = null){
+	    $salt = $salt ?: random_int(1000,9999);
+	    $pwd = 'hea'.$pwd.$salt;
+	    return ['pwd'=>md5($pwd),'salt'=>$salt];
+	}
+	
+	public function indexBefore(){
+	    //不显示超级管理员
+	    $this->setWhere('id','<>',1);
+	}
+
+}

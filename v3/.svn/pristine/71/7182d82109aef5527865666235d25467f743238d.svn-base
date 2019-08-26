@@ -1,0 +1,396 @@
+<style>
+    .layui-table-body .layui-table-cell{
+        height:auto;
+        overflow:hidden;
+        border:1px solid #ccc;
+        padding:0;
+    }
+    .layui-btn{min-width:80px;}
+    .order-info{height:auto; line-height:35px; overflow:hidden;}
+    .order-info div{ padding:0 0 0 20px; border-bottom:1px solid #ccc;}
+    .order-info span{margin-right:10px;}
+    .goods-list{float:left;padding:15px 0 15px 20px; height:190px; line-height:150px;}
+    .goods-list .goods{float:left; height:140px; width:100px; line-height:140px; text-align:center; margin-right:10px;}
+    .goods-list img{height:100px; width:100px;}
+    .goods-list p{height:20px; width:100px; line-height:20px; font-size:12px;}
+    .order-status-box,.order-content{float:right;padding:45px 0 15px 0; height:190px;}
+    .order-status-box{width:200px; text-align:center; border-left:1px solid #ccc; border-right:1px solid #ccc;}
+    .order-content{width:200px; text-align:center;}
+</style>
+<!--导航-->
+<ul class="layui-nav" lay-filter="nav">
+    <li class="layui-nav-item layui-this"><a href="/order/order/list.html">全部</a></li>
+    <li class="layui-nav-item"><a href="/order/order/list.html?verify=0">未审核</a></li>
+    <li class="layui-nav-item"><a href="/order/order/list.html?verify=1">已审核</a></li>
+    <li class="layui-nav-item"><a href="/order/order/list.html?verify=2">不通过</a></li>
+</ul>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form" action="" id="form" >
+                <input type="hidden" name="state" value="<?=isset($_GET['state']) ? $_GET['state'] : '';?>">
+                <input type="hidden" name="delete" value="<?=isset($_GET['delete']) ? $_GET['delete'] : '';?>">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">店铺</label>
+                    <div class="layui-input-inline">
+                        <select name="shop_id" id="shop_box"></select>
+                    </div>
+                    <label class="layui-form-label">下单会员id</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="user_id" value="" placeholder="会员id" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">下单渠道</label>
+                    <div class="layui-input-inline">
+                        <select name="channel_id" id="order_channel_box"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="order_sn" value="" placeholder="商家订单号" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">订单类型</label>
+                    <div class="layui-input-inline">
+                        <select name="order_type" id="order_type_box"></select>
+                    </div>
+                    <label class="layui-form-label">支付状态</label>
+                    <div class="layui-input-inline">
+                        <select name="pay_status" >
+                            <option value="" >请选择</option>
+                            <option value="0" >未支付</option>
+                            <option value="1" >已支付</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">下单时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="start_time" id="start_time" value="" placeholder="开始时间" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid">至</div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="end_time" id="end_time" value="" autocomplete="off" class="layui-input" placeholder="结束时间" >
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--数据列表-->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="order" lay-filter="test"></table>
+        </div>
+    </div>
+</div>
+<script>
+    var verify_param = '';
+    var verify_id = getUrlParam('verify');
+    if( verify_id != null ){
+        $('.layui-nav-item').removeClass('layui-this');
+        verify_param += '&verify='+verify_id;
+        $('.layui-nav-item').eq(eval(verify_id+'+1')).addClass('layui-this');
+    }
+
+    var table = layui.table;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    layui.use('form', function(){
+        request.setHost(CENTER_DATA).get('/merchant/shop/all', function(res){
+            if( res.code == 0 ){
+                var shop = res.data;
+                var shop_box_html = '<option value="" >请选择商家</option>';
+                for( var shopKey in shop ){
+                    shop_box_html += '<option value="'+shop[shopKey].id+'" >'+shop[shopKey].name+'</option>';
+                }
+                $('#shop_box').html(shop_box_html);
+                form.render();
+            }
+        });
+        request.setHost(SHOP_DATA).get('/order/order/getOrderType', function(res){
+            if( res.code == 0 ){
+                var type = res.data;
+                var order_type_html = '<option value="" >全部</option>';
+                for( var type_id in type ){
+                    order_type_html += '<option value="'+type_id+'" >'+type[type_id].desc+'</option>';
+                }
+                $('#order_type_box').html(order_type_html);
+                form.render();
+            }
+        });
+        request.setHost(SHOP_DATA).get('/order/order/getOrderChannel', function(res){
+            if( res.code == 0 ){
+                var channel = res.data;
+                var order_channel_html = '<option value="" >全部</option>';
+                for( var channel_id in channel ){
+                    order_channel_html += '<option value="'+channel_id+'" >'+channel[channel_id].desc+'</option>';
+                }
+                $('#order_channel_box').html(order_channel_html);
+                form.render();
+            }
+        });
+        request.setHost(SHOP_DATA).get('/goods/goods_brands/getBrandsAll/',{'limit':'0'}, function(res){
+            if( res.code == 0 ){
+                var brand_list = res.data;
+                var brand_html = '<option value="" >选择品牌</option>';
+                for( var b = 0; b < brand_list.length; b++ ){
+                    brand_html += '<option value="'+brand_list[b].id+'" >'+brand_list[b].brand_name+'</option>';
+                }
+                $('#brand_box').html(brand_html);
+                form.render();
+            }
+        });
+        form.on('submit', function(data){
+            searchData = data.field;
+            //上述方法等价于
+            table.reload('order', {
+                where: searchData,
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+        form.render();
+    });
+
+    laydate.render({
+        elem: '#start_time', //指定元素
+        type: 'datetime'
+    });
+    laydate.render({
+        elem: '#end_time', //指定元素
+        type: 'datetime'
+    });
+    //执行渲染
+    table.render({
+        id:'order',
+        elem: '#order' //
+        ,height: 'auto' //容器高度
+        ,url: '/order/order/index?'+verify_param
+        ,page: true
+        ,headers: {
+            ctrl: SHOP_DATA
+        }
+        ,cols: [[
+            {title: '订单列表',templet: '#orderTpl'}
+        ]]
+    });
+
+    table.on('tool(test)', function(obj){
+        var data = obj.data;
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+        switch(layEvent){
+            case 'detail' ://查看订单详情
+                var toUrl = "/order/order/detail.html?id="+data.order_id;
+                layer.open({
+                    title:'订单详情',
+                    type:2,
+                    shadeClose: true,
+                    closeBtn:1,
+                    area:['90%','90%'],
+                    content:toUrl
+                });
+                break;
+            case 'cancel_order' : //取消订单
+                layer.confirm("是否确认取消订单！取消后不可恢复", {
+                    btn: ["确定","取消"] //按钮
+                }, function(){
+                    var param = {};
+                    param.order_id = data.order_id;
+                    request.setHost(SHOP_DATA).post('/order/order/adminCancelOrder',param, function(res){
+                        if (res.code == 0) {
+                            layer.msg(res.msg);
+                            setTimeout(function(){
+                                table.reload('order');
+                            },1500);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                    return false;
+                });
+                break;
+            case 'set_pay' : //设为已支付
+                layer.confirm("是否确认设为已支付！", {
+                    btn: ["确定","取消"] //按钮
+                }, function(){
+                    var param = {};
+                    param.order_id = data.order_id;
+                    param.pay_status = 1;
+                    request.setHost(SHOP_DATA).post('/order/order/setOrderPay',param, function(res){
+                        if (res.code == 0) {
+                            layer.msg(res.msg);
+                            setTimeout(function(){
+                                table.reload('order');
+                            },1500);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                    return false;
+                });
+                break;
+            case 'set_verify' ://审核订单
+                layer.confirm("审核订单", {
+                    btn: ["通过","不通过"] //按钮
+                }, function(){
+                    var param = {};
+                    param.order_id = data.order_id;
+                    param.verify = 1;
+                    request.setHost(SHOP_DATA).post('/order/order/orderVerify',param, function(res){
+                        if (res.code == 0) {
+                            layer.msg(res.msg);
+                            setTimeout(function(){
+                                table.reload('order');
+                            },1500);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                    return false;
+                },function(){
+                    var param = {};
+                    param.order_id = data.order_id;
+                    param.verify = 2;
+                    request.setHost(SHOP_DATA).post('/order/order/orderVerify',param, function(res){
+                        if (res.code == 0) {
+                            layer.msg(res.msg);
+                            setTimeout(function(){
+                                table.reload('order');
+                            },1500);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                    return false;
+                });
+                break;
+            case 'set_ship' ://发货
+                var toUrl = "/order/order/ship_set.html?id="+data.order_id+'&type='+data.order_type;
+                layer.open({
+                    title:'设置发货信息',
+                    type:2,
+                    shadeClose: true,
+                    closeBtn:1,
+                    area:['60%','60%'],
+                    content:toUrl
+                });
+                break;
+            case 'set_finished' ://设为已收货（完成订单）
+                layer.confirm("是否确认设为已完成（即为已收货）！", {
+                    btn: ["确定","取消"] //按钮
+                }, function(){
+                    var param = {};
+                    param.order_id = data.order_id;
+                    request.setHost(SHOP_DATA).post('/order/order/setOrderFinished',param, function(res){
+                        if (res.code == 0) {
+                            layer.msg(res.msg);
+                            setTimeout(function(){
+                                table.reload('order');
+                            },1500);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                    return false;
+                });
+                break;
+            case 'evalition_detail' : //查看订单评价
+                var toUrl = "/order/order/detail.html?id="+data.order_id;
+                layer.open({
+                    title:'用户订单评价',
+                    type:2,
+                    shadeClose: true,
+                    closeBtn:1,
+                    area:['90%','90%'],
+                    content:toUrl
+                });
+                break;
+            default :
+                return false;
+                break;
+        }
+        return false;
+    });
+
+    function callback(){
+        table.reload('order');
+        layer.closeAll();
+    }
+</script>
+
+<!-- 操作模板 -->
+<script type="text/html" id="orderTpl">
+    <div class="order-info">
+        <div>
+            <span>店铺：{{d.shop_info.name}}</span>
+            <span style="color:#FB5A5C;"><span style="color:#009688;">( {{ d.add_channel }}）</span>订单号：<i>{{d.order_sn}}</i> <span style="color:#009688;">( {{d.order_type_desc}} )</span></span>
+            <span style="color:#01AAED;">会员：{{d.user_info.user_name}}</span>
+            <span>下单时间：{{d.create_time}}</span>
+        </div>
+        {{# if( d.remark != ''){ }}
+        <div>
+            <span style="color:#009688;">下单备注：{{ d.remark }}</span>
+        </div>
+        {{# } }}
+    </div>
+    <div class="goods-list">
+        {{# layui.each(d.goods_list,function(index,goods){ if( index < 5 ){ }}
+            <div class="goods" >
+                <img src="{{goods.item_info.item_img}}" >
+                <p style="text-align:center;" title="{{goods.erp_code}}">{{goods.erp_code}}</p>
+                <p style="text-align:center;">{{goods.item_price}} × {{goods.num}}</p>
+                {{# if(goods.status > 0 || goods.ship_status == 1){ }}
+                <p style="text-align:center; color:#FB5A5C;">{{goods.goods_status_desc}}</p>
+                {{# } }}
+            </div>
+        {{# } }) }}
+        <div>
+            {{ d.goods_list.length > 5 ? '......' : ''}}
+        </div>
+    </div>
+    <div class="order-content">
+        总计：{{ d.order_price }}<br />
+        优惠：{{ eval(d.discount_price+'+'+d.coupon_price) }}<br />
+        运费：{{ d.ship_price }}<br />
+        <button class="layui-btn layui-btn-xs" style="margin:0;" lay-event="detail" >查看详情</button>
+    </div>
+    <div class="order-status-box">
+        <div style="color:#FB5A5C;">{{d.orderStatusDesc}}</div>
+        {{# if(d.order_status == 0) { }}
+            {{# if(d.pay_status == 0) { }}
+        <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="cancel_order" >取消订单</button>
+        <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="set_pay" >设为已支付</button>
+            {{# } }}
+            {{# if ( d.pay_status == 1 && d.verify == 0 ) { }}
+        <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="cancel_order" >取消订单</button>
+        <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="set_verify" >审核</button>
+            {{# } }}
+            {{# if ( d.verify == 1 && d.shipping_status == 0 ) { }}
+            <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="set_ship" >发货</button>
+            {{# } }}
+            {{# if ( d.shipping_status == 1 && d.finished_status == 0 && d.evaluation_status == 0 ) { }}
+            <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="set_finished" >设置为已完成</button>
+            {{# } }}
+            {{# if ( d.evaluation_status == 1 && d.finished_status == 1 ) { }}
+            <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="evalition_detail" >查看订单评价</button>
+            {{# } }}
+        {{# }else{ }}
+        <!--<button class="layui-btn layui-btn-sm layui-btn-warm" onclick="set(d.order_id)">设为正常</button>-->
+        {{# } }}
+    </div>
+</script>

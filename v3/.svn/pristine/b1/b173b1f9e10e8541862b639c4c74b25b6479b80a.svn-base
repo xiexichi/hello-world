@@ -1,0 +1,54 @@
+<style>
+    .table-box{margin-top:20px;}
+    .layui-form-label{width:100px;}
+    .star{color:#FB5A5C;}
+</style>
+<link rel="stylesheet" href="/static/jwt/style/cj.css" media="all">
+<script src="/static/ueditor/ueditor.config.js"></script>
+<script src="/static/ueditor/ueditor.all.js"></script>
+<script src="/static/ueditor/lang/zh-cn/zh-cn.js"></script>
+<form class="layui-form table-box" action="" id="form">
+    <div class="layui-card">
+        <div class="layui-card-body" id="upload_main" >
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基础信息</li>
+                    <li>销售信息</li>
+                    <li>sku管理</li>
+                    <li>详情内容</li>
+                    <li>运费信息</li>
+                </ul>
+                <div class="layui-tab-content" >
+                    <div class="layui-tab-item layui-show">
+                        <include file="../application/goods/view/goods/set_info.html" />
+                    </div>
+                    <div class="layui-tab-item">
+                        <include file="../application/goods/view/goods/set_sales.html" />
+                    </div>
+                    <div class="layui-tab-item">
+                        <include file="../application/goods/view/goods/set_sku.html" />
+                    </div>
+                    <div class="layui-tab-item">
+                        <include file="../application/goods/view/goods/set_content.html" />
+                    </div>
+                    <div class="layui-tab-item">
+                        <include file="../application/goods/view/goods/set_ship.html" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<hea:js src="/static/js/vue.js" />
+<hea:js src="/static/js/goods/goods_create.js" />
+<script>
+    const url = "<?php echo url('/handlePhoto.html','','',true);?>";
+    const token = "<?php echo session('photojwttoken');?>";
+    const photoSpaceUrl = 'http://photo.25boy.com/?token='+token+'&url='+url+'&showconfirm=1';
+</script>

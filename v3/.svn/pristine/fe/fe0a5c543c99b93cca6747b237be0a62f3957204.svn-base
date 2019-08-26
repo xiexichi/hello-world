@@ -1,0 +1,8 @@
+<?php
+
+namespace app\activity\model;
+
+class CouponGoods extends Base
+{
+    protected $name = 'coupon_goods';
+}

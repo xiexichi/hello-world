@@ -1,0 +1,45 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">商品名<span class="star">*</span></label>
+    <div class="layui-input-inline">
+        <input type="text" name="goods_name" required  lay-verify="required" placeholder="请输入标题" v-model="set_info.goods_name" autocomplete="off" class="layui-input" style="width:300px;" >
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">广告语</label>
+    <div class="layui-input-inline">
+        <textarea name="adv_desc" v-model="set_info.goods_desc" style="resize:none; width:300px;"  placeholder="请输入商品广告语" class="layui-textarea"></textarea>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">SEO关键词</label>
+    <div class="layui-input-inline">
+        <input type="text" name="seo_keyword" v-model="set_info.seo_keyword" placeholder="SEO关键词" autocomplete="off" class="layui-input" style="width:300px;" >
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">SEO描述</label>
+    <div class="layui-input-inline">
+        <textarea name="seo_desc" v-model="set_info.seo_desc" style="resize:none; width:300px;"  placeholder="请输入商品SEO描述" class="layui-textarea"></textarea>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">商品分类<span class="star">*</span></label>
+    <div class="layui-input-inline">
+        <select name="cate_id" lay-filter="cates" lay-verify="required" lay-search v-model="set_info.cate_id" >
+            <option value="" >请选择分类</option>
+            <option :value="cate.id" v-for="(cate,index) in show_list.cate_list">{{cate.cate_name}}</option>
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">商品条码号</label>
+    <div class="layui-input-inline">
+        <input type="text" name="goods_code" placeholder="输入条码号" v-model="set_info.goods_code" autocomplete="off" class="layui-input" style="width:300px;" >
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">erp货号<span class="star">*</span></label>
+    <div class="layui-input-inline">
+        <input type="text" name="erp_code" v-model="set_info.erp_code" required  lay-verify="required" placeholder="erp商品编码" autocomplete="off" class="layui-input" style="width:300px;" >
+    </div>
+</div>

@@ -1,0 +1,74 @@
+<?php
+
+namespace app\goods\model;
+
+class Goods extends Base
+{
+    protected $name = 'goods';
+
+    /**
+     * 获取所有商品
+     * 不要问我为什么放在model
+     * 保证所有部分获取商品列表内容的统一性
+     * @param $paramData
+     * @param bool $getCount
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getGoodsAll($paramData,$getCount=false){
+        $page = isset($paramData['page']) ? intval($paramData['page']) : 1;
+        $limit = $paramData['limit'] ? intval($paramData['limit']) : 10;
+        $pageSize = ( $page - 1 ) * $limit.','.$limit;
+        if($limit=0){
+            $pageSize = '';
+        }
+        $where['g.is_deleted'] = ['=',0];
+        //是否删除
+        if( isset($paramData['delete']) && $paramData['delete'] != ''  ){
+            $where['g.is_deleted'] = ['=',intval($paramData['delete'])];
+        }
+        //上下架
+        if( isset($paramData['status']) && $paramData['status'] != ''  ){
+            $where['g.sales_status'] = ['=',intval($paramData['status'])];
+        }
+        //分类筛选
+        if( isset($paramData['cate_id']) && $paramData['cate_id'] != ''  ){
+            $where['g.cate_id'] = ['=',intval($paramData['cate_id'])];
+        }
+        //品牌筛选
+        if( isset($paramData['brand_id']) && $paramData['brand_id'] != '' ){
+            $where['g.brand_id'] = ['=',intval($paramData['brand_id'])];
+        }
+        //关键词筛选
+        if( isset($paramData['keyword']) && !empty($paramData['keyword']) ){
+            $where['g.goods_name'] = ['like',trim($paramData['keyword'])];
+        }
+        //关键词筛选
+        if( isset($paramData['erp_code']) && !empty($paramData['erp_code']) ){
+            $where['g.erp_code'] = ['=',trim($paramData['erp_code'])];
+        }
+        $data['list'] = $this->alias('g')
+            ->field('g.*,img.image')
+            ->where($where)
+            ->join('goods_images img','img.goods_id = g.id')
+            ->order('sort','desc')
+            ->limit($pageSize)
+            ->select();
+        if($getCount){
+            $info = $this->alias('g')
+                ->field('count(*) as num')
+                ->where($where)
+                ->find();
+            $data['count'] = $info['num'];
+        }
+        return $data;
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        return true;
+    }
+
+}

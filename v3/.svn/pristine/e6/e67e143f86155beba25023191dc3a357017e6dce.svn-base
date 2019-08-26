@@ -1,0 +1,99 @@
+<?php
+
+namespace app\article\model;
+
+class Categorys extends Base
+{
+    protected $name = 'article_categorys';
+
+	public function getCateAll($data){
+
+        $where['is_deleted'] = 0;
+		$whereOr = [];
+		if(isset($data['pid'])){//获取某父级下的子级
+            $where['parent_id'] = $data['pid'];
+            $whereOr['id'] = $data['pid'];
+        }
+
+        $cateAll = $this->where($where)->whereOr($whereOr)
+        	->order('sort','desc')
+            ->select();
+ 
+        if( !empty($cateAll) ){
+            foreach( $cateAll as $k => $v ){
+                $v['value'] = $v['id'];
+                $cateAll[$k] = $v;
+            }
+        }
+        $geType = empty($data['showType']) ? 'list' : $data['showType'];
+        switch( $geType ){
+            case 'list' ://一维数组
+                $list = $cateAll;
+                break;
+            case 'tree' ://普通多维树状数组
+                $list = setTree($cateAll,0,['parent'=>'id','son'=>'parent_id']);
+                break;
+            default :
+                $list = $cateAll;
+                break;
+        }
+        return $list;
+	}
+
+    public function checkRepeatCateName($where=[]){
+
+        if( !empty($this->data['name']) ){//前置方法使用
+            $this->where('name',$this->data['name']);
+        }
+        if( !empty($where) ){
+            foreach( $where as $k => $v ) {
+                $this->where($k,$v[0],$v[1]);
+            }
+        }
+
+        $info = $this->find();
+        if($info){
+            $this->code = 200402;
+            $this->isExit = true;
+            $this->error = "分类名已存在！";
+            return false;
+        }
+        return true;
+    }
+
+
+    public function addBefore(){
+        $this->data['create_time'] = date('Y-m-d H:i:s');
+        $this->data['update_time'] = $this->data['create_time'];
+        return true;
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        return true;
+    }
+
+    public function delBefore(){
+
+        $where['is_deleted'] = 0;
+        $where['categorys_id'] = $this->data['ids'];
+        $ids = $this->data['ids'];
+
+        // 分类下是否有子分类
+        $isCate = $this->where('parent_id',$ids)->find();
+
+        //分类下是否有文章
+        $article = new \app\article\model\Article();
+        $isArticle = $article->where($where)->find();
+
+        if ($isArticle || $isCate) {
+            $this->isExit=true;
+            $this->code=200101;
+            $this->error="分类下有文章或子分类,不能删除";
+            return false;
+        }
+        $this->where('id','in', $ids);
+        return true;
+    }
+
+}

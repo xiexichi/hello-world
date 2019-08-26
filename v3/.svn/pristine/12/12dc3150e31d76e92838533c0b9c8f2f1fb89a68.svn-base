@@ -1,0 +1,114 @@
+<?php
+
+namespace app\activity\controller;
+
+use think\Exception;
+
+class Coupon extends Base
+{
+    public function indexBefore(){
+        $where = [];
+        $param = $this->validate->index(input());
+        if( $param === false ){
+            $this->isExit = true;
+            $this->code = 050101;
+            $this->error = $this->validate->getError();
+        }
+        if( isset($param['is_goods']) && $param['is_goods'] != '' ){
+            $where['is_goods'] = $param['is_goods'];
+        }
+        if( isset($param['status']) &&  $param['status'] != '' ){
+            $where['status'] = $param['status'];
+        }
+        if( isset($param['type']) && $param['type'] != '' ){
+            $where['type'] = $param['type'];
+        }
+        $this->model->where($where)->order(['status'=>'desc','create_time'=>'desc']);
+    }
+
+    public function createCoupon(){
+        $code = 050101;
+        if( !$param = $this->validate->detailCoupon(input('post.')) ){
+            return errorJson($code,$this->validate->getError());
+        }
+        //创建优惠券
+        $t = date('Y-m-d H:i:s');
+        $this->model->startTrans();
+        try{
+            //创建券主信息
+            $insertData = [];
+            $insertData['title'] = $param['title'];
+            $insertData['description'] = $param['description'];
+            $insertData['type'] = $param['type'];
+            $insertData['is_goods'] = $param['is_goods'];
+            $insertData['limit_price'] = $param['limit_price'];
+            $insertData['discount_value'] = $param['discount_value'];
+            $insertData['start_time'] = $param['start_time'];
+            $insertData['end_time'] = $param['end_time'];
+            $insertData['create_time'] = $t;
+            $insertData['update_time'] = $insertData['create_time'];
+            if( !$coupon_id = $this->model->insertGetId($insertData) ){
+                $code = 050110;
+                throw new Exception('优惠券创建失败');
+            }
+            //检查是否指定商品
+            if( $insertData['is_goods'] == 1 ){
+                $couponGoodsModel = new \app\activity\model\CouponGoods();
+                if( !$couponGoodsModel->setGoods($coupon_id,$param['goods_list']) ){
+                    throw new Exception('商品信息处理失败');
+                }
+            }
+            actionLogs('创建优惠券id:'.$coupon_id,$this->model);
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($code,$e->getMessage());
+        }
+        return successJson('success','创建成功');
+    }
+
+    public function saveCoupon(){
+        if( !$param = $this->validate->detailCoupon(input('post.')) ){
+            return errorJson(050101,$this->validate->getError());
+        }
+        $t = date('Y-m-d H:i:s');
+        $ids = $param['coupon_id'];
+        $this->model->startTrans();
+        try{
+            //获取优惠券信息
+            $where['id'] = $ids;
+            $couponInfo = $this->model->where($where)->find();
+            if( empty($couponInfo) ){
+                $code = 050110;
+                throw new Exception('优惠券信息获取失败');
+            }
+            $couponInfo = $couponInfo->toArray();
+            $updateData = [];
+            foreach( $couponInfo as $key => $val ){
+                if( isset($param[$key]) && $param[$key] != $val ){
+                    $updateData[$key] = $param[$key];
+                }
+            }
+            $updateData['update_time'] = $t;
+            //更新信息
+            if( !$this->model->where($where)->update($updateData) ){
+                $code = 050111;
+                throw new Exception('优惠券信息更新失败');
+            }
+            //检查是否指定商品
+            if( $param['is_goods'] == 1 ){
+                $couponGoodsModel = new \app\activity\model\CouponGoods();
+                if( !$couponGoodsModel->setGoods($ids,$param['goods_list']) ){
+                    throw new Exception('商品信息处理失败');
+                }
+            }
+            actionLogs('修改优惠券信息 券id:'.$ids,$this->model);
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($code,$e->getMessage());
+        }
+        return successJson('success','保存成功');
+    }
+
+}

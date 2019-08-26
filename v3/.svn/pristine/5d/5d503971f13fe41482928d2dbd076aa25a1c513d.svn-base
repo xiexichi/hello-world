@@ -1,0 +1,22 @@
+<?php
+namespace app\share\controller;
+
+class ShareActivity extends Base
+{
+	public function getIndex(){
+		$checkData = $this->validate->getIndex(input());
+		if (false === $checkData) {
+			return errorJson(123, $this->validate->getError());
+		}
+		
+		if(!empty($checkData['type'])){
+			$this->model->where('type',$checkData['type']);
+		}
+		if(!empty($checkData['status'])){
+			$this->model->where('status', $checkData['status']);
+		}
+
+		return $this->index();
+	}
+
+}

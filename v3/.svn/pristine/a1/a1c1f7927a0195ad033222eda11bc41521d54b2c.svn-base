@@ -1,0 +1,68 @@
+// layui
+layui.use(['table', 'form'], function (){
+  const table = layui.table
+  const form = layui.form
+
+  // 数据表格
+  table.render({
+    elem: '#appsDataTable',
+    height: 'auto',
+    toolbar: '#toolbar',
+    limit: 20,
+    defaultToolbar: false,
+    url: '/apps/app_third/index',
+    headers: {
+      ctrl: CENTER_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width: 60},
+      {field: 'name', title: '名称', width: 150},
+      {field: 'type', title: '类型', width: 100},
+      {field: 'appid', title: 'APPID'},
+      {field: 'mch_id', title: '商户ID'},
+      {field: 'desc', title: '备注'},
+      {field: 'id', title: '操作', align:'center', width: 130, toolbar: '#ctrlTpl'}
+    ]]
+  })
+
+  //监听工具栏事件
+  table.on('toolbar(appsDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    if (layEvent === 'add') {
+      layer.open({
+        title: '添加第三方应用',
+        type: 2,
+        area: ['600px', '780px'],
+        content: '/apps/app_third/detail'
+      })
+    }
+  })
+
+  //监听行工具事件
+  table.on('tool(appsDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    if (layEvent === 'edit') {
+      layer.open({
+        title: '编辑第三方应用信息',
+        type: 2,
+        area: ['600px', '780px'],
+        content: '/apps/app_third/detail?id='+data.id
+      })
+    } else if (layEvent == 'del') {
+      layer.confirm('删除后不能恢复', {icon: 3, title: '删除确认'}, function (index) {
+        request.setHost('center_data').post('/apps/app_third/delete', {ids: data.id}, function(json) {
+          layer.msg(json.msg, {
+            time: 1000
+          },function () {
+            location.reload()
+          })
+        })
+      })
+    }
+  })
+
+})

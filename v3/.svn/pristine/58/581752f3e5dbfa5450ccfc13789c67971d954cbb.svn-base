@@ -1,0 +1,74 @@
+// layui
+
+    var form = layui.form;
+    layui.use('form',function () {
+        const id = getUrlParam('id');
+        const form = layui.form;
+        // 店铺文件信息
+        request.setHost(CENTER_DATA).post('/document/shop_document/one/',{'id':id}, function(res) {
+            if( res.code == 0 ){
+                info = res.data;
+                // console.log(info);
+                form.val("edit", {
+                    "id":info.id,
+                    "shop_id": info.shop_id,
+                    "desc": info.desc,
+                    "document_path":info.document_path,
+                });
+                loadShop();
+                imgEdit(info.document_path)
+                form.render();
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+
+        form.render();
+        // 监听提交
+        form.on('submit(formEdit)', function(data){
+            request.setHost(CENTER_DATA).post('/document/shop_document/edit',data.field,function(res){
+            if (res.code == 0) {
+                    layer.msg(res.msg);
+                    setTimeout(function(){
+                        parent.location.reload();
+                    },1500);
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+
+            return false; 
+        });
+    
+	
+
+		function loadShop(){
+            // 店铺信息
+            request.setHost(CENTER_DATA).get('/merchant/shop/all/', function(res){
+                if( res.code == 0 ){
+                    var shop_list = res.data;
+                    var shop_html = '<option value="" >选择店铺</option>';
+                    for( var i = 0; i < shop_list.length; i++ ){
+                        selected = '';
+                        if( info.shop_id == res.data[i].id ){
+                            selected = 'selected';
+                        }
+                        shop_html += '<option value="'+shop_list[i].id+'" '+selected+' >'+shop_list[i].name+'</option>';
+                    }
+                    $('#shop_box').html(shop_html);
+                    form.render();
+                }
+            });
+        }
+
+    });
+
+    //待编辑的图片
+    function imgEdit(data){
+        $("#upload_img").attr('src', data);
+    }
+
+    
+
+
+    

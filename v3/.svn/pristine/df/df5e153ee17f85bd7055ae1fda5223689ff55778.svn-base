@@ -1,0 +1,95 @@
+<?php
+
+namespace app\activity\model;
+
+class Coupon extends Base
+{
+    protected $name = 'coupon';
+
+    const TYPE_MONEY = 0;//抵扣券 代金券
+    const TYPE_PERCEN = 1;//折扣券
+
+    public static $map_type = array(
+        self::TYPE_MONEY => array(
+            'desc' => '代金券',
+        ),
+        self::TYPE_PERCEN => array(
+            'desc' => '折扣券',
+        )
+    );
+
+    public function indexAfter(){
+        $t = time();
+        if( !empty($this->data) ){
+            foreach( $this->data as $k => $v ){
+                $v['type_desc'] = self::$map_type[$v['type']]['desc'];
+                $v['goods_area'] = $v['is_goods'] ? '部分商品' : '所有商品';
+                $v['status_desc'] = $v['status'] ? '发放中' : '不可发放';
+                if( $v['is_invalid'] == 1 ){
+                    $v['status_desc'] = '已失效';
+                }
+                if( $v['is_deleted'] == 1 ){
+                    $v['status_desc'] = '已删除';
+                }
+                $this->data[$k] = $v;
+            }
+        }
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        if (isset($this->data['qty'])) {
+            $coupon_info = $this->where('id', $this->data['id'])->find();
+            $coupon_info = $coupon_info->toArray();
+            if( empty($coupon_info) ){
+                $this->isExit = true;
+                $this->code = 040110;
+                $this->error = '优惠券信息获取失败';
+                return false;
+            }
+            if( $this->data['qty'] != $coupon_info['qty'] ){
+                //记录日志
+                $qtyLogModel = new \app\activity\model\CouponQtyLog();
+                if( !$qtyLogModel->markLog($this->data['qty'],$coupon_info) ){
+                    $this->isExit = true;
+                    $this->code = 040111;
+                    $this->error = '操作记录失败';
+                    return false;
+                }
+            }
+        }
+    }
+
+    public function goodsList(){
+        $goodsModel = new \app\goods\model\Goods();
+        $categoryModel = new \app\goods\model\Category();
+        $goodsBrandsModel = new \app\goods\model\GoodsBrands();
+        $where['g.is_deleted'] = ['=',0];
+        return $this->hasMany('CouponGoods','coupon_id','id')
+            ->alias('cg')
+            ->field('cg.coupon_id,g.*,c.cate_name,b.brand_name,img.image')
+            ->join($goodsModel->getTable().' g','g.id = cg.goods_id')
+            ->join($categoryModel->getTable().' c','c.id = g.cate_id')
+            ->join($goodsBrandsModel->getTable().' b','b.id = g.brand_id','LEFT')
+            ->join('goods_images img','img.goods_id = g.id')
+            ->where($where)
+            ->order(['g.sort'=>'desc','g.create_time'=>'desc']);
+
+    }
+
+    public function oneBefore(){
+        $this->with('goodsList');
+    }
+
+    public function oneAfter(){
+        $this->data = $this->data->toArray();
+        if( !empty($this->data['goods_list']) ){
+            $goodsModel = new \app\goods\model\Goods();
+            foreach( $this->data['goods_list'] as $k => $goods ){
+                $goods['status_desc'] = $goodsModel->goodsStatusDesc($goods);
+                $this->data['goods_list'][$k] = $goods;
+            }
+        }
+    }
+
+}

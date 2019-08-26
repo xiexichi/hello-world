@@ -1,0 +1,129 @@
+<style type="text/css">
+.layui-table-cell {
+    height: 50px;
+    line-height: 50px;
+}
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form searchForm">
+            <div class="layui-card-header" style="padding: 10px 20px">
+                <button class="layui-btn" lay-submit>搜索</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+            <div class="layui-card-body">
+                <div class="layui-form-item layui-inline">
+<!--                     <label class="layui-form-label" style="width:auto;">券名称</label>
+                    <div class="layui-input-inline" style="width: 120px;">
+                        <input class="layui-input" type="text" name="title" placeholder="" />
+                    </div> -->
+                    <label class="layui-form-label">券类型</label>
+                    <div class="layui-input-inline">
+                        <select name="type">
+                            <option value=""></option>
+                            <option value="0">抵扣券</option>
+                            <option value="1">折扣券</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">活动状态</label>
+                    <div class="layui-input-inline">
+                        <select name="status">
+                            <option value=""></option>
+                            <option value="0">不可发放</option>
+                            <option value="1">可发放</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="table" lay-filter="table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表内操作模板 -->
+<script type="text/html" id="ctrlbarTpl">
+    <button class="layui-btn layui-btn-xs" style="margin:0;" lay-event="select">选择</button>
+</script>
+<script type="text/javascript">
+var table = layui.table;
+var form = layui.form;
+var layer = layui.layer;
+
+$(document).ready(function() {
+    layui.use(['form', 'table', 'layer'], function() {
+        layer.load(2);
+        //执行渲染
+        table.render({
+            id: 'table',
+            elem: '#table',
+            height: 'auto', //容器高度
+            url: '/activity/coupon/index',
+            page: true,
+            headers: {
+                ctrl: SHOP_DATA
+            },
+            cols: [
+                [
+                    {field: 'id', title: 'ID', width:50},
+                    {field: 'title', title: '标题'},
+                    {field: 'qty', title: '可发量', width:80},
+                    {field: 'type_desc', title: '优惠类型', width:90},
+                    {field: 'status_desc', title: '发放状态', width:90},
+                    {field: 'goods_area', title: '使用范围', width:90},
+                    {field: 'start_time', title: '开始使用时间', width:170},
+                    {field: 'end_time', title: '结束使用时间', width:170},
+                    {field: 'id', title: '操作', templet: '#ctrlbarTpl',width:60}
+                ]
+            ],
+            done: function() {
+                layer.closeAll();
+            }
+        });
+
+        //监听行工具事件
+        table.on('tool(table)', function(obj) {
+            const data = obj.data
+            const layEvent = obj.event
+            const tr = obj.tr
+
+            switch (layEvent) {
+                case 'select':
+                    let iframs = parent.$("iframe");
+                    for (let i = 0; i < iframs.length; i++) {
+                        if (iframs[i].contentWindow.setCoupon) {
+                            iframs[i].contentWindow.setCoupon(data);
+                            break;
+                        }
+                    }
+                    closeMyself();
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            return false;
+        });
+
+        form.on('submit', function(data) {
+            table.reload('table', {
+                where: data.field,
+                page: {
+                    curr: 1, //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+    });
+    form.render();
+});
+
+function closeMyself(){
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.layer.close(index);
+}
+
+
+</script>

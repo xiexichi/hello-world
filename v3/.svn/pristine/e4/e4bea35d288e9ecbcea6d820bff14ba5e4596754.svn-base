@@ -1,0 +1,21 @@
+<div class="staff" id="app">
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<table id="myDataTable" lay-filter="myDataTable"></table>
+		</div>
+	</div>
+</div>
+
+<!-- 表格工具栏模板 -->
+<script id="toolbarTpl" type="text/html">
+	<div class="layui-btn-group">
+		<button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加</button>
+		<button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>修改</button>
+		<button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete"><i class="layui-icon layui-icon-radio"></i>启用</button>
+		<button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete"><i class="layui-icon layui-icon-circle"></i>禁用</button>
+		<button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete"><i class="layui-icon layui-icon-password"></i>重置密码</button>
+	</div>
+</script>
+
+<!-- checkout -->
+<hea:js src="" />

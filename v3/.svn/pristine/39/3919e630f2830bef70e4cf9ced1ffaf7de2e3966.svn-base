@@ -1,0 +1,35 @@
+
+<script src="/static/layui/layui.all.js"></script>
+<script type="text/javascript">
+	//注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+	var element = layui.element;
+		
+	// 获取页面的高度
+	var wh = $(window).height();
+
+	// 筛选条件容器高度
+	var searchHeight = $('.layui-collapse').height();
+	// 筛选条件标题的高度
+	var titleHeight = $('.layui-colla-title').height();
+
+	// 表格正常高度
+	var tableNormalHeight = wh - searchHeight - 30;
+
+	// 面板折叠操作
+	element.on('collapse(search-filter)', function(data){
+	  console.log(data.show); //得到当前面板的展开状态，true或者false
+
+	  if (!data.show) {
+	    let tableViewHeight = wh - titleHeight - 30;
+	    $('.layui-table-view').height(tableViewHeight);
+	    $('.layui-table-box').height(tableViewHeight - 120);
+	    $('.layui-table-main').height(tableViewHeight - 120);
+
+	  } else {
+	    let tableViewHeight = wh - searchHeight - 30;
+	    $('.layui-table-view').height(tableViewHeight);
+	    $('.layui-table-box').height(tableViewHeight - 120);
+	    $('.layui-table-main').height(tableViewHeight - 120);
+	  }
+	});
+</script>

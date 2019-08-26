@@ -1,0 +1,252 @@
+/**
+ * 公共js
+ */
+
+//获取url中的参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return unescape(r[2]); return null; //返回参数值
+}
+
+/**
+ * [getLastDay 获取月份最]
+ * @param  {[type]} year  [description]
+ * @param  {[type]} month [description]
+ * @return {[type]}       [description]
+ */
+function getLastDay(year,month)
+{   
+	var new_year = year;  //取当前的年份   
+	var new_month = month++;//取下一个月的第一天，方便计算（最后一天不固定）   
+	if(month>12)      //如果当前大于12月，则年份转到下一年   
+	{   
+	new_month -=12;    //月份减   
+	new_year++;      //年份增   
+	}   
+	var new_date = new Date(new_year,new_month,1);        //取当年当月中的第一天   
+	return (new Date(new_date.getTime()-1000*60*60*24)).getDate();//获取当月最后一天日期   
+}
+
+
+/**
+ * [getToday 获取今天日期]
+ * @return {[type]} [description]
+ */
+function getToday() {
+	var date = new Date();
+    var seperator1 = "-";
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = year + seperator1 + month + seperator1 + strDate;
+    return currentdate;
+}
+
+/**
+ * [getDayFormat 获取日期格式化]
+ * @return {[type]} [description]
+ */
+function getDayFormat(timestamp){
+	var date = new Date(timestamp);
+    var seperator1 = "-";
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = year + seperator1 + month + seperator1 + strDate;
+    return currentdate;
+}
+
+/**
+ * [calcDate 计算日期]
+ * @param  {[type]} date [日期基数]
+ * @param  {[type]} num  [相加天数]
+ * @return {[type]}      [description]
+ */
+function calcDate(date, num){
+	var d = new Date(date);
+
+	// 谨记，js的时间戳单位是毫秒
+	var timestamp = d.getTime() + (num * 86400000);
+
+	return getDayFormat(timestamp);
+}
+
+/**
+ * [getWeekFirstAndLast 获取日期所属周的第一天和最后一天日期]
+ * @param  {[type]} date [description]
+ * @return {[type]}      [description]
+ */
+function getWeekFirstAndLast(date){
+	if (date) {
+		var now = new Date(date); 
+	} else {
+		var now = new Date(); 
+	}
+
+	var nowTime = now.getTime() ; 
+	var day = now.getDay();
+	var oneDayTime = 24*60*60*1000 ; 
+	//显示周一
+	var MondayTime = nowTime - (day-1)*oneDayTime ; 
+	//显示周日
+	var SundayTime =  nowTime + (7-day)*oneDayTime ;
+
+	return {
+		monday: getDayFormat(MondayTime),
+		sunday: getDayFormat(SundayTime)
+	};
+}
+
+/**
+ * [getMonthFirstAndLast 获取一个月的第一天和最后一天]
+ * @param  {[type]} date [日期]
+ * @param  {[type]} num  [相加的月份]
+ * @return {[type]}      [description]
+ */
+function getMonthFirstAndLast(date, num){
+	if (date) {
+		var now = new Date(date); 
+	} else {
+		var now = new Date(); 
+	}
+
+	var seperator1 = "-";
+
+	// 年
+	var year = now.getFullYear();
+
+	// 如果同时有日期和相加的月份数量
+	if (date && num) {
+		// 月
+		var month = now.getMonth() + 1 + num;	
+	} else {
+		// 月
+		var month = now.getMonth() + 1;		
+	}
+
+	// 第一日
+	var firstDay = year + seperator1 + month + seperator1 + '1';
+
+	// 最后一日
+	var lastDay = calcDate((year + seperator1 + (month + 1) + seperator1 + '1'), -1);
+
+	return {
+		firstDay: firstDay,
+		lastDay: lastDay
+	};
+}
+
+
+/**
+ * [getDateForType 获取指定类型日期]
+ * @param  {[type]} type [description]
+ * @return {[type]}      [description]
+ */
+function getDatesForType(type) {
+	console.info(type)
+
+	// 今天
+	var today = getToday()
+
+	var dates = {}
+
+	// 当前日
+	var now = new Date();
+
+	switch (type) {
+		case 'today':
+			// 今天
+			dates['startDate'] = today;
+			dates['endDate'] = today;
+			break;
+		case 'yesterday':
+			// 昨天
+			dates['startDate'] = calcDate(today, -1);
+			dates['endDate'] = calcDate(today, -1);
+			break;
+		case 'this-week':
+			var thisWeek = getWeekFirstAndLast();
+			// 本周
+			dates['startDate'] = thisWeek['monday'];
+			dates['endDate'] = thisWeek['sunday'];
+			break;
+		case 'last-week':
+			var thisWeek = getWeekFirstAndLast(calcDate(today, -7));
+			// 本周
+			dates['startDate'] = thisWeek['monday'];
+			dates['endDate'] = thisWeek['sunday'];
+			break;
+		case 'this-month':
+			var thisMonth = getMonthFirstAndLast();
+			// 本月
+			dates['startDate'] = thisMonth['firstDay'];
+			dates['endDate'] = thisMonth['lastDay'];
+			break;
+		case 'last-month':
+			var lastMonth = getMonthFirstAndLast(today, -1);
+			// 上月
+			dates['startDate'] = lastMonth['firstDay'];
+			dates['endDate'] = lastMonth['lastDay'];
+			break;	
+	}
+
+	return dates;
+}
+
+/**
+ * 判断数据是否为空
+ * 注意: 0=='', 0是空的
+ */
+function empty(data = undefined) {
+	if (data == undefined || data == '') {
+		return true
+	}
+
+	// 判断空数组
+	var gettype = Object.prototype.toString
+	var dataType = gettype.call(data)
+
+	if (dataType == '[object Array]' && data.length <= 0) {
+		return true
+	}	
+
+	return false
+}
+
+function c(data = '', string = '') {
+	console.log(string, data)
+}
+
+/**
+ * 以千分位显示数字
+ */
+function thousands(num) {
+    var str = String(num)
+    var arr = str.split(".")
+    var integer = arr[0] ? arr[0] : '',
+        decimals = arr[1] ? arr[1] : '',
+        result = '';
+    while (integer.length > 3) {
+        result = ',' + integer.slice(-3) + result
+        integer = integer.slice(0, integer.length - 3)
+    }
+    if (integer) { 
+        result = integer + result
+        if (decimals)
+            result += '.' + decimals
+    }
+    return result
+}

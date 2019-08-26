@@ -1,0 +1,15 @@
+<?php
+
+namespace app\activity\model;
+
+class CouponUser extends Base
+{
+    protected $name = 'coupon_user';
+
+    public function getUserList($user_id,$id_array=[]){
+        if( empty($user_id) ){
+            return [];
+        }
+
+    }
+}

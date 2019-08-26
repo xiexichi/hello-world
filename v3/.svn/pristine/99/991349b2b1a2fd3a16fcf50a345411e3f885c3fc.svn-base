@@ -1,0 +1,96 @@
+// layui
+layui.config({
+    base: '/static/layui/module/'
+    }).extend({
+        treetable: 'treetable-lay/treetable'
+    }).use(['layer', 'table', 'treetable'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var layer = layui.layer;
+        var treetable = layui.treetable;
+        // 渲染表格
+            treetable.render({
+                treeColIndex: 1,
+                treeSpid: 0,
+                treeParentKey: 'id',
+                treeChildKey: 'parent_id',
+                elem: '#cateTable',
+                urlType: 'get',
+                url: '/article/categorys/getCateAll/?showType=list',
+                urlHeaders: {
+                    ctrl: CENTER_DATA
+                },
+                toolbar: '#toolbar',
+                cols: [[
+                    {field: 'id', title: 'id', width:80,align:'center'},
+                    {field: 'name', title: '分类名'},
+                    {field: 'sort', title: '排序', width:150,align:'center'},
+                    {field: 'id', title: '操作', width:200, templet: '#ctrlTpl',align:'center'}
+                ]],
+                done: function () {
+                    layer.closeAll('loading');
+                }
+            });
+
+
+        //监听工具栏事件
+        table.on('toolbar(cateTable)', function (obj) {
+            const data = obj.data
+            const layEvent = obj.event
+            if (layEvent === 'add') {
+              layer.open({
+                title: '添加分类',
+                type: 2,
+                shadeClose :true,
+                area: ['480px', '450px'],
+                content: '/article/categorys/create'
+              })
+            }else if(layEvent === 'btn-expand'){
+                treetable.expandAll('#cateTable');
+            }else if(layEvent === 'btn-fold'){
+                treetable.foldAll('#cateTable');
+            }
+        })
+
+ 
+        //监听行工具事件
+        table.on('tool(cateTable)', function (obj) {
+            const data = obj.data
+            const layEvent = obj.event
+            const tr = obj.tr
+            if (layEvent === 'edit') {
+                layer.open({
+                    title: '编辑分类',
+                    type: 2,
+                    // area: ['50%', '60%'],
+                    area: ['480px','450px'],
+                    shadeClose :true,
+                    content: '/article/categorys/cate_edit?id='+data.id
+                })
+            }
+            else if (layEvent == 'del') {
+                // console.log(123);
+                layer.confirm("是否确认删除！删除后无法恢复！ ", {btn: ["确定","取消"] },
+                 function(){
+                    request.setHost(CENTER_DATA).get('/article/categorys/delete',{ids: data.id}, function(res){
+                        if (res.code == 0) {
+                            // 成功提示
+                            layer.msg('删除成功');
+                            setTimeout(function(){
+                                // $('#btn-refresh').click();
+                                location.reload();
+                            },1000);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                });
+                return false;
+            }
+        })
+});
+
+
+
+

@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="./style/cj.css" media="all">
+<div id="upload_main" >
+    <div class="upload_box" style="width:360px; height:250px;">
+        <input type="hidden" id="images" v-model="images" class="hid-val-box" readonly />
+        <div class="upload-title">商品列表图片</div>
+        <div class="upload-tips"><span>宽</span> <span>*</span><span>高</span></div>
+        <div class="upload-view" id="images_img" style="height:200px;" >
+            <img v-bind:src="images" alt="" onerror="this.src='__UPLOAD__/images/upload_add.png'" >
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<script>
+    let _thisObj;
+    // 选择出发器
+    $('#logo').click(function(){
+        _thisObj = $(this);
+        openPhotoSpace();
+    });
+
+    //打开图片空间
+    function openPhotoSpace(){
+        const url = "<?php echo url('/handlePhoto.html','','',true);?>"
+        const token = "<?php echo session('photojwttoken');?>";
+        const photoSpaceUrl = 'http://photo.25boy.com/?token='+token+'&url='+url+'&showconfirm=1';
+        layer.open({
+            type: 2,
+            content: photoSpaceUrl,
+            shadeClose: true,
+            area: ['60%', '60%'],
+            success: function(layero){
+                layer.setTop(layero);
+            }
+        })
+    }
+
+    /**
+     * 选择图片方法
+     * 从handlePhoto.html文件自动发起调用
+     * JSON content
+     */
+    function handlePhoto(content){
+        if(content == 'close'){
+            // 关闭窗口
+            layer.closeAll();
+        }else{
+            var json = JSON.parse(content);
+            // 业务处理
+            if( json.length == 0 ){
+                layer.msg('请选择图片');
+                return false
+            }
+            if( json.length > 1 ){
+                layer.msg('只能选择一张图片哦');
+                return false
+            }
+            _thisObj.find('img').attr('src',json[0].image);
+            $('#'+$(_thisObj).attr('id')+'_input').val(json[0].image);
+            layer.closeAll();
+        }
+    }
+</script>

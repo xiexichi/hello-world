@@ -1,0 +1,158 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form layui-form-pane" action="" id="form" >
+                <div class="layui-form-item layui-card-header" style="padding-bottom: 10px;">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-card-body">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="realname" value="" placeholder="填写真实姓名" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">账号状态</label>
+                    <div class="layui-input-inline">
+                        <select name="status">
+                            <option value=""></option>
+                            <option value="1" >启用</option>
+                            <option value="2">禁用</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="admin" lay-filter="admin"></table>
+        </div>
+    </div>
+</div>
+
+
+<!-- 操作模板 -->
+<script type="text/html" id="toolbar">
+    <div>
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加管理员</button>
+    </div>
+</script>
+
+<script type="text/html" id="ctrlTpl" >
+    <button class="layui-btn layui-btn-xs" style="margin:0;" lay-event="edit" >编辑</button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" style="margin:0;"  lay-event="del">删除</button>
+</script>
+
+<script type="text/javascript">
+    var form = layui.form;
+    var table = layui.table;
+    var layer = layui.layer;
+    layui.use(['form','table','layer'], function(){
+        form.render();
+        //layer.load(2);
+        //执行渲染
+        table.render({
+            id:'admin',
+            elem: '#admin' ,
+            height: 'auto', //容器高度
+            url: '/power/admin/getAdminList',
+            page: true,
+            toolbar: '#toolbar',
+            headers: {
+                ctrl: CENTER_DATA
+            }
+            ,cols: [[
+                {field: 'id', title: 'ID', width:'5%'},
+                {field: 'realname', title: '真实姓名'},
+                {field: 'code', title: '员工编码'},
+                {field: 'status', title: '状态', width:'5%',templet: function(d){return d.status==1?'启用':'<span style="color: #c00;">禁用</span>'}},
+                {field: 'merchant_name', title: '商户主体'},
+                {field: 'last_time', title: '最后登录时间'},
+                {field: 'ip', title: 'IP'},
+                {field: 'id', title: '操作', width:'10%',templet: '#ctrlTpl'}
+            ]],
+            done: function () {
+                layer.closeAll('loading');
+            }
+        });
+
+            //监听行工具事件
+        table.on('tool(admin)', function (obj) {
+            const data = obj.data
+            const layEvent = obj.event
+            const tr = obj.tr
+
+            switch(layEvent){
+                case 'edit':
+                    layer.open({
+                        title: '编辑管理员',
+                        type: 2,
+                        area: ['90%', '95%'],
+                        scrollbar:false,
+                        shadeClose:true,
+                        content: '/power/admin/page_edit?id='+data.id
+                    })
+                    break;
+                case 'del':
+                    layer.confirm("是否确认删除！删除后 无法恢复！", {btn: ["确定","取消"] },
+                     function(){
+                        request.setHost(CENTER_DATA).get('/power/admin/delete',{ids: data.id}, function(res){
+                            if (res.code == 0) {
+                                // 成功提示
+                                layer.msg('删除成功');
+                                setTimeout(function(){  
+                                    table.reload('admin');
+                                },1000);
+                            } else {
+                                // 错误提示
+                                layer.msg(res.msg);
+                            }
+                        });
+                    });
+                    return false;
+                    break;
+            }
+        });
+
+        //监听工具栏事件
+        table.on('toolbar(admin)', function (obj) {
+            const data = obj.data
+            const layEvent = obj.event
+            if (layEvent === 'add') {
+              layer.open({
+                title: '添加管理员',
+                type: 2,
+                area: ['90%', '95%'],
+                scrollbar:false,
+                shadeClose:true,
+                content: '/power/admin/page_add'
+              })
+            }
+        });
+
+        form.on('submit', function(data){
+            table.reload('admin', {
+                where: data.field,
+                page: {
+                    curr: 1, //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+    });
+
+    function callback(){
+        table.reload('admin');
+        layer.closeAll();
+    }
+</script>
+
+
+
+
+
+

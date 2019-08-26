@@ -1,0 +1,60 @@
+<?php
+/**
+ * 商品销售参数规格组
+ */
+namespace app\goods\controller;
+
+class AttributeGroup extends Base
+{
+    //获取所有规格信息
+    public function getAttrGroupList(){
+        if( !$checkData = $this->validate->getAttrGroupList(input('get.')) ){
+            return errorJson(020501, $this->validate->getError());
+        }
+        $list = $this->model->getAttrGroupAll($checkData['page'],$checkData['limit'],true);
+        return successJson($list['list'],'',$list['count']);
+    }
+
+    //获取单个规格信息
+    public function getGoodsAttrGroupInfo(){
+        $postParam = input('post.');
+        if( !$checkData = $this->validate->getGoodsAttrGroupInfo($postParam) ){
+            return errorJson(020501, $this->validate->getError());
+        }
+        //获取参数组基本信息
+        $info = $this->model->getAttrGroupInfo($checkData['id']);
+        if( $info === false ){
+            return errorJson($this->model->getCode(), $this->model->getError());
+        }
+        //获取参数成员
+        $groupValModel = new \app\goods\model\AttributeGroupVal();
+        $info['attr_list'] = $groupValModel->getGroupVals($info['id']);
+        return successJson($info);
+    }
+
+    //保存设置
+    public function saveAttrGroupInfo(){
+        if( !$checkData = $this->validate->saveAttrGroupInfo(input('post.')) ){
+            return errorJson(020501, $this->validate->getError());
+        }
+        //更新参数信息
+        $info = $this->model->saveAttrGroupInfo($checkData);
+        if( $info === false ){
+            return errorJson($this->model->getCode(), $this->model->getError());
+        }
+        return successJson(true,'保存成功');
+    }
+
+    //删除参数组
+    public function deleted(){
+        if (!$checkData = $this->validate->deleted(input('post.'))) {
+            // 设置错误信息和错误码
+            return errorJson(020510, $this->validate->getError());
+        }
+        //数据处理
+        if( $this->model->deleted($checkData['id']) === false ){
+            return errorJson($this->model->getCode(), '网络错误，操作失败');
+        }
+        return successJson(true,'删除成功');
+    }
+}

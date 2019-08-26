@@ -1,0 +1,109 @@
+<style>
+    [v-cloak]{display:none;}
+</style>
+<div class="layui-fluid" id="vue_main" v-cloak >
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col v-for="(prop,p_index) in order_info.prop_list">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>商品图</th>
+                    <th>商品名</th>
+                    <th v-for="(prop,p_index) in order_info.prop_list">{{prop}}</th>
+                    <th>erp编码</th>
+                    <th>售价</th>
+                    <th>库存</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(sku,s_index) in order_info.sku_list" v-if="sku.sales_status == 1 && sku.is_deleted == 0 " >
+                    <td><img alt="" :src="sku.item_image" onerror="this.src='/static/jwt/images/upload_add.png'" ></td>
+                    <td>{{order_info.goods_name}}</td>
+                    <th v-for="(prop,p_index) in order_info.prop_list">
+                        <span v-for="(pv,pv_index) in order_info.prop_val_list[p_index]" v-if="sku.pv_id.indexOf(pv_index) >= 0"  >{{pv}}</span>
+                    </th>
+                    <td>{{sku.erp_code}}</td>
+                    <td>{{sku.price}}</td>
+                    <td>{{sku.stock}}</td>
+                    <td v-if="item_id == sku.item_id">当前商品</td>
+                    <td v-else >
+                        <button class="layui-btn layui-btn-danger layui-btn-xs" style="margin:0;"  v-on:click="replace(sku)" >替换</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<hea:js src="/static/js/vue.js" />
+<script>
+    var Vue = new Vue({
+        el: '#vue_main',
+        data: {
+            'order_goods_id': getUrlParam('order_goods_id'),
+            'item_id': getUrlParam('item_id'),
+            'goods_id': getUrlParam('goods_id'),
+            'shop_id': getUrlParam('shop_id'),
+            'order_info' : [],
+        },
+        mounted:function(){
+            var that = this;
+            var param = {};
+            param.id = that.goods_id;
+            param.shop_id = that.shop_id;
+            request.setHost(SHOP_DATA).post('/goods/goods/getGoodsInfo',param, function(res){
+                if (res.code == 0) {
+                    that.order_info = res.data;
+                } else {
+                    // 错误提示
+                    layer.msg(res.msg);
+                }
+            });
+        },
+        methods:{
+            replace:function(item_info){
+                var that = this;
+                if( item_info.stock == 0 ){
+                    layer.msg('没有库存');
+                    return false;
+                }
+                layer.confirm('是否确认更换商品 （若价格有差异不会主动进行补差业务，请尽量选择同价商品）', {
+                    btn: ["确定","取消"] //按钮
+                }, function(){
+                    var param = {};
+                    param.order_goods_id = that.order_goods_id;
+                    param.item_id = item_info.item_id;
+                    layer.prompt({
+                        title: '请填写替换数量'
+                    }, function(val, index){
+                        if(isNaN(val)){
+                            layer.msg('必须填写数字');
+                            return false;
+                        }
+                        param.num = val;
+                        request.setHost(SHOP_DATA).post('/order/order/replaceOrderGoods',param, function(res){
+                            if (res.code == 0) {
+                                that.order_info = res.data;
+                                setTimeout(function(){
+                                    parent.callback();
+                                },1000);
+                            } else {
+                                // 错误提示
+                                layer.msg(res.msg);
+                            }
+                            layer.close(index);
+                        });
+                    });
+                });
+            }
+        }
+    });
+</script>

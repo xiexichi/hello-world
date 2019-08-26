@@ -1,0 +1,23 @@
+<?php
+
+namespace app\index\controller;
+
+class Area extends Base
+{
+
+	/**
+	 * [getAreas 获取区域]
+	 * @return [type] [description]
+	 */
+	public function getAreas(){
+
+		$param = input();
+
+		$res = $this->service->get($this->request->url());
+
+		ee($res);
+	}
+
+
+
+}

@@ -1,0 +1,98 @@
+<div class="p-1" id="app">
+	<form class="layui-form layui-form-pane" id="openAddForm" lay-filter="layer">
+		<div class="layui-form-item">
+			<label class="layui-form-label">模块名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="module_name" placeholder="内容模块名称"  class="layui-input" required lay-verify="required" v-model="row.module_name">
+			</div>
+		</div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">模块代码</label>
+      <div class="layui-input-block">
+        <input type="text" name="module_code" placeholder="内容模块唯一代码" class="layui-input" required lay-verify="required" v-model="row.module_code" v-bind:disabled="idDisabled">
+      </div>
+    </div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">描述</label>
+			<div class="layui-input-block">
+				<textarea name="desc" placeholder="后台描述内容" class="layui-textarea" v-model="row.desc"></textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" v-if="id" v-model="id">
+				<button class="layui-btn" lay-submit lay-filter="edit-layer">立即提交</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<hea:js src="/static/js/vue.js" />
+<script type="text/javascript">
+const id = getUrlParam('id')
+var app = new Vue({
+  el: '#app',
+  data: {
+  	id: '',
+    row: {}
+  },
+  mounted: function () {
+  	if (id && id != 0) this.getOne()
+  },
+  computed: {
+    idDisabled: function () {
+      return this.id ? true : false
+    }
+  },
+  methods: {
+  	// 获取数据
+  	getOne: function() {
+  		let _this = this
+  		_this.id = id
+  		request.setHost('center_data').get('/picshow/module/one?id='+id, function (json) {
+  			if (json.code === 0) {
+          _this.row = json.data
+          _this.$nextTick().then (function () {
+            layui.form.render()
+          })
+  			} else {
+  				layer.alert(json.msg)
+  			}
+  		})
+  	}
+  }
+})
+
+// layui
+layui.use('form', function () {
+  const form = layui.form
+  form.render()
+
+  //监听添加层提交
+  form.on('submit(edit-layer)', function (data) {
+  	const loadLayer = layer.load()
+  	let url = '/picshow/module/add'
+  	if (id && id !=0){
+  		url = '/picshow/module/edit'
+  	}
+    request.setHost('center_data').post(url, data.field, function (json){
+    	if (json.code === 0) {
+    		layer.msg(json.msg, {
+    			icon: 1,
+    			time: 2000
+    		}, function () {
+    			// 刷新父页面
+    			parent.location.reload()
+    		})
+    	}else{
+	    	layer.close(loadLayer)
+    		layer.alert(json.msg, function (index) {
+    			layer.close(index)
+    		})
+    	}
+    })
+    return false
+  })
+
+})
+</script>

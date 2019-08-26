@@ -1,0 +1,98 @@
+<div class="checkout" id="app">
+	<div class="checkout-main">
+		<table class="layui-table" id="myDataTable" lay-filter="myDataTable">
+			<thead>
+				<tr>
+					<th width="20"></th>
+					<th width="60">图片</th>
+					<th>商品编码</th>
+					<th>规格</th>
+					<th>条码</th>
+					<th>数量</th>
+					<th>库存</th>
+					<th>售价</th>
+					<th>实付单价</th>
+					<th width="60" align="center">代发</th>
+				</tr> 
+			</thead>
+			<tbody>
+				<tr v-for="(item, index) in items" :key="index" :class="{'layui-bg-gray': item.is_checked}">
+					<td align="center" width="10" @click="selectRow(index)">
+						<span :class="{'layui-badge': item.is_checked}">{{ index+1 }}</span>
+					</td>
+					<td width="60"><img :src="item.pic" width="60" height="60" /></td>
+					<td>{{ item.item_code }}</td>
+					<td>{{ item.prop }}</td>
+					<td>{{ item.brcode }}</td>
+					<td>{{ item.quantity }}</td>
+					<td>{{ item.is_online ? item.online_stock : item.stock }}</td>
+					<td>{{ item.price }}</td>
+					<td>
+						<span :class="{'layui-badge layui-bg-blue': item.is_gift}">{{ item.is_gift ? '赠品' : item.pay_price }}</span>
+					</td>
+					<td align="center">
+						<el-switch v-model="item.is_online" active-color="#13ce66"></el-switch>
+					</td>
+				</tr> 
+			</tbody>
+		</table>
+	</div>
+
+	<div class="checkout-footer">
+		<div role="alert" class="el-alert el-alert--warning alert-activitys">
+			<div class="el-alert__content">
+				<ul class="el-alert__title">
+					<li>双12狂欢节，全场8折，2018-12-12 至 2018-12-12</li>
+					<li>满2件送HEAB9417，满4件送HEAF9542</li>
+				</ul>
+			</div>
+		</div>
+		<div class="checkout-footer-bar">
+      <div class="checkout-footer-bartotal">共 2 件商品</div>
+      <div class="checkout-footer-baraction">
+        <el-switch v-model="no_user" active-color="#13ce66" active-text="非会员订单" class="mr-1"></el-switch>
+        <button class="layui-btn layui-btn layui-btn-xs" @click="setGift">设置赠品</button>
+        <button class="layui-btn layui-btn layui-btn-xs" @click="deleteRow">删除</button>
+      </div>
+    </div>
+    <div class="checkout-area">
+    	<div class="layui-row layui-col-space30">
+    		<div class="layui-col-xs5">
+    			<input type="text" name="title" placeholder="商品条码、商品编码" autocomplete="off" class="layui-input input-checkout">
+    			<button class="layui-btn layui-btn-lg layui-btn-primary btn-search">
+	    			<i class="layui-icon layui-icon-search" style="font-size:40px;"></i>
+	    		</button>
+    		</div>
+    		<div class="layui-col-xs4">
+    			<div class="layui-row">
+	    			<div class="layui-col-xs12">
+	    				<input type="text" name="title" placeholder="会员码、手机号码、昵称" autocomplete="off" class="layui-input input-users" value="15218938652">
+	    				<i class="layui-icon layui-icon-username"></i>  
+	    			</div>
+	    			<div class="layui-col-xs12">
+	    				<table class="layui-table  table-userinfo">
+	    					<tr>
+	    						<td align="center">25boy_536854</td>
+	    						<td align="center" width="33%">余额: 0.00</td>
+	    						<td align="center" width="33%">积分: 1800</td>
+	    					</tr>
+	    				</table>
+	    			</div>
+    			</div>
+    		</div>
+    		<div class="layui-col-xs3">
+    			<button class="layui-btn layui-btn layui-btn-lg layui-btn-normal btn-checkout" @click="showCheckLayer">结算 ¥ 880.00</button>
+    		</div>
+    	</div>
+
+    </div>
+	</div>
+</div>
+
+<!-- vue -->
+<hea:js src="/static/js/vue.js" />
+<hea:js src="/static/js/element-ui.js" />
+<hea:css src="/static/style/element-ui.css" />
+<!-- checkout -->
+<hea:js src="" />
+<hea:css src="" rel="less" />

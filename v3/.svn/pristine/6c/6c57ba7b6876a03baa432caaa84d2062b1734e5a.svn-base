@@ -1,0 +1,18 @@
+<div class="layui-fluid" id="app">
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<table id="myDataTable" lay-filter="myDataTable"></table>
+		</div>
+	</div>
+</div>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+	<button class="layui-btn layui-btn-xs" lay-event="edit">修改</button>
+	<button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</button>
+</script>
+<script type="text/html" id="toolbarTpl">
+	<button class="layui-btn layui-btn-sm" lay-event="add">添加内容模块</button>
+</script>
+
+<hea:js src="" />

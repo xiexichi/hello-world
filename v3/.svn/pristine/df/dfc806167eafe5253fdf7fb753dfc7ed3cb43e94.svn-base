@@ -1,0 +1,38 @@
+<style>
+    .layui-form-label{width:100px;}
+    .star{color:#FB5A5C;}
+</style>
+<link rel="stylesheet" href="/static/jwt/style/cj.css" media="all">
+<div class="layui-fluid">
+    <form class="layui-form table-box" action="" id="form"  >
+        <div class="layui-card" id="upload_main" >
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">市场价<span class="star">*</span></label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="market_price" v-model="set_sales.market_price" required  lay-verify="required" placeholder="请输入市场价" autocomplete="off" class="layui-input" onblur="validateFloatEmpty(this)" onkeyup="validateFloat(this)" >
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">RMB </div>
+                    <label class="layui-form-label">基础售价<span class="star">*</span></label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="sell_price" v-model="set_sales.sell_price" required  lay-verify="required" placeholder="请输入售价"  autocomplete="off" class="layui-input" v-on:blur="set_sales_price" onkeyup="validateFloat(this)"  >
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">RMB （无sku 或 sku没有设置售价时的 售价）</div>
+                </div>
+                <include file="../application/goods/view/goods/set_sku.html" />
+            </div>
+        </div>
+    </form>
+</div>
+<hea:js src="/static/js/vue.js" />
+<hea:js src="/static/js/goods/sales_update.js" />
+<script>
+    const url = "<?php echo url('/handlePhoto.html','','',true);?>";
+    const token = "<?php echo session('photojwttoken');?>";
+    const photoSpaceUrl = 'http://photo.25boy.com/?token='+token+'&url='+url+'&showconfirm=1';
+</script>

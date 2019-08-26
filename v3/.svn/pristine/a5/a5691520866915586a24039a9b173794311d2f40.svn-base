@@ -1,0 +1,66 @@
+    <div class="layui-form-item">
+        <label class="layui-form-label">文章名<span class="star">*</span></label>
+        <div class="layui-input-inline">
+            <input type="text" name="title" required  lay-verify="required" placeholder="请输入文章名" autocomplete="off" class="layui-input" style="width:300px;" >
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">文章分类<span class="star">*</span></label>
+        <div class="layui-input-inline">
+            <select name="categorys_id" lay-search>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">文章图片<span class="star">*</span></label>
+        <div class="layui-input-inline">
+            <div class="upload_box" style="width:180px; height:180px;">
+                <input type="hidden" id="article_image_input" name="image" class="hid-val-box" readonly />
+                <div class="upload-title">主图<span class="star">*</span></div>
+                <div class="upload-view" id="image" style="height:150px;" onClick="openPhotoSpace()" >
+                    <img alt="" id="imageBack" src="" onerror="this.src='/static/jwt/images/upload_add.png'" >
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-inline">
+            <input type="number" min="0" max="255" name="sort" placeholder="0-255" value="0" autocomplete="off" class="layui-input" onkeyup="checkSort(this)" >
+        </div>
+        <div class="layui-form-mid layui-word-aux">(排序由大都小排列)</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述</label>
+        <div class="layui-input-inline">
+            <textarea name="desc" style="resize:none; width:300px;"  placeholder="请输入描述" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">文章详情</label>
+        <div class="layui-input-block">
+            <div id="article_content" name="content" style="width:75%; height:300px; margin-left:20px;"></div>
+        </div>
+    </div>
+
+    <script>
+    var urls = "<?php echo url('/handlePhoto.html','','',true);?>";
+    var tokens = "<?php echo session('photojwttoken');?>";
+    var photoSpaceUrl = 'http://photo.25boy.com/?token='+tokens+'&url='+urls+'&showconfirm=1';
+        var ue = UE.getEditor('article_content');
+        //获取文章内容内容
+        function getArticleContent() {
+            var html = '';
+            ue.ready(function () {
+                html = ue.getContent();
+            });
+            return html;
+        }
+    </script>

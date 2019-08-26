@@ -1,0 +1,63 @@
+<?php
+
+namespace app\goods\model;
+
+class GoodsItem extends Base
+{
+    protected $name = 'goods_item';
+
+    //获取tag绑定状态
+    public function createGoodsSku($goods_id,$goodsInfo){
+        $t = date('Y-m-d H:i:s');
+        if( !empty($goodsInfo['sku_param']) ){
+            $skuParam = $goodsInfo['sku_param'];
+            //配置添加参数
+            $item_insertData = [];
+            $item_prop_insertData = [];
+            foreach( $skuParam as $key => $val){
+                $item_insertData = [
+                    'goods_id'          => $goods_id,
+                    'erp_code'          => empty($val['erp_code']) ? $goodsInfo['erp_code'].','.$val['pv_erp_code'] : trim($val['erp_code']),
+                    'sku_sn'            => empty($val['sku_sn']) ? $goodsInfo['erp_code'].' '.$val['pv_erp_code'] : trim($val['erp_code']),
+                    'item_price'        => bcadd($val['price'],0,2),
+                    'item_code'         => trim($val['item_code']),
+                    'item_img'          => trim($val['item_image']),
+                    'description'       => trim($val['remark']),
+                    'is_deleted'        => $val['is_deleted'],
+                    'create_time'       => $t,
+                    'update_time'       => $t
+                ];
+                if( !$item = $this->insertGetId($item_insertData) ){
+                    return false;
+                }
+                //处理商品属性
+                $item_prop_insertData = [];//初始化参数
+                $itemPropValModel = new \app\goods\model\GoodsItemPropVal();
+                foreach( $val['pv_id'] as $k => $v ){
+                    $item_prop_insertData[] = [
+                        'goods_id'          => $goods_id,
+                        'goods_item_id'     => $item,
+                        'goods_prop_val_id' => $v
+                    ];
+                }
+                if( !$itemPropValModel->insertAll($item_prop_insertData) ){
+                    return false;
+                }
+            }
+        }else{//默认创建一个sku
+            $item_insertData = [
+                'goods_id'          => $goods_id,
+                'erp_code'          => $goodsInfo['erp_code'],
+                'sku_sn'            => $goodsInfo['erp_code'],
+                'item_price'        => bcadd($goodsInfo['sell_price'],0,2),
+                'item_code'         => $goodsInfo['goods_code'],
+                'create_time'       => $t,
+                'update_time'       => $t
+            ];
+            if( !$item = $this->insert($item_insertData) ){
+                return false;
+            }
+        }
+        return true;
+    }
+}

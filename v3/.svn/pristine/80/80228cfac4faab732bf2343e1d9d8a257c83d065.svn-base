@@ -1,0 +1,104 @@
+<link rel="stylesheet" href="/static/layui/css/login/admin.css" media="all">
+<link rel="stylesheet" href="/static/layui/css/login/login.css" media="all">
+<style type="text/css">
+html {
+    color: #000;
+    background-color: #fff;
+}
+
+.layui-input-block {
+    margin-left: 10px;
+}
+
+.layadmin-user-login-header h2 {
+    color: #000;
+}
+
+.layadmin-user-login-body .layui-form-item {
+    background: rgba(198, 207, 228, 0.1);
+}
+
+.layadmin-user-login-main {
+    width: 90%
+}
+
+.layadmin-user-login {
+    padding-top: 10px;
+}
+</style>
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+    <div class="layadmin-user-login-main">
+        <div style="padding: 5px; background-color: #F2F2F2;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <div class="layadmin-user-login-box layadmin-user-login-header">
+                                <h2>可登录的店铺</h2>
+                            </div>
+                            <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+                                <div id="tpl_view"></div>
+                                <div class="layui-form-item">
+                                    <button class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit lay-filter="formDemo" style="height:47px">进 入</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="tpl_tpl" type="text/html">
+    {{# layui.each(d, function(index,item){  }}
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input {{# if(index == 0){}}checked{{# } }} type="radio" lay-verify="required" name="shop_id" value="{{ item.id }}" title="{{ item.name }}">
+        </div>
+    </div>
+    {{# }); }}
+</script>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+var laytpl = layui.laytpl;
+var shops = '';
+
+$(document).ready(function() {
+    layui.use(['form', 'layer', 'laytpl'], function() {
+        try {
+            shops = JSON.parse(Base64.base64ToUtf8(getUrlParam('q')));
+        } catch(e) {
+            layer.msg('暂未获取到店铺信息');
+        }
+
+        if (!shops) {
+            layer.msg('暂未获取到店铺信息');
+        }
+        //模板填坑
+        var getTpl = tpl_tpl.innerHTML,
+            view = document.getElementById('tpl_view');
+        laytpl(getTpl).render(shops, function(html) {
+            view.innerHTML = html;
+        });
+        form.render();
+
+        form.on('submit(formDemo)', function (data) {console.log(data);
+            //location.href = '/index/index/index?shop_id='+shopID
+            request.setHost(SHOP_DATA).post('/index/index/selectShop', data.field, function(res) {
+                if (res.code == 0) {
+                    parent.location.href = '/index/index/index';
+                }else{
+                    layer.msg(res.msg);
+                }
+                return;
+            });
+            return;
+        })
+
+
+
+
+    });
+});
+</script>

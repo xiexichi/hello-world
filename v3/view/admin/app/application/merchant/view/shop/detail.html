@@ -1,0 +1,223 @@
+
+<div class="p-1">
+  
+  <form class="layui-form" action="">
+    <!-- 店铺id -->
+    <input type="hidden" name="id">
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">所属商户</label>
+      <div class="layui-input-inline">
+        <select id="merchant" name="merchant_id" lay-verify="required">
+          <option value=""></option>
+        </select>
+      </div>
+
+      <label class="layui-form-label">店铺电话</label>
+      <div class="layui-input-inline">
+        <input name="phone" required  lay-verify="required|phone" class="layui-input">
+      </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">店铺名称</label>
+      <div class="layui-input-inline">
+        <input type="text" name="name" required  lay-verify="required" class="layui-input">
+      </div>
+      
+      <label class="layui-form-label">账号</label>
+      <div class="layui-input-inline">
+        <input type="text" name="account" required  lay-verify="required" class="layui-input">
+      </div>
+  
+      <label class="layui-form-label">密码</label>
+      <div class="layui-input-inline">
+        <input type="password" name="passwd" placeholder="不修改请留空" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">店铺类型</label>
+      <div class="layui-input-inline">
+        <select id="shop_type" name="shop_type_id" lay-verify="required">
+          <option value=""></option>
+        </select>
+      </div>
+
+      <label class="layui-form-label">销售类型</label>
+      <div class="layui-input-inline">
+        <select id="shop_sale_type" name="shop_sale_type_id" lay-verify="required">
+          <option value=""></option>
+        </select>
+      </div>
+  
+      <label class="layui-form-label">店铺状态</label>
+      <div class="layui-input-inline">
+        <input type="radio" name="sex" value="1" title="正常">
+        <input type="radio" name="sex" value="0" title="禁用" checked>
+      </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">省</label>
+      <div class="layui-input-inline">
+        <select id="province" name="province_id" lay-verify="required" lay-filter="province">
+          <option value=""></option>
+        </select>
+      </div>
+
+      <label class="layui-form-label">市</label>
+      <div class="layui-input-inline">
+        <select id="city" name="city_id" lay-verify="required" lay-filter="city">
+          <option value=""></option>
+        </select>
+      </div>
+      
+      <label class="layui-form-label">区</label>
+      <div class="layui-input-inline">
+        <select id="region" name="region_id" lay-verify="required" lay-filter="region">
+          <option value=""></option>
+        </select>
+      </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">详细地址</label>
+      <div class="layui-input-block">
+        <input type="text" name="address" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">店铺简介</label>
+      <div class="layui-input-block">
+        <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+  </form>
+ 
+</div>
+
+<!-- 加载公共模板 -->
+<include file="merchant@base/base" />
+
+<script>
+//Demo
+  // 获取商户id
+  var id = getUrlParam('id');
+
+  // 设置省份信息
+  setAreas({type: 1}, $('#province'));
+
+  // 渲染表单
+  form.render();
+
+  // 获取商户
+  request.setAsync(true).setHost(CENTER_DATA).get('/merchant/merchant/all', function(res){
+    for (var i = 0; i < res.data.length; i++) {
+      var merchant = res.data[i];
+      $('#merchant').append('<option value="'+merchant.id+'">'+merchant.name+'</option>');
+    }
+    // 渲染表单
+    form.render();
+  })
+
+  // 1. 获取店铺类型
+  request.setAsync(true).setHost(CENTER_DATA).get('/merchant/shop/getShopTypes', function(res){
+    console.info(res);
+    for (var i = 0; i < res.data.length; i++) {
+      var type = res.data[i];
+      $('#shop_type').append('<option value="'+type.id+'">'+type.type+'</option>');
+    }
+    // 渲染表单
+    form.render();
+  })  
+
+  // 2. 获取店铺销售类型
+  request.setAsync(true).setHost(CENTER_DATA).get('/merchant/shop/getShopSaleTypes', function(res){
+    console.info(res);
+    for (var i = 0; i < res.data.length; i++) {
+      var type = res.data[i];
+      $('#shop_sale_type').append('<option value="'+type.id+'">'+type.sale_type+'</option>');
+    }
+    // 渲染表单
+    form.render();
+  })
+
+  
+  // 获取店铺信息
+  request.setHost(CENTER_DATA).get('/merchant/shop/one?id='+id, function(res){
+
+    // 填入数据
+    for (i in res.data) {
+      // 跳过状态和密码
+      if (i == 'status' || i == 'passwd') {
+        continue;
+      }
+
+      $('form').find('input[name="'+i+'"]').val(res.data[i]);
+      $('form').find('textarea[name="'+i+'"]').val(res.data[i]);
+      $('form').find('select[name="'+i+'"]').val(res.data[i]);
+    }
+
+    // 设置获取城市数据
+    setAreas({type: 2, pid: res.data['province_id']}, $('#city'), function
+      (){
+        $('form').find('select[name="city_id"]').val(res.data['city_id']);
+      });
+
+    // 设置获取地区数据
+    setAreas({type: 3, pid: res.data['city_id']}, $('#region'), function
+      (){
+        $('form').find('select[name="region_id"]').val(res.data['region_id']);
+      });
+
+    // 设置商户状态
+    $('form').find('input [name="status"],[value="'+res.data['status']+'"]').attr('checked', 'true');
+
+    // 渲染表单
+    form.render();
+  })
+
+
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    // layer.msg(JSON.stringify(data.field));
+
+    request.setHost(CENTER_DATA).post('/merchant/shop/edit', data.field, function(res){
+      if (res.code == 0) {
+        // 成功提示
+        layer.open({
+          icon: 1,
+          content: '修改成功',
+          yes: function(index, layero){
+            //do something
+            layer.close(index); //如果设定了yes回调，需进行手工关闭
+            // 返回上一页
+            location.href = '/merchant/shop/list.html';
+          }
+        });
+
+      } else {
+        // 错误提示
+        layer.alert(res.msg, {icon: 1});
+      }
+    })
+
+    return false;
+  });
+
+</script>
+
+

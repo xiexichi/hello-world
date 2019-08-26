@@ -1,0 +1,259 @@
+<?php
+
+namespace app\cart\model;
+use app\order\model\Order;
+use \app\common\controller\Service;
+
+class Cart extends Base
+{
+
+    //购物车初始化
+    public function cartReset($user_id){
+
+    }
+
+    public function getCartList($user_id,$shop_id=0,$channel=Order::CHANNEL_PC,$is_selected=false){
+        //check channel 预留用于活动使用
+        if( in_array($channel,Order::$map_channel) ){
+//            return [];
+        }
+        $where['user_id'] = $user_id;
+        if($shop_id){
+            $where['shop_id'] = $shop_id;
+        }
+        if($is_selected){
+            $where['is_selected'] = 1;
+        }
+        $list = $this->where($where)->select();
+        if( !empty($list) ){
+            $server = new Service();
+            $goodsItemModel = new \app\goods\model\GoodsItem();
+            $shop = [];
+            foreach( $list as $key => $val ){
+                $itemInfo = $goodsItemModel->getItemInfo($val['goods_item_id']);
+                if( empty($shop[$val['shop_id']]) ){
+                    //获取店铺信息
+                    $shop_info = $server->setHost('center_data')->post('merchant/shop/one',['id'=>$val['shop_id']]);
+                    $shop[$val['shop_id']] = [
+                        'shop_id' => $val['shop_id'],
+                        'shop_name' => $shop_info['name'],
+                        'shop_status' => $shop_info['status'],
+                        'status_desc' => $shop_info['status'] ? '' : '店铺已关闭',
+                        'goods_list' => []
+                    ];
+                }
+                $status = 1;
+                $status_desc = '';
+                if( $itemInfo['sales_status'] == 0 ){
+                    $status = 0;
+                    $status_desc = '商品已下架';
+                }
+                if( $itemInfo['is_invalid'] == 1 || $itemInfo['is_deleted'] == 1 ){
+                    $status = 0;
+                    $status_desc = '商品已失效';
+                }
+                //小计部分
+                $shop[$val['shop_id']]['goods_list'][] = [
+                    'item_info' => $itemInfo,
+                    'is_selected' => $val['is_selected'],
+                    'item_status' => $status,
+                    'item_status_desc' => $status_desc,
+                    'num' => $val['num'],
+                    'coupon_price' => 0,
+                    'discount_price' => 0,
+                    'sub_price' => (($val['item_price'] > $itemInfo['item_price']) ? bcsub($val['item_price'],$itemInfo['item_price'],2) : 0),
+                    'sum_price' => bcmul($val['num'],$itemInfo['item_price'],2)
+                ];
+            }
+        }
+        if( !empty($shop) ){
+            $list = [];
+            foreach( $shop as $v ){
+                $list[] = $v;
+            }
+        }
+        return $list;
+    }
+
+    /**
+     * 过滤异常购物车商品
+     * @param array $cart_list      购物车列表
+     * @return array
+     */
+    public function cartValid($cart_list=array()){
+        if(empty($cart_list)){
+            return [];
+        }
+        $list = [];
+        foreach( $cart_list as $key => $shop ){
+            //不要问我为什么不用 unset 我是不会告诉你的！！！！
+            if( $shop['shop_status'] == 1 ){
+                $goods_list = [];
+                foreach( $shop['goods_list'] as $gkey => $goods ) {
+                    if ($goods['item_status'] == 1) {
+                        $goods_list[] = $goods;
+                    }
+                }
+                if( !empty($goods_list) ){
+                    $shop['goods_list'] = $goods_list;
+                    $list[] = $shop;
+                }
+            }
+        }
+        return $list;
+    }
+
+    //添加购物车
+    public function addCart($user_id,$item_id,$num,$shop_id,$channel=Order::CHANNEL_PC,$is_selected=false){
+//check channel 预留用于活动使用
+        if( in_array($channel,Order::$map_channel) ){
+//            return [];
+        }
+        if( empty($user_id) || empty($item_id) || empty($shop_id) ){
+            $this->code = 000010;
+            $this->error = '信息错误';
+            return false;
+        }
+        //检查用户是否存在
+        $server = new Service();
+        //检查用户信息
+        $user_info = $server->setHost('center_data')->post('user/user/one',['id'=>$user_id]);
+        if( empty($user_info) ){
+            $this->code = 000011;
+            $this->error = '用户不存在';
+            return false;
+        }
+        //获取商品信息
+        $itemModel = new \app\goods\model\GoodsItem();
+        $itemInfo = $itemModel->getItemInfo($item_id);
+        if( empty($itemInfo) ){
+            $this->code = 000012;
+            $this->error = '商品已下架';
+            return false;
+        }
+        if( $itemInfo['sales_status'] == 0 || $itemInfo['is_invalid'] == 1 || $itemInfo['is_deleted'] == 1 ){
+            $this->code = 000013;
+            $this->error = '商品已下架';
+            return false;
+        }
+        //检查购物车
+        $where['user_id'] = $user_id;
+        $where['goods_item_id'] = $item_id;
+        $where['shop_id'] = $shop_id;
+        $cartItemInfo = $this->where($where)->find();
+        if( !empty($cartItemInfo) && !$is_selected ){
+            $num = bcadd($num,$cartItemInfo['num'],0);
+        }
+        //检查商品sku库存
+        $stockModel = new \app\depot\model\Stock();
+        $erp_info = explode(',',$itemInfo['erp_code']);
+        if( !$stockModel->checkStockOver($erp_info[0],$erp_info[1],$num,$shop_id) ){
+            $this->code = 000014;
+            $this->error = '库存不足';
+            return false;
+        }
+        if( !empty($cartItemInfo) ){
+            if( !$this->where('id',$cartItemInfo['id'])->update(['num'=>$num]) ){
+                $this->code = 000015;
+                $this->error = '网络错误';
+                return false;
+            }
+        }else{
+            $insertData = $where;
+            $insertData['goods_id'] = $itemInfo['goods_id'];
+            $insertData['item_price'] = $itemInfo['item_price'];
+            $insertData['num'] = $num;
+            $insertData['create_time'] = date('Y-m-d H:i:s');
+            $insertData['update_time'] = $insertData['create_time'];
+            if($is_selected){
+                $insertData['is_selected'] = 1;
+            }
+            if( !$this->insert($insertData) ){
+                $this->code = 000015;
+                $this->error = '网络错误';
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 更新购物车
+     * @param $user_id      用户id
+     * @param $item_id      商品sku id
+     * @param $num          商品数量 0 为删除已加入购物车的商品
+     * @param $shop_id      店铺id
+     * @param int $channel  加入渠道
+     */
+    public function updateCart($cart_id,$item_id,$num,$shop_id,$channel=Order::CHANNEL_PC,$is_selected=false){
+        //check channel 预留用于活动使用
+        if( in_array($channel,Order::$map_channel) ){
+//            return [];
+        }
+        //获取商品信息
+        $itemModel = new \app\goods\model\GoodsItem();
+        $itemInfo = $itemModel->getItemInfo($item_id);
+        if( empty($itemInfo) ){
+            $this->code = 000012;
+            $this->error = '商品已下架';
+            return false;
+        }
+        if( $itemInfo['sales_status'] == 0 || $itemInfo['is_invalid'] == 1 || $itemInfo['is_deleted'] == 1 ){
+            $this->code = 000013;
+            $this->error = '商品已下架';
+            return false;
+        }
+        //检查商品sku库存
+        $stockModel = new \app\depot\model\Stock();
+        $erp_info = explode(',',$itemInfo['erp_code']);
+        if( !$stockModel->checkStockOver($erp_info[0],$erp_info[1],$num,$shop_id) ){
+            $this->code = 000014;
+            $this->error = '库存不足';
+            return false;
+        }
+        //更新数量
+        $update['num'] = $num;
+        $update['update_time'] = date('Y-m-d H:i:s');
+        if($is_selected){
+            $update['is_selected'] = 1;
+        }
+        $where['id'] = $cart_id;
+        if( !$this->where($where)->update($update) ){
+            $this->code = 000015;
+            $this->error = '网络错误,操作失败';
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 更新购物车选中
+     * @param $id               购物车id
+     * @param int $user_id      用户id
+     * @param int $shop_id      店铺id
+     * @return bool
+     */
+    public function selectCartItem($id=0,$user_id=0,$shop_id=0){
+        $update['is_checked'] = 1;
+        if( !empty($user_id) && !empty($shop_id) ){
+            $where['user_id'] = $user_id;
+            $where['shop_id'] = $shop_id;
+        }else{
+            if(empty($id)){
+                return false;
+            }
+            $where['id'] = $id;
+            $cart_item = $this->where($where)->find();
+            if( empty($cart_item) ){
+                return false;
+            }else{
+                $update['is_checked'] = $cart_item['is_checked'] ? 0 : 1;
+            }
+        }
+        if( !$this->where($where)->update($update) ){
+            return false;
+        }
+        return true;
+    }
+
+}
