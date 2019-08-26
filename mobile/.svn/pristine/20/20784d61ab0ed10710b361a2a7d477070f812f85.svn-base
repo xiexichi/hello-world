@@ -1,0 +1,175 @@
+/*jinjie*/
+.icon-relative {
+	width:250px !important;
+	margin:0 auto !important;
+	position: relative;
+}
+
+/*注册页面的样式*/
+.ex-text {
+	width:190px;
+	height:30px;
+	line-height: 30px;
+	padding:3px 30px;
+	background: #eee;
+	font-size:13px;
+	border:1px solid #ccc;
+}
+.ex-text-short {
+	width:103px;
+}
+.icon-close {
+	position: absolute;
+	top: 11px;
+	right:8px;
+	font-size: 16px;
+	color:#707070;
+	display: none;
+	cursor: pointer;
+	height:16px;
+	line-height: 16px;
+}
+.icon-eye {
+	position: absolute;
+	top: 11px;
+	right:8px;
+	font-size: 16px;
+	cursor: pointer;
+	height:16px;
+	line-height: 16px;
+	color:#bbb;
+	display: block !important;
+}
+.incon-close-short {
+	right:90px;
+}
+.icon-font {
+	position: absolute;
+	top: 8px;
+	left:7px;
+	font-size: 20px;
+	color:#707070;
+	height:20px;
+	line-height: 20px;
+}
+
+
+
+.button_get_code {
+	width:80px;
+	height:36px;
+	line-height:36px;
+	margin-left: 5px;
+	font-size:12px;
+	border:none;
+	background: #da3335;/*#d84b39;*/
+	border-radius:3px;
+	color:#fff;
+}
+.ex-span {
+	display: inline-block;
+	position: absolute;
+	width: 90px;
+	height:30px;
+	margin-left: 5px;
+	padding-top:5px;
+	text-align:left;
+}
+.ex-btn  {
+	width:252px !important;
+	height:40px !important;
+	line-height: 40px !important;
+	border-radius:2px !important;
+	font-weight: normal !important;
+	font-size:20px !important;
+	margin:0;
+}
+
+/*登录*/
+.ex-horse {
+	margin:0 auto;
+	width:252px !important;
+
+}
+.ex-horse-left {
+
+	float:left !important;
+	cursor: pointer;
+}
+.ex-horse-right {
+	float:right !important;
+	cursor: pointer;
+}
+
+.horse-login-pass,.login-msg {
+	display: none;
+}
+
+/*layer*/
+
+/*个人页面修改手机号码的弹出层样式*/
+.layer-html {
+	background:#fff !important;
+	position:fixed !important; 
+	bottom:0 !important; 
+	left:0 !important; 
+	width:100% !important; 
+/*	height:110px !important;*/
+	border:none !important;
+	color:#000 !important;
+}
+.layer-html h3 {
+
+	font-size: 1.1em;
+	color:#999;
+}
+.account-setting-phone {
+	padding:1em;
+}
+.input-phone-code {
+	width: 100%;
+	height:30px;
+	line-height: 30px;
+	padding:5px 0;
+	text-indent: 10px;
+	background: #eee;
+	font-size:13px;
+	border:0;
+	margin-bottom:1em;
+}
+.btn-phone-code {
+	width:100%;
+	height:36px;
+	line-height:36px;
+	font-size:14px;
+	letter-spacing: 2px;
+	border:none;
+	background: #da3335;/*#d84b39;*/
+	border-radius:3px;
+	color:#fff;
+}
+.btn-inline {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 40px;
+	line-height: 40px;
+	background: #5bc0de;
+	font-size: 1em;
+}
+.relative {
+	position: relative;
+}
+.w210 {
+	width:250px !important;
+}
+.fs18 {
+	font-size: 1.8em !important;
+}
+.p0 {
+	padding:0;
+}
+
+/* 隐藏广告 */
+#youzi_adContainer {display: none !important;}
+#mob_ad_logo {display: none !important;}

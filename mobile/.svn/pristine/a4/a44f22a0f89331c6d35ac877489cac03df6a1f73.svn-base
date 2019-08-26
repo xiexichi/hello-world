@@ -1,0 +1,159 @@
+<?php
+include_once($_SERVER['DOCUMENT_ROOT']."/config.php");
+$pageSize = isset($_GET["pagesize"]) ? (int)$_GET["pagesize"] : 20;
+$pagecurrent =  isset($_GET["page"]) ? (int)$_GET["page"] : 1;
+
+if(!isset($_SESSION["user_id"])||empty($_SESSION["user_id"])) {
+    echo json_encode(
+        array("status"=>"nologin")
+    );
+    exit;
+}
+
+//获取分销商
+$seller = $DB->GetRs('seller', '*',"where user_id=" . $_SESSION["user_id"]);
+$is_seller = $seller ? 1 : 0;
+
+
+/*// 购物车总记录数
+$Table = "cart";
+$Fileds = "cart_id";
+$Condition = "where user_id=" . $_SESSION["user_id"];
+$Row = $DB->Get($Table, $Fileds, $Condition, 0);
+$rsAll = $DB->num_rows($Row);*/
+
+
+// 查询购物车
+/*$pageNo = ($pagecurrent-1)*$pageSize;
+$sql = "SELECT DISTINCT(c.cart_id),c.quantity,c.product_id,c.sku_prop,c.color_prop,c.size_prop,p.product_name,p.market_price,p.price,p.total_quantity,p.sale,p.hot,p.stock,p.presale_date,p.sku_sn
+        FROM cart c LEFT JOIN products p ON c.product_id=p.product_id
+        WHERE c.user_id=".(int)$_SESSION["user_id"]." ORDER BY c.create_date DESC";
+        // LIMIT $pageNo,$pageSize";
+$Row = $DB->query($sql);
+$rsAll = $DB->num_rows();
+$pageAll=ceil($rsAll/$pageSize);
+$carts = array();
+while($cart = $DB->fetch_assoc($Row)){
+    if(empty($cart['sku_prop'])){
+        $where = " AND color_prop='".$cart['color_prop']."' AND size_prop='".$cart['size_prop']."'";
+    }else{
+        $where = " AND sku_prop='".$cart['sku_prop']."'";
+    }
+    $stock = $DB->GetRs("stock","photo_prop,color_prop,size_prop,sync,quantity as siglequantity","WHERE depot_id=".$SITECONFIGER['sys']['default_depot_id']." and sku_sn='".$cart['sku_sn']."' $where");
+    if(!empty($stock)){
+        $cart = array_merge($cart,$stock);
+    }
+    $carts[] = $cart;
+}
+*/
+$carts = $Common->carts(null, $seller);
+
+$productlist = array("status"=>"success","list"=>array());
+$outstock = array(); //缺货商品列表
+
+if(count($carts) > 0){
+    foreach ($carts as $result) {
+        $miao = $Common->check_miao($result["product_id"]);
+        $event = $Common->check_events($result["product_id"]);
+        $event_title = array();
+
+        foreach ($event as $k => $v) {
+            $event_value = unserialize($v['event_value']);
+            $event_price = unserialize($v['event_price']);
+            //活动提示
+            for($i=0;$i<count($event_price);$i++){
+              switch ($v['event_index']) {
+                case '1':
+                  $event_title[]= '满'.$event_value[$i].'元,减'.$event_price[$i].'元';
+                  break;
+                case '2':
+                  $event_title[] = '满'.$event_value[$i].'元,打'.$event_price[$i].'折';
+                  break;
+                case '3':
+                  $event_title[] = '满'.$event_value[$i].'件,减'.$event_price[$i].'元';
+                  break;
+                case '4':
+                  $event_title[] = '满'.$event_value[$i].'件,打'.$event_price[$i].'折';
+                  break;
+                case '5':
+                  $event_title[] = '满'.$event_value[$i].'件,免'.$event_price[$i].'件';
+                  break;
+                default:
+                  $event_title[] = '';
+                  break;
+              }
+
+            }
+        }
+        
+        /*$seller_discount = null;
+
+        if($is_seller) {
+            //取得产品的折扣
+            $where = "WHERE product_id = ".$result["product_id"];
+            $item = $DB->GetRs('seller_item', '*', $where);
+            if($item) {
+                $discounts = unserialize($item['discounts']);
+                $seller_discount = $discounts[$seller['seller_level_id']];
+                if(isset($seller_discount['type']) && $seller_discount['type']=='price'){
+                    // 设置分销供货价
+                    $seller_price = number_format($seller_discount['value'], 2, '.', '');
+                }else{
+                    // 按折扣计算分销供货价
+                    if(isset($seller_discount["value"]) && $seller_discount["value"] > 0 && $seller_discount["value"] < 10 ){
+                        $seller_price = round($seller_discount["value"]*$result['price']/10, 2);
+                    }
+                }
+            }
+        }
+
+        $arr = array(
+            "cart_id"=>$result["cart_id"],
+            "product_id"=>$result["product_id"],
+            "product_name"=>$result["product_name"],
+            "market_price"=>ceil($result["market_price"]),
+            // "price"=>ceil($result['price']),
+            "miao_price"=>$miao['miao_price']?ceil($miao['miao_price']):0,
+            "total_quantity"=>$result["total_quantity"],
+            "size_prop"=>$result["size_prop"],
+            "quantity"=>$result["quantity"],
+            "color_prop"=>$result["color_prop"],
+            "stock"=>$result["stock"],
+            "siglequantity"=>$result["siglequantity"],
+            "thumb"=>$result["thumb"]."!w200",
+            "order_time"=>isset($miao['order_time'])?$miao['order_time']:NULL,
+            "event"=> !empty($event) ? $event_title : '',
+            "presale"=>empty($result['sync'])?1:0,
+            "presale_date"=>empty($result['presale_date'])?'':date('Y-m-d',strtotime($result['presale_date'])),
+            "is_seller" => $is_seller,
+            "seller_discount"=>$seller_discount,
+        );
+        if(isset($seller_price) && $seller_price>0){
+            $arr['orig_price'] = ceil($result['price']);
+            $arr['price'] = number_format($seller_price, 2, '.', '');
+        }else{
+            $arr['price'] = ceil($result['price']);
+        }
+        // 预售时间小于当前，改为非预售
+        if(strtotime($arr['presale_date'])<time()){
+            $arr['presale']=0;
+        }*/
+        if($result['siglequantity']<=0 || $result['stock']==0){
+            array_push($outstock, $result);
+        }else{
+            array_push($productlist['list'], $result);
+        }
+    }
+}
+// 将缺货商品放置列表底部
+$productlist['list'] = array_merge($productlist['list'],$outstock);
+
+echo json_encode($productlist);
+exit;
+
+if($pagecurrent>$pageAll){
+    echo json_encode(array("status"=>"nomore"));
+}else{
+    echo json_encode($productlist);
+}
+

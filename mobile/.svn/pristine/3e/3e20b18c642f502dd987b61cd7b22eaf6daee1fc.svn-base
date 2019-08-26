@@ -1,0 +1,193 @@
+.item-right{
+	padding: 0.5rem 0;		
+}
+
+/*页面css样式*/
+.combo-info{
+	padding: 1rem;
+}
+
+.combo-title{
+	font-size: 1.1rem;
+	margin-bottom: 5px;
+}
+
+.combo-desc{
+	font-size: 0.9rem;
+	margin-bottom: 5px;
+	color: #a09999;
+}
+.combo-info-bottom,.combo-price{
+	color: #b01f23;
+	font-size: 0.7rem;
+}
+
+.save-money{
+	font-size: 1rem;
+}
+.combo-event-time{
+	color: #a09999;
+}
+
+.combo-products-title{
+	padding: 0.5rem;
+	padding-left: 1rem;
+	font-size: 0.8rem;
+	/*background: #e2e2e2;*/
+}
+
+.combo-product-a{
+	display: block;
+}
+
+.combo-product-img{
+	width: 6rem;
+}
+
+.product-info{
+	font-size: 0.8rem;
+	/*margin:0 2.5%;*/
+}
+
+/*选择颜色尺寸*/
+.select-cs{
+	margin-top: 0.4rem;
+}
+
+/*灰色字体*/
+.color-gary{	
+	color: #a09999;
+}
+
+/*选择商品颜色尺码*/
+#choose-attr,#tip-bg{
+	background-color: rgba(0,0,0,0.3);
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	display: none;
+}
+
+#tip-bg{
+	background:none;
+	z-index: 10000;
+}
+
+.product-attr{
+	position: absolute;
+	width: 90%;
+	padding: 0 5%;
+	bottom: 0;
+	background: white;
+}
+
+.product-attr .img-div{
+	padding: 5px;
+	border:1px solid #ccc;
+	background: white;
+	border-radius: 5px;
+	position: relative;
+}
+
+.product-attr .sizeitem,.coloritem{
+	display: inline-block;
+	border:1px solid #ccc;
+	min-width: 1.5rem;
+	text-align: center;
+	padding: 0.2rem 0.5rem;
+	margin-right: 0.5rem;
+	margin-bottom: 10px;
+	border-radius: 5px;
+	font-size: 0.9rem;
+	height: 20px;
+	line-height: 20px;
+}
+
+/*选中颜色*/
+.selected{
+	background: #b01f23;
+	color: white;
+}
+
+.img-div{
+	margin-top: -40px;
+}
+
+.product-attr-img{
+	border-radius: 5px;
+	width: 6.5rem;
+}
+
+#sure-choose-btn{
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	z-index: 1000;
+	text-align: center;
+	background: #e93c3e;
+	font-size: 1rem;
+	color: white;
+	display: none;
+}
+
+.close-choose-btn{
+	width: 30px;
+	height: 30px;
+	font-size: 1.2rem;
+	position: absolute;
+	right: 2px;
+	top: 5px;
+}
+
+.select-quantity-div span{
+	display: inline-block;
+	background: #f1f1f1;
+	font-size: 1rem;
+	padding: 0.2rem 0.4rem;
+	min-width: 1.2rem;
+	margin-right: 0.2rem;
+	height: 1.5rem;
+	line-height: 1.6rem;
+	text-align: center;
+	color: #ccc;
+}
+
+.product-attr{
+	display: none;
+}
+
+#tips{
+	padding: 1rem;
+	position: fixed;
+	top:40%;
+	left:10%;
+	right: 10%;
+	border-radius: 3px;
+	background: rgba(0,0,0,0.7);
+	z-index: 10002;
+	display: none;
+	font-size: 0.9rem;
+	color: white;
+	/*text-align: center;*/
+}
+
+/*底部购买div*/
+#botton-buy-div{
+	position: fixed;
+	bottom:0;
+	width: 100%;
+	height: 3rem;
+	background: white;
+}
+
+#botton-buy-btn{
+	background: #b01f23;
+	text-align: center;
+	height: 100%;
+	line-height: 3rem;
+	color: white;
+	padding: 0 1.5rem;
+	font-size: 1rem;
+}

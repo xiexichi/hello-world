@@ -1,0 +1,239 @@
+.nav_in{-webkit-animation:.3s ease-out both;-webkit-animation-name:nav_in;-moz-animation:.3s ease-out both;-moz-animation-name:nav_in;animation:.3s ease-out both;animation-name:nav_in}
+@-webkit-keyframes nav_in{from{bottom:-100px}
+to{bottom:0}
+}
+@-moz-keyframes nav_in{from{bottom:-100px}
+to{bottom:0}
+}
+@-o-keyframes nav_in{from{bottom:-100px}
+to{bottom:0}
+}
+@keyframes nav_in{from{bottom:-100px}
+to{bottom:0}
+}
+.header_in{-webkit-animation:.2s ease-out both;-webkit-animation-name:header_in;-moz-animation:.2s ease-out both;-moz-animation-name:header_in;animation:.2s ease-out both;animation-name:header_in}
+@-webkit-keyframes header_in{from{top:-90px}
+to{top:0}
+}
+@-moz-keyframes header_in{from{top:-90px}
+to{top:0}
+}
+@-o-keyframes header_in{from{top:-90px}
+to{top:0}
+}
+@keyframes header_in{from{top:-90px}
+to{top:0}
+}
+@-webkit-keyframes bg_in{from{opacity:0}
+to{opacity:100}
+}
+@-moz-keyframes bg_in{from{opacity:0}
+to{opacity:100}
+}
+@-o-keyframes bg_in{from{opacity:0}
+to{opacity:100}
+}
+@keyframes bg_in{from{opacity:0}
+to{opacity:100}
+}
+@keyframes loading{0%{left:0;opacity:0}
+5%{opacity:1}
+95%{opacity:1}
+100%{left:100%;opacity:0}
+}
+@-webkit-keyframes loading{0%{left:0;opacity:0}
+5%{opacity:1}
+95%{opacity:1}
+100%{left:100%;opacity:0}
+}
+@-moz-keyframes loading{0%{left:0;opacity:0}
+5%{opacity:1}
+95%{opacity:1}
+100%{left:100%;opacity:0}
+}
+@-o-keyframes loading{0%{left:0;opacity:0}
+5%{opacity:1}
+95%{opacity:1}
+100%{left:100%;opacity:0}
+}
+@-webkit-keyframes left_to_right{0%{-webkit-transform:scale(1,1) translateX(0);-webkit-box-shadow:-5px 0 5px transparent;opacity:1}
+90%{-webkit-transform:scale(1.3,1.3) translateX(640px);-webkit-box-shadow:-30px 0 30px rgba(0,0,0,.5);opacity:.8}
+100%{-webkit-transform:scale(1,1) translateX(640px);-webkit-box-shadow:0 0 0 transparent;opacity:0}
+}
+@-webkit-keyframes right_to_left{0%{-webkit-transform:scale(1.3,1.3) translateX(640px);-webkit-box-shadow:-30px 0 30px rgba(0,0,0,.5);opacity:.8}
+90%{-webkit-transform:scale(1,1) translateX(0);-webkit-box-shadow:-5px 0 5px rgba(0,0,0,.5);opacity:1}
+100%{-webkit-transform:scale(1,1) translateX(0);-webkit-box-shadow:0 0 0 transparent;opacity:1}
+}
+.zoom_in{-webkit-animation:.3s ease-out both;-webkit-animation-name:zoom_in}
+@-webkit-keyframes zoom_in{from{-webkit-transform:scale(1,1) translateX(0);opacity:1}
+to{-webkit-transform:scale(.8,.8) translateX(-50px);opacity:0}
+}
+.zoom_out{-webkit-animation:.4s ease-out both;-webkit-animation-name:zoom_out}
+@-webkit-keyframes zoom_out{from{-webkit-transform:scale(.8,.8) translateX(-50px);opacity:1}
+to{-webkit-transform:scale(1,1) translateX(0);opacity:1}
+}
+.rotate360{animation:9.5s linear 0s normal none infinite rotate;-webkit-animation:9.5s linear 0s normal none infinite rotate}
+@-webkit-keyframes rotate{from{-webkit-transform:rotate(0)}
+to{-webkit-transform:rotate(360deg)}
+}
+@-moz-keyframes rotate{from{-moz-transform:rotate(0)}
+to{-moz-transform:rotate(360deg)}
+}
+@-ms-keyframes rotate{from{-ms-transform:rotate(0)}
+to{-ms-transform:rotate(360deg)}
+}
+@-o-keyframes rotate{from{-o-transform:rotate(0)}
+to{-o-transform:rotate(360deg)}
+}
+.rotateZ360{animation:8s linear 0s normal none infinite rotateZ;-webkit-animation:8s linear 0s normal none infinite rotateZ}
+@-webkit-keyframes rotateZ{0%{-webkit-transform:perspective(900px) rotateY(0)}
+25%{-webkit-transform:perspective(900px) rotateY(30deg)}
+50%{-webkit-transform:perspective(900px) rotateY(0)}
+75%{-webkit-transform:perspective(900px) rotateY(-30deg)}
+100%{-webkit-transform:perspective(900px) rotateY(0)}
+}
+@keyframes rotateZ{0%{transform:perspective(900px) rotateY(0)}
+33%{transform:perspective(900px) rotateY(30deg)}
+66%{transform:perspective(900px) rotateY(0)}
+100%{transform:perspective(900px) rotateY(-30deg)}
+}
+@-webkit-keyframes move_to_left{from{-webkit-transform:translateX(0)}
+to{-webkit-transform:translateX(-640px)}
+}
+@keyframes move_to_left{from{transform:translateX(0)}
+to{transform:translateX(-640px)}
+}
+@-webkit-keyframes move_from_right{from{-webkit-transform:translateX(640px)}
+to{-webkit-transform:translateX(0)}
+}
+@keyframes move_from_right{from{transform:translateX(640px)}
+to{transform:translateX(0)}
+}
+@-webkit-keyframes move_from_right_percent{from{-webkit-transform:translateX(100%)}
+to{-webkit-transform:translateX(0)}
+}
+@keyframes move_from_right_percent{from{transform:translateX(100%)}
+to{transform:translateX(0)}
+}
+@-webkit-keyframes move_to_right_percent{from{-webkit-transform:translateX(0)}
+to{-webkit-transform:translateX(100%)}
+}
+@keyframes move_to_right_percent{from{transform:translateX(0)}
+to{transform:translateX(100%)}
+}
+.rotate180{-webkit-animation:.2s ease-out both;-webkit-animation-name:rotate180}
+@-webkit-keyframes rotate180{0%{-webkit-transform:rotate(0)}
+100%{-webkit-transform:rotate(180deg)}
+}
+@keyframes rotate180{0%{transform:rotateY(0)}
+100%{transform:rotateY(180deg)}
+}
+.rotate180back{-webkit-animation:.2s ease-out both;-webkit-animation-name:rotate180back}
+@-webkit-keyframes rotate180back{0%{-webkit-transform:rotate(180deg)}
+100%{-webkit-transform:rotate(0)}
+}
+@keyframes rotate180back{0%{transform:rotateY(180deg)}
+100%{transform:rotateY(0)}
+}
+
+@keyframes verical-slow {
+  2% {
+    transform: translate(0, 1.5px) rotate(1.5deg); }
+  4% {
+    transform: translate(0, -1.5px) rotate(-0.5deg); }
+  6% {
+    transform: translate(0, 1.5px) rotate(-1.5deg); }
+  8% {
+    transform: translate(0, -1.5px) rotate(-1.5deg); }
+  10% {
+    transform: translate(0, 2.5px) rotate(1.5deg); }
+  12% {
+    transform: translate(0, -0.5px) rotate(1.5deg); }
+  14% {
+    transform: translate(0, -1.5px) rotate(1.5deg); }
+  16% {
+    transform: translate(0, -0.5px) rotate(-1.5deg); }
+  18% {
+    transform: translate(0, 0.5px) rotate(-1.5deg); }
+  20% {
+    transform: translate(0, -1.5px) rotate(2.5deg); }
+  22% {
+    transform: translate(0, 0.5px) rotate(-1.5deg); }
+  24% {
+    transform: translate(0, 1.5px) rotate(1.5deg); }
+  26% {
+    transform: translate(0, 0.5px) rotate(0.5deg); }
+  28% {
+    transform: translate(0, 0.5px) rotate(1.5deg); }
+  30% {
+    transform: translate(0, -0.5px) rotate(2.5deg); }
+  32% {
+    transform: translate(0, 1.5px) rotate(-0.5deg); }
+  34% {
+    transform: translate(0, 1.5px) rotate(-0.5deg); }
+  36% {
+    transform: translate(0, -1.5px) rotate(2.5deg); }
+  38% {
+    transform: translate(0, 1.5px) rotate(-1.5deg); }
+  40% {
+    transform: translate(0, -0.5px) rotate(2.5deg); }
+  42% {
+    transform: translate(0, 2.5px) rotate(-1.5deg); }
+  44% {
+    transform: translate(0, 1.5px) rotate(0.5deg); }
+  46% {
+    transform: translate(0, -1.5px) rotate(2.5deg); }
+  48% {
+    transform: translate(0, -0.5px) rotate(0.5deg); }
+  50% {
+    transform: translate(0, 0.5px) rotate(0.5deg); }
+  52% {
+    transform: translate(0, 2.5px) rotate(2.5deg); }
+  54% {
+    transform: translate(0, -1.5px) rotate(1.5deg); }
+  56% {
+    transform: translate(0, 2.5px) rotate(2.5deg); }
+  58% {
+    transform: translate(0, 0.5px) rotate(2.5deg); }
+  60% {
+    transform: translate(0, 2.5px) rotate(2.5deg); }
+  62% {
+    transform: translate(0, -0.5px) rotate(2.5deg); }
+  64% {
+    transform: translate(0, -0.5px) rotate(1.5deg); }
+  66% {
+    transform: translate(0, 1.5px) rotate(-0.5deg); }
+  68% {
+    transform: translate(0, -1.5px) rotate(-0.5deg); }
+  70% {
+    transform: translate(0, 1.5px) rotate(0.5deg); }
+  72% {
+    transform: translate(0, 2.5px) rotate(1.5deg); }
+  74% {
+    transform: translate(0, -0.5px) rotate(0.5deg); }
+  76% {
+    transform: translate(0, -0.5px) rotate(2.5deg); }
+  78% {
+    transform: translate(0, -0.5px) rotate(1.5deg); }
+  80% {
+    transform: translate(0, 1.5px) rotate(1.5deg); }
+  82% {
+    transform: translate(0, -0.5px) rotate(0.5deg); }
+  84% {
+    transform: translate(0, 1.5px) rotate(2.5deg); }
+  86% {
+    transform: translate(0, -1.5px) rotate(-1.5deg); }
+  88% {
+    transform: translate(0, -0.5px) rotate(2.5deg); }
+  90% {
+    transform: translate(0, 2.5px) rotate(-0.5deg); }
+  92% {
+    transform: translate(0, 0.5px) rotate(-0.5deg); }
+  94% {
+    transform: translate(0, 2.5px) rotate(0.5deg); }
+  96% {
+    transform: translate(0, -0.5px) rotate(1.5deg); }
+  98% {
+    transform: translate(0, -1.5px) rotate(-0.5deg); }
+  0%, 100% {
+    transform: translate(0, 0) rotate(0); } }

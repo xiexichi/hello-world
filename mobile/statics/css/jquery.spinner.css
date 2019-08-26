@@ -1,0 +1,15 @@
+table{border-collapse:collapse;border-spacing:0}
+caption,td,th{text-align:left;font-weight:400;vertical-align:middle}
+blockquote,q{quotes:none}
+blockquote:after,blockquote:before,q:after,q:before{content:"";content:none}
+a img{border:none}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block}
+.spinner{height:40px;width:160px;overflow:hidden;-webkit-box-shadow:0 3px 3px -4px #aaa;-moz-box-shadow:0 3px 3px -4px #aaa;box-shadow:0 3px 3px -4px #aaa;padding:10px 0 0 15px}
+.spinner .value,.spinner button{text-align:center;display:block;float:left;height:100%;line-height:40px;margin:0}
+.spinner button{border:none;width:40px;color:#e5312a;font:22px Arial 700;padding:0;outline:0}
+.spinner .decrease{background-image:url(/statics/img/spinner-mid.png);background-size:contain;cursor:pointer;text-indent:-10000px}
+.spinner .decrease[disabled]{background-image:url(/statics/img/spinner-mid-dis.png);cursor:default}
+.spinner .increase{background-image:url(/statics/img/spinner-add.png);background-size:contain;cursor:pointer;text-indent:-10000px}
+.spinner .value{background-image:url(/statics/img/spinner-bg.png);background-size:contain;width:60px;height:40px;border:none;font-family:Arial;color:#fff;padding:0}
+.spinner .value.passive{color:#919191}
+.spinner .error,.spinner .invalid{background:#a00}

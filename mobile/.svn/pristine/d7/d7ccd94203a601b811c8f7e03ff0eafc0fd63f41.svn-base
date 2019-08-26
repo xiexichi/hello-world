@@ -1,0 +1,211 @@
+body{background:#f2f2f2;}
+.account_header{height:auto;overflow:hidden;position:relative;border-bottom:1px solid #ccc;background:#fff}
+.account_header .bg{height:8em;overflow:hidden;position:absolute;background:url(/statics/img/account.headerbg.jpg) center;left:0;right:0;background-size:cover}
+.account_header .contentbox{height:auto;overflow:hidden;position:relative}
+.account_header .contentbox .infobox{height:8em;position: relative;}
+.account_header .infobox a.setting, .account_header .infobox a.qrcode{position:absolute;right: 1.5em;top: 50%;font-size: 1.6em;color:#fff;background: rgba(0,0,0,0.5);border-radius: 8px;width: 1.8em;height: 1.8em;text-align: center;overflow: hidden;line-height: 1.8em;margin-top: -0.8em;}
+.account_header .infobox a.qrcode{margin-right: 2.5em;}
+.account_header .user_icon{height:6em;width:6em;overflow:hidden;float:left;border-radius: 100%;border: 3px solid #fff;position:absolute;left: 1.5em;bottom: -2em;}
+.account_header .user_icon img{width: 100%;border-radius: 100%;}
+.account_header .btngroup{padding-left: 6.5em;clear: both;overflow: hidden;}
+.account_header .btngroup span.item{width:50%;float:left}
+.account_header .btngroup span.item.frist a{border-right:1px solid #ddd;}
+.account_header .btngroup a{font-weight:700;color:#da3335;display:block;text-align:center;font-size: 1.5em;padding: .5em 0;}
+.account_header .btngroup a span{color:#999;font-size:.6em;font-weight:400;display:block}
+.account_header .btngroup i{height:50px;float:left;width:1px;text-align:left;background:#ccc;margin:15px 20px 0 0}
+.account_header .rightbox{position:absolute;left:9em;bottom:1em;}
+.account_header .rightbox .name{font-size:1.8em;color:#fff}
+.account_header .rightbox .name i{color:#f4c600;}
+.account_header .rightbox .address{font-size:1em;color:rgba(255,255,255,.7);padding-top:.5em;padding-right:5em}
+.account_header .orderbox{overflow:hidden;position:relative;border-top: 1px solid #ddd;}
+.account_header .orderbox .itemgroup{overflow:hidden}
+.account_header .orderbox .itemgroup .div{width: 25%;float:left;}
+.account_header .orderbox .itemgroup .item{padding: 0.5em 0;border-right:1px solid #eee;}
+.account_header .account_row{border-color:#eee;margin:0;border-bottom:none;}
+.account_header .orderbox .itemgroup .item i{display:block;text-align:center;font-size:2em;line-height: 1.3em;color:#434343;}
+.account_header .orderbox .itemgroup .item span{display:block;text-align:center;}
+.account_row{border-top:1px solid #ddd;border-bottom:1px solid #ddd;background:#fff;margin:1em 0 0 0;padding:0 1em;font-size:1.4em;position:relative;display:block;line-height:3em}
+.account_row i{float:left;font-size:1.4em;position:relative;left:-2px;color:#E09293}
+.account_row i.wallet{background-image:url(/statics/img/icon.wallet_red.png)}
+.account_row span.fr{color:#999;font-size:.8em;padding-right:15px}
+.account_row span.more{height:18px;width:10px;float:right;overflow:hidden;background:url(/statics/img/icon.foward.png) no-repeat center;background-size:contain;position:absolute;top:50%;right:10px;margin-top:-10px}
+.account_row_followbox{border-top:1px solid #eee;background:#fbfbfb;padding:0 20px;border-bottom:1px solid #ccc;height:auto;overflow:hidden}
+.p30{width:33%}
+.p50{width:50%}
+.cel_3{height:auto;overflow:hidden;display:inline-block;float:left}
+.borderbottom{border-bottom:1px solid #ccc}
+.bordertop{border-top:1px solid #ccc}
+.order_class{background:#fff;line-height:40px;font-size:16px;overflow:hidden;position:relative;height:40px}
+.order_class span.arrow{height:0;padding-top:15px;width:15px;position:absolute;right:20px;top:15px;overflow:hidden;display:block;background:url(/statics/img/arrow.png) no-repeat center;background-size:contain}
+.order_class ul{height:auto;overflow:hidden}
+.order_class ul li{border-bottom:1px solid #ccc;padding:0 1em}
+.order_class ul li.selected{background:#da3335;color:#fff;font-weight:700}
+.order_list_more span{height:0;padding-top:14px;width:14px;overflow:hidden;display:inline-block;background:url(/statics/img/arrow.png) no-repeat center;background-size:contain;position:relative;top:3px}
+.order_list_more{border-top:1px solid #ddd;padding:0 1em;background:#fff;line-height:2em}
+.order_list_more .textbox{padding-right:10px;color:#da3335}
+.order_list ul{height:auto;overflow:hidden}
+.order_list ul li{border-bottom:1px solid #ccc;border-top:1px solid #ccc;background:#fff;height:auto;overflow:hidden;margin:1em 0}
+.order_list ul li .infobox{border-bottom:1px solid #ccc;position:relative;overflow:hidden;height:auto;padding:1em}
+.order_list ul li .infobox .itemno{float:left;font-size:1.3em}
+.order_list ul li .infobox .itemno span{font-size:12px;font-weight:400}
+.order_list ul li .infobox .itemno span strong{font-size:12px}
+.order_list ul li .infobox .org_sn{font-size:22px;font-weight:400;color:#444;margin-bottom:5px}
+.order_list ul li .infobox .fl{border-left:3px solid #da3335;padding-left:15px}
+.order_list ul li .infobox .statusbox{border-radius:12px;background:#fff;color:#000;height:20px;width:auto;overflow:hidden;line-height:20px;padding:0 8px;margin:0;font-size:10px;position:absolute;right:5px;font-weight:400;bottom:10px}
+.importbg{background:#f87677!important;color:#fff!important;border:1px solid #f87677}
+.normalbg{background:#fff!important;color:#da3335!important;border:1px solid #f87677}
+.disbg{background:#ccc!important;color:#fff!important;border:1px solid #ccc}
+.order_list_box{overflow:hidden}
+.order_detail_box .order_items .innerbox,.order_list ul li .innerbox{border-bottom:1px dotted #ccc;background:#f6f6f6;padding:10px;position:relative;overflow:hidden}
+.order_detail_box .order_items .innerbox .imgbox,.order_list ul li .innerbox .imgbox{text-align:center;width:22%;float:left}
+.order_detail_box .order_items .innerbox .imgbox a,.order_list ul li .innerbox .imgbox a{width:100%;display:block;border:1px solid #eee}
+.order_detail_box .order_items .innerbox .itemsummary,.order_list ul li .innerbox .itemsummary{display:block;line-height:1.5em;width:75%;float:right;font-size:1.2em}
+.order_detail_box .order_items .innerbox .itemsummary p.title,.order_list ul li .innerbox .itemsummary p.title{display:block;overflow:hidden;text-overflow:ellipsis}
+.order_detail_box .order_items .innerbox .itemsummary p.model,.order_list ul li .innerbox .itemsummary p.model{display:block;overflow:hidden;text-overflow:ellipsis;color:#666}
+.order_detail_box .order_items .innerbox .itemsummary p.price,.order_list ul li .innerbox .itemsummary p.price{display:block;color:#000;overflow:hidden;font-size:20px;padding:5px 0 0 20px}
+.order_list ul li .btn_box{height:auto;overflow:hidden;padding:.5em 1em;clear:both;border-top:1px solid #ccc;background-color:#cbcbcb;color:#fff}
+.order_list ul li .noticebox{font-size:1.2em;line-height:30px}
+.a_btn{border-radius:4px;padding:0.6em;background:#f9f9f9;border:1px solid #ccc;width:auto;overflow:hidden;color:#666;line-height:1em}
+.btn_box .a_btn.fr{margin-left:10px}
+.a_btn_import{background:#da3335!important;color:#fff!important;border:1px solid #da3335}
+.mgl-20{margin-left:20px}
+.mgr-20{margin-right:20px}
+.account_setting,.account_setting .icon_box{height:auto;overflow:hidden}
+.account_setting .icon_box{padding:1em 0;border-bottom:1px solid #ccc}
+.account_setting .icon_box .usericon{width:8em;height:8em;margin:0 auto 10px auto;border-radius:5em;overflow:hidden;border:3px solid #fff;position:relative}
+.account_setting .icon_box .btnchangebox{width:30px;height:30px;margin:0 auto;overflow:hidden;position:relative}
+.account_setting .icon_box .usericon .loader{width:180px;height:180px;display:none;position:absolute;left:0;top:0;opacity:.8;background:url(/statics/img/loader2.gif) no-repeat center rgba(0,0,0,.5);background-size:20% 20%}
+.account_setting .icon_box .btnchange{width:30px;height:0;padding-top:30px;margin:0 auto;overflow:hidden;background:url(/statics/img/icon.camera.png) no-repeat center;background-size:contain}
+.account_setting .row{background:#fff;font-size:1.3em;border-bottom:1px solid #ccc;padding:0 1em;line-height:3em;overflow:hidden;position:relative}
+.account_setting .row .fr.load{background:url(/statics/img/loader3.gif) no-repeat center;width:42px;height:42px;background-size:60%}
+.account_setting .row .fr .btncheckbox{border-radius:5px;background:#f0f0f0;padding:0 10px;border:1px solid #ccc;float:right;margin-left:10px;line-height:2em;margin-top:.5em}
+.account_setting .row .fr .btncheckbox_checked{background:#da3335;border:1px solid #da3335;color:#fff}
+.disenable_edit{color:#999}
+.rt{height:20px;display:block}
+span.arrow_noraml{height:0;padding-top:18px;width:18px;position:absolute;overflow:hidden;background:url(/statics/img/icon.foward.png) no-repeat center;background-size:contain;right:.5em;top:50%;margin-top:-9px}
+.input_short{border:1px solid #ccc;padding:5px 10px;margin:0}
+.text_right{text-align:right}
+ul.historylist{background:#fff;height:auto;overflow:hidden}
+ul.historylist li{position:relative}
+ul.historylist li .v_check{position:absolute;right:20px;bottom:0;font-size:3.5em;color:#d84b39}
+ul.historylist li .innerbox{border-bottom:1px dotted #ccc;background:#fff;padding:1em}
+ul.historylist li .innerbox .imgbox{text-align:center;width:20%;float:left}
+ul.historylist li .innerbox .imgbox a{display:block;border:1px solid #eee}
+ul.historylist li .innerbox{position:relative;overflow:hidden}
+ul.historylist li .innerbox .itemsummary{display:block;line-height:1.5em;float:right;width:78%}
+ul.historylist li .innerbox .itemsummary p.title{display:block;overflow:hidden;text-overflow:ellipsis;font-size:1.3em}
+ul.historylist li .innerbox .itemsummary p.time{display:block;overflow:hidden;text-overflow:ellipsis;line-height:24px;color:#333}
+ul.historylist li .innerbox .itemsummary p.click{display:block;color:#000;overflow:hidden}
+ul.historylist li .innerbox .itemsummary p.price{display:block;color:#000;overflow:hidden}
+ul.historylist li .innerbox .itemsummary p.click span.old{text-decoration:line-through}
+
+.nav-tags{background:#fff;line-height: 3em;font-size: 1.5em;overflow:hidden;position:relative}
+.nav-tags .item{width:50%;float:left;text-align:center;height:auto;overflow:hidden;}
+.nav-tags.nav-tags-col4 .item{width:25%;}
+.nav-tags.nav-tags-col3 .item{width:33.333333%;}
+.nav-tags.nav-tags-col2 .item{width:50%;}
+.nav-tags a{border-right:1px solid #ddd;display:block;color:#777;border-bottom:5px solid #fff;}
+.nav-tags .item:last-child a{border-right:0}
+.nav-tags .item.current a{border-bottom:5px solid #da3335;color:#da3335;}
+
+.balance_total{background:#18284a;overflow:hidden;position:relative;color:#fff;text-align:center;padding: 2em;}
+.balance_total span{padding-right:15px}
+.balance_total sup{font-weight:400;padding-right:5px;font-size: 0.7em;}
+.balance_total button{border-radius:8px;padding:8px 15px;background:#fff;width:auto;display:block;margin:auto;overflow:hidden;color:#666;border:0;font-size: 16px;}
+.balance_total .btnbox,.balance_total .totaltext{display:block;text-align:center;position:relative;width:100%;height:auto;overflow:hidden;font-size: 4em;}
+.balance_total .btnbox{padding-top:5px}
+.balance_class{background:#fff;line-height: 3em;font-size: 1.5em;overflow:hidden;position:relative}
+.balance_class .item{width: 25%;float:left;text-align:center;height:auto;overflow:hidden;}
+.balance_class a{border-right:1px solid #ddd;display:block;color:#777;border-bottom:5px solid #fff;}
+.balance_class .item:last-child a{border-right:0}
+.balance_class .item.current a{border-bottom:5px solid #da3335;color:#da3335;}
+.balance_list{height:auto;overflow:hidden}
+.balance_list li{border-bottom:1px solid #ccc;height:auto;overflow:hidden;padding: 1em;background:#fff;position: relative;}
+.balance_list li .box{line-height: 1.6em;font-size: 1.4em;position: relative;}
+.balance_list li .box .title{font-size: 1.2em;line-height: 1.8em;}
+.balance_list li .fr{line-height: 1.8em;font-size: 1.2em;position: absolute;right:0;padding-right: 1.2em;top: 0;}
+.balance_list li .fr span{font-size: 0.8em;color:red;}
+.balance_list li .fr i{overflow:hidden;background-size:contain;height: 1em;width: 1em;position: absolute;top: 50%;margin-top: -0.5em;right: 0;background-repeat:no-repeat;}
+.balance_list li .fr i.add{background-image:url(/statics/img/icon.bag_add.png)}
+.balance_list li .fr i.mid{background-image:url(/statics/img/icon.bag_mid.png)}
+.balance_list li .fr .btn{position:absolute;right:0;margin-top:10px; white-space:nowrap;}
+.coupon_box{border-bottom:1px solid #ccc;background:#fff;padding:1em;height:auto;overflow:hidden}
+.coupon_box .inputbox{width:70%;float:left}
+.coupon_box .inputbox input{text-align:center;border:0;padding:0;margin:0;font-size:24px;font-weight:700;line-height:58px;letter-spacing:3px;width: 100%;border-bottom-left-radius:6px;border-top-left-radius:6px;border-left:1px solid #ccc;border-top:1px solid #ccc;border-bottom:1px solid #ccc;}
+.coupon_box button{width:30%;height:60px;border-bottom-right-radius:6px;border-top-right-radius:6px;background:#da3335;font-size:26px;color:#fff;text-align:center;line-height:60px;border:0;float:left}
+.coupon_box .remindbox{padding:10px;font-size:1em;color:#999;display:block;width:100%;height:auto;overflow:hidden;}
+ul.coupon_list{height:auto;overflow:hidden;padding:1em}
+ul.coupon_list.lottery_code{padding:0 1em;}
+ul.coupon_list li{padding: 20px 20px;overflow:hidden;background:url(/statics/img/coupon_single.png) no-repeat right center;background-size:cover;margin:10px 0;display: block;border-radius:6px;}
+ul.coupon_list li.mulit{background-image:url(/statics/img/coupon_mulit.png);}
+ul.coupon_list li.single{background-image:url(/statics/img/coupon_single.png);}
+ul.coupon_list li.disenable{background-image:url(/statics/img/coupon_dis.png);}
+ul.coupon_list li.useed{background-image:url(/statics/img/coupon_useed.png);}
+ul.coupon_list li.fail{background-image:url(/statics/img/coupon_lottery_fail.png);}
+ul.coupon_list li.victory{background-image:url(/statics/img/coupon_lottery_victory.png);}
+ul.coupon_list li.wait{background-image:url(/statics/img/coupon_lottery_wait.png);}
+ul.coupon_list li .title{font-size: 1.6em;color:#da3335;font-weight:700;}
+ul.coupon_list li .time{font-size: 1.2em;color:#666;padding:5px 0 0 0}
+ul.coupon_list li.disenable .time,ul.coupon_list li.disenable .title,
+ul.coupon_list li.fail .time,ul.coupon_list li.fail .title,
+ul.coupon_list li.victory .time,ul.coupon_list li.victory .title,
+ul.coupon_list li.useed .time,ul.coupon_list li.useed .title{color:#999}
+.recharge_box{text-align:center;padding-top:10px;height:auto;overflow:hidden}
+.recharge_box .inputbox{text-align:center}
+.recharge_box .inputbox input.text{width:50%;text-align:center;border:1px solid #ccc;padding:0;margin:0;font-size:28px;font-weight:700;line-height:48px;letter-spacing:3px}
+.recharge_box .plus_price{font-size: 1.8em;font-weight:700;color: #CD3322;text-align:center;margin-bottom:20px;margin-top:5px; display:none; width: 50%;margin: 0 auto;border: 1px solid #CD3322;padding: 0.5em 0;}
+.recharge_rules{padding:20px 50px;}
+.recharge_rules h3{font-size:18px;color:#5a5a5a;}
+.recharge_rules .info{font-size:14px;color:#828282;line-height:1.5em;list-style-type:decimal;padding:0;}
+.recharge_rules .info li{padding-top:10px;}
+.block_row{height:20px;overflow:hidden;display:block}
+.order_detail_box .order_status{background-color:#d84b39;color:#fff;padding:20px 30px;font-size:1.6em;position:relative;line-height:1.5em}
+.order_detail_box .order_status a{color:#fff;text-decoration:underline}
+.order_detail_box .order_status .subcon{font-weight:400;font-size:.8em}
+.order_detail_box .order_status .iconfont{position:absolute;right:15%;font-size:4em}
+.order_detail_box .order_status .pay{position:absolute;font-size:4.5em;right:10%;margin-top:12px}
+.order_detail_box .order_status .wait{font-size:4em;right:11%;margin-top:5px}
+.order_detail_box .order_status .exp{font-size:6em;right:15%;margin-top:5px}
+.order_detail_box .order_status .refund{font-size:3em;right:20px;margin-top:8px}
+.order_detail_box .order_status .return{font-size:4em;right:8%;margin-top:2px}
+.order_detail_box .order_status .ok{font-size:3em;right:10%;margin-top:5px}
+.order_detail_box .order_status .cencel{font-size:3em;right:10%;margin-top:5px}
+.order_detail_box .order_status .return2{font-size:5em;right:6%;margin-top:12px}
+.order_detail_box .order-detail-row{padding:10px;clear:both;overflow:hidden;position:relative;background-color:#fff;border-bottom:1px dotted #eee}
+.order_detail_box .order-detail-row .arrow,.order_detail_box .order-detail-row .ico{-webkit-box-pack:center;-moz-box-pack:center;-ms-box-pack:center;-o-box-pack:center;box-pack:center;-webkit-box-align:center;-moz-box-align:center;-ms-box-align:center;-o-box-align:center;box-align:center;display:-webkit-box;display:-moz-box;display:-ms-box;display:-o-box;display:box}
+.order_detail_box .order-detail-row .ico{width:2em;float:left;height:100%;position:absolute;left:5px;top:0;font-size:1.5em}
+.order_detail_box .order-detail-row .con{padding-left:2.5em;padding-right:4em;line-height:1.6em;font-size:1.3em}
+.order_detail_box .order-detail-row .arrow{position:absolute;right:0;top:0;height:100%;width:3em;font-size:1.6em}
+.order_detail_box .order-detail-row.express .ico{color:#ff6400}
+.order_detail_box .order-detail-row.address .ico{font-size:2em;left:0}
+.order_detail_box .order-detail-row.address .con{padding-right:10px}
+.order_detail_box .order-detail-row .exping{color:#ff6400}
+.order_detail_box .order-detail-row .time{font-size:.8em}
+.order_detail_box .order-detail-row .phone{float:right;font-size:.8em;font-weight:400}
+.order_detail_box .order-detail-row .localhost{font-size:.8em;font-weight:400;line-height:20px}
+.order_detail_box .order_items{border-top:5px solid #ddd}
+.order_detail_box .order_prices{background-color:#fff;padding:10px}
+.order_detail_box .order_prices dl{clear:both;overflow:hidden;line-height:1.5em}
+.order_detail_box .order_prices dl dt{float:left;color:#888}
+.order_detail_box .order_prices dl dd{float:right}
+.order_detail_box .order_services{border-bottom:5px solid #ddd;clear:both;overflow:hidden;border-top:1px solid #ddd}
+.order_detail_box .order_services span{float:left;display:block;width:50%}
+.order_detail_box .order_services a{display:block;text-align:center;line-height:3em;font-size:1.4em;background-color:#f2f2f2}
+.order_detail_box .order_services span>a:first-child{border-right:1px solid #ddd}
+.order_detail_box .order_services a i{margin-right:5px;}
+.order_detail_box .order_sninfo{background-color:#fff;padding:10px;line-height:1.5em;color:#888}
+.order_detail_bottom{position:fixed;bottom:0;width:100%;background-color:#fff;padding:5px 0;text-align:center;border-top:1px solid #ddd}
+.wuliu_box{height:90%;overflow:hidden;margin-top:10px;}
+.wuliu_box .wuliu_head{text-align:left;line-height:1.5em;padding-bottom:10px;background-color:#f8f8f8;padding:10px;border:1px solid #eee;margin-bottom:10px}
+.wuliu_box .wuliu_body{text-align:left;padding-top:10px;height:80%;overflow:auto}
+.wuliu_box .wuliu_body dl dt{border-bottom:1px solid #ddd;font-size:1.4em;color:#000;line-height:2em;margin-bottom:10px}
+.wuliu_box .wuliu_body dl dd{line-height:1.5em;border-top:1px dotted #ddd;padding:10px 0}
+.wuliu_box .wuliu_body dl>dd.d-0{border-top:0;color:#ff6400}
+
+.phone-here{height: 3em;line-height: 3em;position: absolute;right: 8em;color:#da3335;}
+
+/* 生成二唯码 */
+.qrcodebox{background:#fff;color:#000;}
+.qrcodebox .code{position:relative;}
+.qrcodebox .code .qrlogo{position:absolute;top:50%;left:50%;height:50px;width:50px;margin-top:-30px;margin-left:-30px;border-radius:10px;border:5px #fff solid;}
+.qrcodebox .code .qrimg{width:232px;height:232px;}

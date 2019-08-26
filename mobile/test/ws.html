@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+</body>
+</html>
+
+
+
+<!-- 测试链接WebSocket -->
+<script type="text/javascript">
+		
+
+
+
+	/**
+	 * [p 打印函数]
+	 * @param  {[type]} data [description]
+	 * @return {[type]}      [description]
+	 */
+	function p(data){
+		console.info(data);
+	}
+
+	// 链接时，发送手机号码和用户名，如有微信名，则一同发送 
+	// var conn = new WebSocket("ws://192.168.75.128:13000/cs?business_code=gz_huimei&phone=13612465277&name=andy&wname=andy");
+
+	// var conn = new WebSocket("ws://api.25boy.com/cs?business_code=gz_huimei&phone=13612465277&name=andy&wname=andy");
+
+	var conn = new WebSocket("wss://api.25boy.com/cs?business_code=gz_huimei&phone=13612465277&name=andy&wname=andy");
+
+	// var conn = new WebSocket("ws://api.25boy.cn/cs?business_code=gz_huimei&phone=13612465277&name=andy&wname=andy");
+	// var conn = new WebSocket("ws://localhost:13000/bs");
+
+	// 链接成功方法
+	conn.onopen = function(evt) { 
+        p('链接成功') 
+
+        // conn.send('hello world')
+    }; 
+
+    // 手动消息方法
+	conn.onmessage = function (evt) {
+		var data = getMessage(evt);
+		if (!data) {
+			return;
+		}
+
+		p(data);
+
+	}
+
+	// 关闭webSocket链接
+	conn.onclose = function (evt) {
+	    console.info(evt);
+	};
+
+
+	/**
+	 * [getMessage 获取消息]
+	 * @param  {[type]} evt [description]
+	 * @return {[type]}     [description]
+	 */
+	function getMessage(evt){
+		if (evt.isTrusted) {
+			// 转换为json数据
+			return eval('(' + evt.data + ')');
+		}
+
+		return null;
+	}
+
+
+</script>

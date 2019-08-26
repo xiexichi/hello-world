@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>25BOY - 微信关注</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="HandheldFriendly" content="true">
+    <meta http-equiv="cleartype" content="on">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="keywords" content="25boy,潮牌,新国货,国潮男装,HEA,狮子头,银鳞堂">
+    <meta name="description" contect="HARDLYEVERS 25boy潮牌新国货，7天无理由退换货。复古,古着,原创,中国风T恤，高桥石尚运动服，潮牌与运动完美结合">
+    <link rel="stylesheet" type="text/css" href="/statics/css/global.css">
+    <link rel="stylesheet" type="text/css" href="/statics/css/page.css">
+    <link rel="stylesheet" type="text/css" href="/statics/css/font.css" />
+    <link rel="stylesheet" type="text/css" href="/statics/css/animate.css" />
+    <link rel="stylesheet" type="text/css" href="/statics/css/20151106.css" />
+    <script src="/statics/js/jquery.min.js"></script>
+<style type="text/css">
+.message{height:auto;margin-top: 0.5em;}
+.message span{color:#e56163;font-size:120%;margin-left:0.2em;margin-top: 0.5em;}    
+.p_txt{width:85%;margin:1.5em auto;color:#8C807E;font-size:1em;line-height: 1.5em;margin-top: 0.5em;text-align: center;}
+.message h2{color:#8C807E;font-size: 1em;text-align: center;}
+.getCardstep{width:85%;margin:1em auto;font-size:1.2em;text-align:center;color:#e56163;font-weight:700;}
+.QR_code{width:100%;height:auto;}
+.QR_code .title{color:#e56163;font-size:200%;text-align: center;}
+.QR_code h2{width:15em;height:15em;margin:1em auto;}  
+</style>    
+</head>
+<body>
+    <div id="bodybox">
+        <div class="layoutmasker"></div>
+        <div class="page_header_out">
+            <header class="header_in page_header">
+                <div class="log_status_box">
+                    <a href="javascript:history.go(-1)" class="back"><i class="iconfont">&#xe616;</i></a>
+                </div>
+                <div class="pagetitle">微信关注</div>
+                <div class="homebtn">
+                    <a href="javascript:;" class="menu dropdown-toggle" id="quickMenu" data-toggle="dropdown" role="button" aria-haspopup="true"><i class="iconfont">&#xe604;</i></a>
+                </div>
+                <ul class="dropdown-menu" aria-labelledby="quickMenu">
+                    <li><a href="/">首页</a></li>
+                    <li><a href="/?m=cart">购物车</a></li>
+                    <li><a href="/?m=category">全部商品</a></li>
+                    <li><a href="/?m=account">我的二五</a></li>
+                </ul>
+                <div class="dropdown-backdrop" style="display:none"></div>
+            </header>
+        </div>
+        <section class="main pagemain pagebgwhite">
+            <div class="inbox">
+                <div class="message">
+                    <p class="getCardstep">关注官方公众微信号</p>
+                    <p class="p_txt">如果您未关注，请长按下方二维码，在弹出菜单里选择"识别二维码"，关注25BOY(hardly-evers)官方微信，方可获取更多优惠</p>
+                </div>
+                <div class="QR_code">
+                    <h1 class="title">25BOY 二五仔</h1>
+                    <h2>
+                        <img src="http://www.25boy.cn/images/v2/wchat_qcode.jpg" width="100%" />            
+                    </h2>
+                </div>
+                <span class="blank10"></span>
+                <div class="message">
+                    <h2 class="p_txt" style="text-align:left;margin-bottom:0;font-size:1.2em;color:#000;">绑定微信号包邮方法：</h2>
+                    <p class="p_txt" style="text-align:left;">1. 关注25BOY(hardly-evers)官方微信；<br />2. 点击右下角“进入官网”，注册/登录即可自动绑定包邮。</p>
+                </div>
+                <p class="img_box">
+                    <img src="http://img.25miao.com/115/1469865907.jpg!w640" alt="绑定微信步骤" style="width:80%;margin:auto;" />
+                </p>
+            </div>
+        </section>
+    </div>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?761f90d4d4c1c7b71eefae88b4b45b4e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    $(function(){
+        $.get('/?m=public&a=js',function(data){
+            $('body').append(data);
+        })
+    })
+    </script>
+    <script src="/statics/js/page.js"></script>
+</body>
+</html>
