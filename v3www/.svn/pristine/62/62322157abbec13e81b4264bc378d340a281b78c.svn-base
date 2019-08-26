@@ -1,0 +1,84 @@
+<?php
+namespace app\order\controller;
+
+use think\Exception;
+
+class OrderGoods extends Base
+{
+    public function getOrderGoodsList(){
+        if( !$param = $this->validate->getOrderGoodsList(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $goods_list = $this->model->getItemList($param['order_id']);
+        return successJson($goods_list,'success');
+    }
+
+    //用户订单评价提交
+    public function goodsEvaluationSubmit(){
+        $code = 000001;
+        if( !$param = $this->validate->goodsEvaluationSubmit(input('post.')) ){
+            return errorJson($code,$this->validate->getError());
+        }
+        $order_goods_id = $param['order_goods_id'];
+        $user_id = $param['user_id'];
+        $star = $param['star'];
+        $desc = $param['desc'];
+        $img_list = $param['img_list'];
+        $this->model->startTrans();
+        try{
+            $where['og.id'] = $order_goods_id;
+            $where['o.user_id'] = $user_id;
+            $orderModel = new \app\order\model\Order();
+            //获取商品单信息
+            $order_goods_info = $this->model->alias('og')
+                ->field('o.user_id,o.order_sn,og.*,o.finished_status,o.evaluation_status')
+                ->join($orderModel->getTable().' o','o.order_id = og.order_id')
+                ->where($where)
+                ->find();
+            if( empty($order_goods_info) ){
+                $code = 000010;
+                throw new Exception('订单信息获取失败');
+            }
+            //检查订单状态
+            if( $order_goods_info['status'] <> 0 && $order_goods_info['finished_status'] == 0 ){
+                $code = 000011;
+                throw new Exception('商品订单不在可评论状态');
+            }
+            //处理评论数据
+            $t = date('Y-m-d H:i:s');
+            $goodsEvaluationModel = new \app\goods\model\Evaluation();
+            $insertData = [];
+            $insertData['user_id'] = $user_id;
+            $insertData['order_id'] = $order_goods_info['order_id'];
+            $insertData['order_sn'] = $order_goods_info['order_sn'];
+            $insertData['order_goods_id'] = $order_goods_info['id'];
+            $insertData['goods_id'] = $order_goods_info['goods_id'];
+            $insertData['goods_item_id'] = $order_goods_info['goods_item_id'];
+            $insertData['star'] = $star;
+            $insertData['content'] = $desc;
+            $insertData['images_list'] = empty($img_list) ? '' : json_encode($img_list);
+            $insertData['create_time'] = $t;
+            $insertData['update_time'] = $t;
+            if( getSystemSet('GOODS_EVALUATION_AUTO') == 'on' ){
+                $insertData['verify'] = 1;
+            }
+            if( !$goodsEvaluationModel->insert($insertData) ){
+                throw new Exception('网络错误，评论提交失败');
+            }
+            //检查原订单是否已经更改状态
+            if( $order_goods_info['evaluation_status'] == 0 ){
+                $updateData['evaluation_status'] = 1;
+                $updateData['evaluation_time'] = $t;
+                $updateData['update_time'] = $t;
+                if( !$orderModel->where('order_id',$order_goods_info['order_id'])->update($updateData) ){
+                    throw new Exception('网络错误，订单状态更新失败');
+                }
+            }
+            $this->model->commit();
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($code,$e->getMessage());
+        }
+        return successJson('success','提交成功');
+    }
+}

@@ -1,0 +1,36 @@
+<?php
+
+namespace app\cart\model;
+
+class Cart extends Base
+{
+    public function getAllAfter(){
+        $data = $this->data;
+        if( !empty($data) ){
+            $goodsItemModel = new \app\goods\model\GoodsItem();
+            $shop = [];
+            foreach( $data as $key => $val ){
+                $itemInfo = $goodsItemModel->getItemInfo($val['goods_item_id']);
+                if( empty($shop[$val['shop_id']]) ){
+                    $shop[$val['shop_id']] = [
+                        'shop_id' => $val['shop_id'],
+                        'goods_list' => []
+                    ];
+                }
+                $shop[$val['shop_id']]['goods_list'][] = [
+                    'item_info' => $itemInfo,
+                    'num' => $val['num'],
+                    'sub_price' => (($val['item_price'] > $itemInfo['item_price']) ? bcsub($val['item_price'],$itemInfo['item_price'],2) : 0),
+                    'sum_price' => bcmul($val['num'],$itemInfo['item_price'],2)
+                ];
+            }
+        }
+        if( !empty($shop) ){
+            $data = [];
+            foreach( $shop as $v ){
+                $data[] = $v;
+            }
+        }
+        $this->data = $data;
+    }
+}

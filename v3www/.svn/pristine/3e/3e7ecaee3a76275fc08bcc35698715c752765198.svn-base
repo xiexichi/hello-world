@@ -1,0 +1,84 @@
+// layui
+layui.use(['table', 'form'], function (){
+  const table = layui.table
+  const form = layui.form
+
+  // 数据表格
+  table.render({
+    elem: '#appsDataTable',
+    height: 'auto',
+    toolbar: '#toolbar',
+    limit: 20,
+    defaultToolbar: false,
+    url: '/apps/app_auth/index',
+    headers: {
+      ctrl: CENTER_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width: 80},
+      {field: 'app_name', title: '应用名称', width: 180},
+      {field: 'app_id', title: '应用ID', width: 150},
+      {field: 'app_key', title: '应用密钥', width: 250},
+      {field: 'platform_code', title: '平台代码', width: 120},
+      {field: 'desc', title: '应用说明'},
+      {field: 'status', title: '状态', align:'center', width: 120, templet: '#statusTpl'},
+      {field: 'id', title: '操作', align:'center', width: 130, toolbar: '#ctrlTpl'}
+    ]]
+  })
+
+  //监听工具栏事件
+  table.on('toolbar(appsDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    if (layEvent === 'add') {
+      layer.open({
+        title: '添加应用',
+        type: 2,
+        area: ['500px', '480px'],
+        content: '/apps/app_auth/detail'
+      })
+    }
+  })
+
+  //监听行工具事件
+  table.on('tool(appsDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    if (layEvent === 'edit') {
+      layer.open({
+        title: '编辑应用信息',
+        type: 2,
+        area: ['500px', '480px'],
+        content: '/apps/app_auth/detail?id='+data.id
+      })
+    } else if (layEvent == 'del') {
+      layer.confirm('删除后不能恢复', {icon: 3, title: '删除确认'}, function (index) {
+        request.setHost('center_data').post('/apps/app_auth/delete', {ids: data.id}, function(json) {
+          layer.msg(json.msg, {
+            time: 1000
+          },function () {
+            location.reload()
+          })
+        })
+      })
+    }
+  })
+
+  // 监听切换状态
+  form.on('switch(switch-status)', function (obj) {
+    const json = JSON.parse(decodeURIComponent($(this).data('json')))
+    let status = $(this).data('value')
+    let params = table.clearCacheKey(json)
+    params.status = (status == 1 ? 0 : 1)
+    $(this).data('value', params.status)
+
+    request.setHost('center_data').post('/apps/app_auth/edit', params, function (json) {
+      layer.msg(json.msg, {
+        time: 800
+      })
+    })
+  })
+
+})

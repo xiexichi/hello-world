@@ -1,0 +1,104 @@
+<?php
+namespace app\power\model;
+
+class PowerRole extends Base
+{
+	// 自动时间
+	protected $autoWriteTimestamp = 'datetime';
+
+	protected $table = 'power_role';
+	protected $createTime = 'create_time';
+	protected $updateTime = 'update_time';
+
+	public function getRoleGroupTree(){
+	    //....身份条件判断
+	    $moduleList = (new PowerModule())->field('id,title')->where('is_show',1)->order('sort DESC')->select();	    
+	    $controllerList = (new PowerController())->field('id,title,module_id')->where('is_show',1)->order('sort DESC')->select();
+	    $groupList = (new PowerGroup())->field('id,title,module_id,controller_id')->where('is_show',1)->order('sort DESC')->select();
+	    
+	    $controllerList = collection($controllerList)->toArray();
+	    $moduleList = collection($moduleList)->toArray();
+	    $groupList = collection($groupList)->toArray();
+
+	    $tree = self::makeMCGAuthtree($moduleList, $controllerList, $groupList);
+	    return $tree;
+	}
+	
+	public static function makeMCGAuthtree($moduleList,$controllerList,$groupList){
+	    /*
+	     //返回树例子
+	     $list['trees'] = [
+    	     ["name"=> "用户管理", "value"=> "yhgl", "checked"=> true],
+    	     ["name"=> "用户组管理", "value"=> "yhzgl", "checked"=> true, "list"=> [
+        	     ["name"=> "角色管理", "value"=> "yhzgl-jsgl", "checked"=> true, "list"=>[
+            	     ["name"=> "添加角色", "value"=> "yhzgl-jsgl-tjjs", "checked"=> true],
+            	     ["name"=> "角色列表", "value"=> "yhzgl-jsgl-jslb", "checked"=> false]
+        	     ]]
+    	     ]],
+    	     ["name"=> "管理员管理", "value"=> "glygl", "checked"=> false, "list"=>[
+        	     ["name"=> "添加管理员", "value"=> "glygl-tjgly", "checked"=> false],
+        	     ["name"=> "管理员列表", "value"=> "glygl-glylb", "checked"=> false],
+        	     ["name"=> "管理员管理", "value"=> "glygl-glylb", "checked"=> false]
+    	     ]]
+	     ];*/
+	    $tree = [];
+	    foreach ($moduleList as $k=>$v){
+	        $tree[$k] = [
+	            'name'     =>  $v['title'],
+	            //'value'    =>  (string)$v['id'],
+	            'value'    =>  0,
+	            'checked'  =>  false
+	        ];
+	        foreach ($controllerList as $kk=>$vv){
+	            if($vv['module_id'] == $v['id']){
+	                $tree[$k]['list'][$kk] = [
+	                    'name'     =>  $vv['title'],
+	                    //'value'    =>  $vv['module_id'].'-'.$vv['id'],
+	                    'value'    =>  0,
+	                    'checked'  =>  false
+	                ];
+	                foreach ($groupList as $kkk=>$vvv){
+	                    if($vvv['controller_id'] == $vv['id']){
+	                        $tree[$k]['list'][$kk]['list'][$kkk] = [
+	                            'name'     =>  $vvv['title'],
+	                            //'value'    =>  $vvv['module_id'].'-'.$vvv['controller_id'].'-'.$vvv['id'],
+	                            'value'    =>  $vvv['id'],
+	                            'checked'  =>  false
+	                        ];
+	                        unset($groupList[$kkk]);
+	                    }
+	                }
+	                unset($controllerList[$kk]);
+	            }
+	        } 
+	    }
+	    return $tree;
+	}
+
+	public function addAfter(){
+	    if(empty($this->data['authids'])){
+	        return true;
+	    }
+	    //插入【角色-权限组】-关联表
+	    $roleID = $this->data['id'];
+	    $list = [];
+	    array_map(function($v) use ($roleID,&$list){
+	        $list[] = ['group_id'=>$v,'role_id'=>$roleID];
+	    }, $this->data['authids']);
+	    
+        if(!(new PowerRoleGroup())->addAll($list)){
+            $this->setErrorAndCodeExit('更新角色组-方法表失败');
+        }
+	}
+
+	public function getParentRoles(){
+	    return $this->field('id,pid,title')->where(['status'=>1,'pid'=>0])->select();
+	}
+	
+	
+	
+	
+	
+	
+	
+}

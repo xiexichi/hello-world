@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/products/list",
+    "pages/products/index",
+    "pages/users/index",
+    "pages/public/login",
+    "pages/public/register",
+    "pages/public/verify",
+    "pages/cart/index",
+    "pages/cart/checkout"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "25BOY国潮品牌",
+    "navigationBarBackgroundColor": "#ededed",
+    "backgroundColor": "#eeeeee"
+  },
+  "usingComponents": {
+    "van-icon": "/static/vant/icon/index"
+  },
+  "tabBar": {
+    "color": "#000000",
+    "selectedColor": "#07c062",
+    "borderStyle": "black",
+    "backgroundColor": "#f7f7f7",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/cart/index",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/users/index",
+        "text": "我的"
+      }
+    ]
+  }
+}

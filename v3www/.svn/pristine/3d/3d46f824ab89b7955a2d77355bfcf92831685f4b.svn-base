@@ -1,0 +1,111 @@
+/**
+ * 基于Jquery：所以使用前必须引入jquery
+ * 网络请求对象
+ */
+
+const CENTER = 'center';	// 中心-业务层
+const CENTER_DATA = 'center_data';	// 中心数据层
+const SHOP = 'shop';	// 商城数据层
+const SHOP_DATA = 'shop_data';	// 商城数据层
+
+const request = {
+	host: SHOP_DATA,	// 默认请求地址
+	async: true,	    // 异步请求
+}
+
+/**
+ * [setHost 设置请求地址]
+ * @param {[type]} host [请求地址]
+ */
+request.setHost = function (host) {
+	this.host = host;
+	return this;
+}
+
+/**
+ * [setAsync 设置同步请求]
+ * @param {[type]} async [是否]
+ */
+request.setAsync = function (async) {
+	this.async = async;
+	return this;
+}
+
+/**
+ * [get GET方式请求]
+ * @param  {[type]}   url      [请求地址]
+ * @param  {[type]}   params   [请求参数]
+ * @param  {Function} callback [回调函数]
+ * @return {[type]}            [description]
+ */
+request.get = function () {
+
+	// 三个参数
+	if (arguments.length == 3) {
+		var url = arguments[0];
+		var params = arguments[1];
+		var callback = arguments[2];
+		// $.get(this.host + url, params, callback);
+
+		$.ajax({
+			type: "GET",
+        	url: url,
+        	data: params,
+        	async: this.async,
+        	success: function(res) {
+        		callback(res);
+        	},
+        	headers: {
+	            "ctrl": this.host
+	        }
+		});
+
+	} 
+
+	// 2个参数
+	if (arguments.length == 2) {
+		var url = arguments[0];
+		var callback = arguments[1];
+
+		$.ajax({
+			type: "GET",
+        	url: url,
+        	async: this.async,
+        	success: function(res) {
+        		callback(res);
+        	},
+        	headers: {
+	            "ctrl": this.host
+	        }
+		});
+
+	}
+
+}
+
+
+/**
+ * [post POST方式请求]
+ * @param  {[type]}   url      [请求地址]
+ * @param  {[type]}   data     [提交数据]
+ * @param  {Function} callback [回调函数]
+ * @return {[type]}            [description]
+ */
+request.post = function(url, data, callback) {
+	// post请求
+	// $.post(this.host + url, data, callback)
+
+	$.ajax({
+		type: "POST",
+    	url: url,
+    	data: data,
+    	async: this.async,
+    	success: function(res) {
+    		callback(res);
+    	},
+    	headers: {
+            "ctrl": this.host
+        }
+	});
+
+}

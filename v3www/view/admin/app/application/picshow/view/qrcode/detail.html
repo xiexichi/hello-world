@@ -1,0 +1,93 @@
+<div class="p-1" id="app">
+	<form class="layui-form layui-form-pane" id="openAddForm" lay-filter="layer">
+    <div class="layui-form-item">
+      <label class="layui-form-label">二唯码内容</label>
+      <div class="layui-input-block">
+        <input type="text" name="url" placeholder="可以是网址、文本" class="layui-input" required lay-verify="required" v-model="row.url">
+      </div>
+    </div>
+    <div class="layui-form-item" pane>
+      <label class="layui-form-label">中心LOGO</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="logo" title="显示">
+      </div>
+    </div>
+    <div class="layui-form-item" pane v-if="! id">
+      <label class="layui-form-label">保存记录</label>
+      <div class="layui-input-inline" style="width:auto">
+        <input type="checkbox" name="savatolist" lay-skin="switch" lay-text="是|否" value="1">
+      </div>
+      <div class="layui-form-mid layui-word-aux">是否将此次生成码保存列表中</div>
+    </div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">描述</label>
+			<div class="layui-input-block">
+				<textarea name="desc" placeholder="后台描述内容，保存记录时填写" class="layui-textarea" v-model="row.desc"></textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" v-if="id" v-model="id">
+				<button class="layui-btn" lay-submit lay-filter="edit-layer">提交并生成</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<style type="text/css">
+.toggle{display:none;}
+</style>
+<hea:js src="/static/js/vue.js" />
+<script type="text/javascript">
+const id = getUrlParam('id')
+var app = new Vue({
+  el: '#app',
+  data: {
+  	id: id,
+    row: {}
+  },
+  mounted: function () {
+    if (id && id != 0) this.getOne()
+  },
+  methods: {
+  	// 获取数据
+  	getOne: function() {
+  		let _this = this
+  		_this.id = id
+  		request.setHost('center_data').get('/picshow/qrcode/one?id='+id, function (json) {
+  			if (json.code === 0) {
+          _this.row = json.data
+  			} else {
+  				layer.alert(json.msg)
+  			}
+  		})
+  	}
+  }
+})
+
+// layui
+layui.use('form', function () {
+  const form = layui.form
+  form.render()
+
+  //监听添加层提交
+  form.on('submit(edit-layer)', function (data) {
+  	const loadLayer = layer.load()
+  	let url = '/picshow/qrcode/add'
+  	if (id && id !=0){
+  		url = '/picshow/qrcode/edit'
+  	}
+    request.setHost('center_data').post(url, data.field, function (json){
+      layer.close(loadLayer)
+    	if (json.code === 0) {
+        parent.openQrcodeLayer(json.data.imgEncode)
+      }else{
+        layer.alert(json.msg, function (index) {
+          layer.close(index)
+    		})
+    	}
+    })
+    return false
+  })
+})
+</script>

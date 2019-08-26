@@ -1,0 +1,24 @@
+<table id="demo" lay-filter="test"></table>
+<script>
+    var table = layui.table;
+    request.setHost(SHOP_DATA);
+    //执行渲染
+    table.render({
+        elem: '#demo' //指定原始表格元素选择器（推荐id选择器）
+        ,height: auto //容器高度
+        ,url: '/goods/prop/list'
+        ,page: true
+        ,cols: [[
+            {field: 'id', title: 'ID', width:80}
+            ,{field: 'name', title: '属性类型', width:200}
+            ,{field: 'id', title: '操作', width:200, templet: '#ctrlTpl'}
+        ]]
+    });
+
+</script>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+    <a href="/merchant/merchant/detail_val.html?id={{d.id}}" class="layui-table-link">设置属性值</a>
+    <a href="/merchant/merchant/detail.html?id={{d.id}}" class="layui-table-link">详情</a>
+</script>

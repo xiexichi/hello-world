@@ -1,0 +1,73 @@
+// layui组件的封装方法
+
+
+/**
+ * [openLayer 宽高100%弹窗]
+ * @param  {[type]} url   [description]
+ * @param  {[type]} title [description]
+ * @param  {[type]} param [弹窗参数]
+ * @return {[type]}       [description]
+ */
+function openLayer(url, title, param){
+	if (undefined == title) {
+		title = '信息';
+	}
+
+  console.info(param);
+  // 弹窗大小
+  let area = ['100%', '100%'];
+  if (undefined != param) {
+    if (undefined != param.area) {
+      area = param.area
+    }
+  }
+
+	layer.open({
+	  title: title,
+      type: 2,
+      shade: false,
+      area: area,
+      maxmin: true,
+      content: url,
+      zIndex: layer.zIndex, //重点1
+      success: function(layero){
+        layer.setTop(layero); //重点2
+      }
+    });
+}
+
+
+/**
+ * [tableInstance 实例表格]
+ * @param  {[type]} idName       [表格id]
+ * @param  {[type]} url          [数据url]
+ * @param  {[type]} cols         [数据列字段]
+ * @param  {[type]} doneCallback [表格初始化完成回调]
+ * @return {[type]}              [description]
+ */
+function tableInstance(idName, url, cols, doneCallback){
+  //第一个实例
+  layui.table.render({
+    elem: '#'+idName
+    ,height: 'auto'
+    ,url: url //数据接口
+    ,page: true //开启分页
+    ,done: function(res, curr, count){
+    	// 调用回调
+    	if (undefined != doneCallback) {
+    		doneCallback(res, curr, count);
+    	}
+    }
+    ,cols: [[ //表头
+      {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+      ,{field: 'username', title: '用户名', width:80}
+      ,{field: 'sex', title: '性别', width:80, sort: true}
+      ,{field: 'city', title: '城市', width:80} 
+      ,{field: 'sign', title: '签名', width: 177}
+      ,{field: 'experience', title: '积分', width: 80, sort: true}
+      ,{field: 'score', title: '评分', width: 80, sort: true}
+      ,{field: 'classify', title: '职业', width: 80}
+      ,{field: 'wealth', title: '财富', width: 135, sort: true}
+    ]]
+  });
+}

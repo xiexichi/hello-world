@@ -1,0 +1,123 @@
+// layui
+	var upload_obj = '';
+	layui.use('form', function (){
+	  	const form = layui.form;
+	 	form.render();
+	  	loadCate();
+	  //监听添加层提交
+	  	form.on('submit(formAdd)', function (data) {
+	    const loadLayer = layer.load()
+	    // addArticle
+	    request.setHost(CENTER_DATA).post('/article/article/checkRepeatArticleName', data.field, function (res){
+		        layer.close(loadLayer)
+		        if (res.code === 0) {
+		            if( res.data ){
+                        layer.confirm("文章名已存在，是否继续添加", {
+                            btn: ["确定","取消"] //按钮
+                        }, function() {
+                            addSubmit(data.field);
+                        });
+                    }else{
+                       	addSubmit(data.field);
+                    }
+		        }else{
+		           layer.msg(res.msg);
+		        }
+	    	})
+	    	return false;
+	  	})
+
+	  	function loadCate(){
+        // 获取分类信息
+	        request.setHost(CENTER_DATA).get('/article/categorys/getCateAll/',{'showType':'tree'}, function(res){
+	            if( res.code == 0 ){
+	                res.data = setTreeList(res.data,'children');
+	                //分层标题处理
+	                res.data = setTreeGrid(res.data);
+	                for( var l = 0; l < res.data.length; l++ ){
+	                    $('select[name=categorys_id]').append('<option value="'+res.data[l].id+'">'+res.data[l].name+'</option>');
+	                }
+	                form.render();
+	            }
+	        });
+    	}
+
+	});
+
+		function addSubmit(data){
+			request.setHost(CENTER_DATA).post('/article/article/add',data,function(res){
+    			if (res.code == 0) {
+    				layer.msg(res.msg);
+	                setTimeout(function(){
+	                    parent.location.reload();
+	                },1500);
+    			}else{
+    				layer.msg(res.msg);
+    			}
+    		});
+    		return false;
+		}
+
+		function openUEPhotoSpace(){
+			upload_obj = 'article_content';
+		    layer.open({
+		        type: 2,
+		        title : '选择图片',
+		        content: photoSpaceUrl,
+		        shadeClose: true,
+		        area: ['80%', '80%'],
+		        success: function(layero){
+		            layer.setTop(layero);
+		        }
+		    })
+		}
+	    function openPhotoSpace(){
+	    	upload_obj = 'article_image';
+		    layer.open({
+		        type: 2,
+		        title : '选择图片',
+		        content: photoSpaceUrl,
+		        shadeClose: true,
+		        area: ['80%', '80%'],
+		        success: function(layero){
+		            layer.setTop(layero);
+		        }
+		    })
+		}
+
+		function handlePhoto(content){
+    		if(content == 'close'){
+		        // 关闭窗口
+		        layer.closeAll();
+		    }else{
+		    	var json = JSON.parse(content);
+
+		    	uploadImgBack(json);
+		        layer.closeAll();
+		    }
+    	}
+
+    	function  uploadImgBack(data){
+    		var that = this;
+    		// console.log(that.upload_obj);
+    		if (that.upload_obj == "article_image") {
+    			var imageBack = document.getElementById('imageBack');
+		    	var image_input = document.getElementById('article_image_input');
+				imageBack.src = data[0]['image'];
+				image_input.value = data[0]['image'];
+    		}else if (that.upload_obj == "article_content") {
+    			var src_list = [];
+                for( var i = 0; i < data.length; i++){
+                    src_list.push({
+	                    src:data[i].image,
+	                    width:'100%'
+	                });
+	            }
+	            ue.execCommand( 'insertimage',src_list);
+
+    		}
+    	}
+    
+
+
+    

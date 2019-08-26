@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * 转发控制器
+ */
+
+namespace app\common\Controller;
+
+class Forward extends Common
+{
+
+	/**
+	 * [go 转发]
+	 * @param  [type] $request [request对象]
+	 * @return [type]          [description]
+	 */
+	public function go($request){
+		// pe($request);
+		$url = $request->url();
+
+		// 获取请求地址
+		$ctrl = $this->getHeader('ctrl');
+
+		if (!$ctrl) {
+			// 设置默认为center
+			$ctrl = 'center';
+		}
+
+		// 设置请求主机/域名
+		$this->service->setHots($ctrl);
+
+		// get转发
+		if ($request->isGet()) {
+			// pe(023);
+			$res = $this->service->get($url);
+
+		}
+
+		// post转发
+		if ($request->isPost()) {
+			$res = $this->service->post($url, input());
+		}
+
+		// 转换一下json数据
+		$data = json_decode($res, true);
+
+		// 如果解析json数据失败，可能是报错
+		if (!$data) {
+			// 直接输出获取的数据
+			echo "ctrl:{$ctrl}<br/>";
+			exit($res);
+		}
+
+		return json($data);
+
+	}
+
+
+} 

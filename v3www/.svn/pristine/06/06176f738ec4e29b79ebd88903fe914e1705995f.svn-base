@@ -1,0 +1,158 @@
+<div class="layui-fluid">
+    <form class="layui-form table-box" action="" id="form" lay-filter="form">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="submitBtn">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                    </div>
+                </div>
+                <div class="layui-tab layui-tab-card">
+                    <div class="layui-tab-content" >
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">真实姓名</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verify="required" type="text" name="realname" placeholder="请输入真实姓名(必填)" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">登录名</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verify="required" type="text" name="loginname" placeholder="请输入登录名(必填)" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">密码</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verify="required" type="text" name="password" placeholder="请输入密码(必填)" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">重复密码</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verify="required" type="text" name="repassword" placeholder="请再次输入密码(必填)" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">员工编号</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" type="text" name="code" placeholder="请输入员工编号" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">手机号</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" type="text" name="phone" placeholder="请输入手机号" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">是否启用</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="status" value="1" title="启动" checked="">
+                                    <input type="radio" name="status" value="2" title="禁用">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">账户类型</label>
+                                <div class="layui-input-block">
+                                    <select name="account_type" lay-filter="selectAccountType" lay-verify="required">
+                                        <option value=""></option>
+                                        <option value="2">后台管理员</option>
+                                        <option value="3">商户持有者</option>
+                                        <option value="4">商户员工</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="merchant_id_selecter_view"></div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">角色组</label>
+                                <div class="layui-input-block">
+                                    <select name="role_id" lay-filter="selectRole">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/html" id="merchant_id_selecter_tpl">
+    <div class="layui-form-item">
+        <label class="layui-form-label">商户主体</label>
+        <div class="layui-input-block">
+            <select name="merchant_id" lay-filter="selectMerchantID" lay-verify="required">
+                <option></option>
+                {{# layui.each(d, function(index,item){ }}
+                <option value="{{ item.id }}">{{ item.name }}</option>
+                {{# }); }}
+            </select>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        layui.use(['jquery', 'form', 'layer', 'laytpl'], function(){
+            var $ = layui.jquery;
+            var form = layui.form;
+            var layer = layui.layer;
+            var laytpl = layui.laytpl;
+            var getTpl = merchant_id_selecter_tpl.innerHTML;
+            view = document.getElementById('merchant_id_selecter_view');
+
+            request.setHost(CENTER_DATA).get('/power/power_role/getParentRoles',{}, function(res){
+                if( res.code == 0 ){
+                    var selectDom = $('select[name=role_id]');
+                    selectDom.append('<option value="">请选择角色身份</option>');
+                    for(var i in res.data){
+                        selectDom.append('<option value="'+res.data[i].id+'">'+res.data[i].title+'</option>');
+                    }
+                    form.render();
+                }
+            });
+
+            //监听提交
+            form.on('submit(submitBtn)', function(data){
+                request.setHost(CENTER_DATA).post('/power/admin/add', data.field, function(res){
+                    if (res.code == 0) {
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            parent.window.callback();
+                        },1000);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                });
+                return false;
+            });
+
+            form.on('select(selectAccountType)',function(data){
+                //显示商户选择器
+                if(data.value == 3 || data.value == 4){
+                    request.setHost(CENTER_DATA).get('/merchant/Merchant/all',{}, function(res){
+                        if( res.code == 0 ){
+                            laytpl(getTpl).render(res.data.items, function(html){
+                                view.innerHTML = html;
+                            });
+                            form.render();
+                        }
+                    });
+                }else{
+                    //清空商户选择器
+                    laytpl(getTpl).render([],function(html){
+                        view.innerHTML = '';
+                    });
+                }
+            });
+
+        });
+    });
+
+</script>
+

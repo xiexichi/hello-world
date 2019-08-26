@@ -1,0 +1,136 @@
+<?php
+
+namespace app\goods\model;
+
+class GoodsPropVal extends Base
+{
+    protected $name = 'goods_prop_val';
+
+    public function getPropValAll($prop_id,$page=1,$limit=10,$getCount=false){
+        $pageSize = ( $page - 1 ) * $limit.','.$limit;
+        if($limit=0){
+            $pageSize = '';
+        }
+        $propModel = new \app\goods\model\GoodsProp();
+        $propInfo = $propModel->getPropInfo($prop_id);
+        $where['goods_prop_id'] = $prop_id;
+        $where['is_deleted'] = 0;
+        $data['list'] = $this->where($where)
+            ->limit($pageSize)
+            ->select();
+        if( !empty($data['list']) ){
+            foreach( $data['list'] as $key => $val ){
+                if( $propInfo['show_type'] == $propModel::SHOW_TYPE_COLOR && !empty($val['pv_type_val']) ){
+                    $val['pv_type_val'] = '<i style="display:block; border:1px solid #ccc; width:100px; height:100px; margin:0 auto; background:'.$val['pv_type_val'].';"></i>';
+                }else if( $propInfo['show_type'] == $propModel::SHOW_TYPE_IMG || $propInfo['show_type'] == $propModel::SHOW_TYPE_ALL ){
+                    $val['pv_type_val'] = '图片商品独立上传';
+                }
+            }
+        }
+        if($getCount){
+            $info = $this->field('count(*) as num')->where($where)->find();
+            $data['count'] = $info['num'];
+        }
+        return $data;
+    }
+
+    public function getPropValInfo($ids){
+        $info = $this->where('id',$ids)->find();
+        if(empty($info)){
+            $this->code = 020404;
+            $this->error = "属性类型不存在";
+            return false;
+        }
+        return $info;
+    }
+
+    public function addBefore(){
+        $this->data['create_time'] = date('Y-m-d H:i:s');
+        $this->data['update_time'] = $this->data['create_time'];
+        if($this->checkRepeatPropValName()){
+            return false;
+        }
+        return true;
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        $where['id'] = ['<>',$this->data['id']];
+        $where['goods_prop_id'] = ['=',$this->data['goods_prop_id']];
+        if($this->checkRepeatPropValName($where)){
+            return false;
+        }
+        return true;
+    }
+
+    public function checkRepeatPropValName($where=[]){
+        if(!empty($this->data['goods_prop_id']) && !empty($this->data['pv_name'])){//前置方法使用
+            $this->where('goods_prop_id',$this->data['goods_prop_id']);
+            $this->where('pv_erp_code',$this->data['pv_erp_code']);
+            $this->where('pv_name',$this->data['pv_name']);
+        }
+        if( !empty($where) ){
+            foreach( $where as $key => $val ) {
+                $this->where($key,$val[0],$val[1]);
+            }
+        }
+        $info = $this->find();
+        if($info){
+            $this->code = 020402;
+            $this->isExit = true;
+            $this->error = "属性值已存在！";
+            return false;
+        }
+        return true;
+    }
+
+    const CHECK_TYPE_PV = 'pv';
+    const CHECK_TYPE_P  = 'p';
+
+    public function getPropValGoods($id,$checkType=self::CHECK_TYPE_PV){
+        $where = [];
+        switch($checkType){
+            case self::CHECK_TYPE_PV :
+                $where['pv.id'] = $id;
+                break;
+            case self::CHECK_TYPE_P :
+                $where['goods_prop_id'] = $id;
+                break;
+            default :
+                $where['pv.id'] = $id;
+                break;
+        }
+        $itemPropValModel = new \app\goods\model\GoodsItemPropVal();
+        $item_list = $this->alias('pv')
+            ->join($itemPropValModel->getTable().' ipv','ipv.goods_prop_val_id = pv.id')
+            ->where($where)
+            ->select();
+        return $item_list;
+    }
+
+    public function deleted($ids){
+        //检查是否存在
+        $info = $this->getPropValInfo($ids);
+        if( empty($info) ){
+            $this->code = 020402;
+            $this->error = "属性类型不存在！";
+            return false;
+        }
+        //检查是否存在商品绑定
+        $returnList = $this->getPropValGoods($ids,self::CHECK_TYPE_PV);
+        if( !empty($returnList) ){
+            $this->code = 020405;
+            $this->error = "存在商品绑定不允许删除！";
+            return false;
+        }
+        //执行删除
+        $updateData['is_deleted'] = 1;
+        $updateData['update_time'] = date('Y-m-d H:i:s');
+        if( !$this->where('id',$ids)->update($updateData) ){
+            $this->code = 020410;
+            $this->error = '网络错误，删除失败';
+            return false;
+        }
+        return true;
+    }
+}

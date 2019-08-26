@@ -1,0 +1,84 @@
+<script type="text/javascript">
+
+console.info('reasdasd')
+
+// 库存预选操作常量
+const PURCHASE = 'purchase';
+const RETURN = 'return';
+const ADJUST = 'adjust';
+const DIFFER = 'differ';
+const TRANSFER = 'transfer';
+
+
+// 选择保存到云端的标签
+var preSelectTag;
+
+// 库存预选对象
+const preSelectCtrl = {}
+
+/**
+ * [add 添加方法]
+ * @param {[type]} type   [库存预选类型]
+ * @param {[type]} $input [input]
+ */
+preSelectCtrl.add = function (type, $input){
+	// 判断是否达到最大值
+	let max = $input.attr('max') ? $input.attr('max') : 0;
+	// 限制最大值
+	if ( parseInt($input.val()) > max) {
+		$input.val(max);
+	}
+
+	let data = {};
+
+	// 组合保存数据
+	data['quantity'] = $input.val();
+	data['stock_id'] = $input.attr('stock_id');
+
+	console.info(preSelectTag);
+
+	// 判断是否开启
+	if (preSelectTag) {
+		console.info('开启云端保存');
+		// 店铺预选标记id
+		data['shop_depot_pre_select_id'] = preSelectTag['id'];
+
+		request.post('/depot/shop_depot_pre_select_item/add', data, function(res){
+			console.info(res);
+		})
+	}
+
+	console.info(data);
+
+	// 1.检测本地储存中是否有对应类型的，库存预选数据
+	if (localStorage.getItem(type)) {
+		// 没有则创建
+		data = JSON.parse(localStorage.getItem(type));
+	}
+
+	
+}
+
+
+/**
+ * [del 删除方法]
+ * @param {[type]} id                       [预选项id]
+ * @param {[type]} shop_depot_pre_select_id [预选标记id]
+ * @param {[type]} callback [回调函数]
+ */
+preSelectCtrl.del = function (id, shop_depot_pre_select_id, callback){
+	let data = {
+		ids: id,
+		shop_depot_pre_select_id: shop_depot_pre_select_id
+	};
+
+	request.post('/depot/shop_depot_pre_select_item/delete', data, function(res){
+		if ( undefined != callback ) {
+			callback(res);
+		}
+	});
+}
+
+
+
+</script>

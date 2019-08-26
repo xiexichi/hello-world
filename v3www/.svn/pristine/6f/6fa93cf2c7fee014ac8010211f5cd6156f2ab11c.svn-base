@@ -1,0 +1,7 @@
+<?php
+
+namespace app\goods\validate;
+
+class Evaluation extends Base
+{
+}

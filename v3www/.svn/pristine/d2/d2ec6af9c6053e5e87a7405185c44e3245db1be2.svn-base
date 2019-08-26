@@ -1,0 +1,17 @@
+<?php
+
+namespace app\share\model;
+
+class Share extends Base
+{
+
+    public function addBefore(){
+        if( isset($this->data['images_list']) ){
+            $this->data['images_list'] = empty($this->data['images_list']) ? '' : json_encode($this->data['images_list']);
+        }
+        $this->data['create_time'] = date('Y-m-d H:i:s');
+        $this->data['update_time'] = $this->data['create_time'];
+        return true;
+    }
+
+}

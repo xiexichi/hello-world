@@ -1,0 +1,123 @@
+<div class="p-1" id="app">
+	<form class="layui-form layui-form-pane" id="openAddForm" lay-filter="layer">
+		<div class="layui-form-item">
+			<label class="layui-form-label">应用名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="app_name" placeholder="应用显示名称" class="layui-input" required lay-verify="required" v-model="row.app_name">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">应用ID</label>
+			<div class="layui-input-inline">
+				<input type="text" name="app_id" placeholder="app_id，8-16位"  class="layui-input" required lay-verify="required" v-model="row.app_id" v-bind:disabled="idDisabled">
+			</div>
+			<div class="layui-form-mid layui-word-aux">添加后不允许修改</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">应用密钥</label>
+			<div class="layui-input-block">
+				<button class="layui-btn layui-btn-xs input-btn-append" type="button" @click="randAppKey" v-if=" ! app_key">随机生成</button>
+				<input type="text" name="app_key" placeholder="app_key，18-21位" class="layui-input" required lay-verify="required" v-model="app_key">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">平台代码</label>
+			<div class="layui-input-block">
+				<input type="text" name="platform_code" placeholder="应用识别码" class="layui-input" required lay-verify="required" v-model="row.platform_code">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注说明</label>
+			<div class="layui-input-block">
+				<textarea name="desc" placeholder="备注说明" class="layui-textarea" v-model="row.desc"></textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" v-if="id" v-model="id">
+				<button class="layui-btn" lay-submit lay-filter="edit-layer">立即提交</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<hea:js src="/static/js/vue.js" />
+<script type="text/javascript">
+const id = getUrlParam('id')
+var app = new Vue({
+  el: '#app',
+  data: {
+  	id: '',
+  	app_key: '',
+    row: {}
+  },
+  mounted: function () {
+  	if (id && id != 0) this.getOne()
+  },
+	computed: {
+		idDisabled: function () {
+			return this.id ? true : false
+		}
+	},
+  methods: {
+  	// 获取数据
+  	getOne: function() {
+  		let _this = this
+  		_this.id = id
+  		request.setHost('center_data').get('/apps/app_auth/one?id='+id, function (json) {
+  			if (json.code === 0){
+  				_this.app_key = json.data.app_key
+  				_this.row = json.data
+  			} else {
+  				layer.alert(json.msg)
+  			}
+  		})
+  	},
+  	// 生成随机字符串
+  	randAppKey: function () {
+  		const len = 21
+  		const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz0123456789'
+  		const maxPos = $chars.length
+  		let str = ''
+  		for (i = 0; i < len; i++) {
+  			str += $chars.charAt(Math.floor(Math.random() * maxPos))
+  		}
+  		console.log(str)
+  		this.app_key = str
+  	}
+  }
+})
+
+// layui
+layui.use('form', function () {
+  const form = layui.form
+  form.render()
+
+  //监听添加层提交
+  form.on('submit(edit-layer)', function (data) {
+  	const loadLayer = layer.load()
+  	let url = '/apps/app_auth/add'
+  	if (id && id !=0){
+  		url = '/apps/app_auth/edit'
+  	}
+    request.setHost('center_data').post(url, data.field, function (json){
+    	if (json.code === 0) {
+    		layer.msg(json.msg, {
+    			icon: 1,
+    			time: 2000
+    		}, function () {
+    			// 刷新父页面
+    			parent.location.reload()
+    		})
+    	}else{
+	    	layer.close(loadLayer)
+    		layer.alert(json.msg, function (index) {
+    			layer.close(index)
+    		})
+    	}
+    })
+    return false
+  })
+
+})
+</script>

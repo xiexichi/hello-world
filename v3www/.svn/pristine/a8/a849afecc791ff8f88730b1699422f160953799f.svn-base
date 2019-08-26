@@ -1,0 +1,68 @@
+<!--导航-->
+<style>
+    .layui-table-body .layui-table-cell{
+        height:105px;
+        line-height: 105px;
+    }
+</style>
+<ul class="layui-nav" >
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html">全部</a></li>
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html?state=1">上架中</a></li>
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html?state=0">已下架</a></li>
+    <li class="layui-nav-item nav_list"><a href="/goods/goods/list.html?delete=1">已删除</a></li>
+</ul>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form" action="" id="form" >
+                <input type="hidden" name="state" value="<?=isset($_GET['state']) ? $_GET['state'] : '';?>">
+                <input type="hidden" name="delete" value="<?=isset($_GET['delete']) ? $_GET['delete'] : '';?>">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">关键词</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="keyword" value="<?=isset($_GET['keyword']) ? $_GET['keyword'] : '';?>" placeholder="商品名关键词" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">货号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="erp_code" value="<?=isset($_GET['erp_code']) ? $_GET['erp_code'] : '';?>" placeholder="商品货号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">分类</label>
+                    <div class="layui-input-inline">
+                        <select name="cate_id" id="cate_box" lay-search >
+                        </select>
+                    </div>
+                    <label class="layui-form-label">品牌</label>
+                    <div class="layui-input-inline">
+                        <select name="brand_id" id="brand_box" lay-search >
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="goods" lay-filter="test"></table>
+        </div>
+    </div>
+</div>
+<!-- 操作模板 -->
+<script type="text/html" id="toolbar" >
+    <button class="layui-btn layui-btn-sm" lay-event="add" >添加商品</button>
+</script>
+<script type="text/html" id="ctrlTpl">
+    <button class="layui-btn layui-btn-xs" lay-event="sales_detail" >销售管理</button>
+    <button class="layui-btn layui-btn-xs" style="margin:0;" lay-event="set_tag" >设置标签</button>
+    <button class="layui-btn layui-btn-xs" style="margin:0;{{d.sales_status ? 'display:none;' : ''}}" lay-event="detail"  >详情</button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" style="margin:0;" lay-event="sales" >{{ d.sales_status ? '下架' : '上架' }}</button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" style="margin:0;" lay-event="deleted" >{{ d.is_deleted ? '恢复' : '删除' }}</button>
+</script>
+<hea:js src="" />

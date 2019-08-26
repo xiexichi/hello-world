@@ -1,0 +1,70 @@
+<?php
+
+/**
+ *  商品属性
+ */
+
+namespace app\goods\validate;
+
+class GoodsProp extends Base
+{
+
+    public function getPropAll($data){
+        $rule = [
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getPropInfo 获取单个属性信息
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getPropInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function addBefore($data){
+        $rule = [
+            'prop_name' => 'require',
+            'show_type' => 'integer',
+            'is_changed' => 'integer',
+            'prop_desc' => 'require',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function editBefore($data){
+        $rule = [
+            'id'        => 'require|integer',
+            'prop_name' => 'require',
+            'show_type' => 'integer',
+            'is_changed' => 'integer',
+            'prop_desc' => 'require',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getGoodsTagSingle 获取单个属性值信息
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getGoodsPropValInfo($data){
+        $rule = [
+            'prop_val_id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+}

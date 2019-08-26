@@ -1,0 +1,55 @@
+<?php
+namespace app\power\model;
+
+class Admin extends Base
+{
+	// 自动时间
+	protected $autoWriteTimestamp = 'datetime';
+
+	protected $table = 'admin';
+	protected $createTime = 'create_time';
+	protected $updateTime = 'update_time';
+	
+	public function addAfter(){
+	    $adminID = $this->data['id'];
+	    if(empty($this->data['role_id'])){
+	        return true;
+	    }
+	    
+	    //设置管理员的角色
+	    $modelPowerRoleAdmin = new PowerRoleAdmin();
+	    $modelPowerRoleAdmin->data(['role_id'=>$this->data['role_id'],'admin_id'=>$adminID]);
+
+	    if(!$modelPowerRoleAdmin->add()){
+	        $this->setErrorAndCodeExit('更新角色组-管理员失败');
+	    }
+	}
+	
+	public static function makePassword($pwd,$salt = null){
+	    $salt = $salt ?: random_int(1000,9999);
+	    $pwd = 'hea'.$pwd.$salt;
+	    return ['pwd'=>md5($pwd),'salt'=>$salt];
+	}
+	
+	public function delAfter(){
+	    if(empty($this->data['ids'])){
+	        return true;
+	    }
+	    $adminIds = $this->data['ids'];
+
+	    //删除【角色-管理员】表
+	    if(!(new PowerRoleAdmin())->setWhere('admin_id','in',$adminIds)->del()){
+	        $this->setErrorAndCodeExit('删除角色组-管理员失败');
+	    }
+	}
+	
+	public function getAdminDetail($adminID){
+	    $adminDetail = $this->alias('a')
+	                        ->field('a.*,pra.role_id')
+	                        ->join('power_role_admin pra', 'a.id = pra.admin_id', 'LEFT')
+	                        ->where('a.id',$adminID)
+	                        ->find();
+	    return $adminDetail;
+	}
+
+}

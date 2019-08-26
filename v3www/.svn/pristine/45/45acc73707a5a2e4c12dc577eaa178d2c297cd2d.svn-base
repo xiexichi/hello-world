@@ -1,0 +1,24 @@
+<?php
+
+namespace app\order\model;
+
+class OrderGoods extends Base
+{
+    protected $name = 'order_goods_info';
+
+    public function getItemList($order_id,$limit='',$item_id=0){
+        $goodsItemModel = new \app\goods\model\GoodsItem();
+        $where['order_id'] = $order_id;
+        if( $item_id != 0 ){
+            $where['goods_item_id'] = $item_id;
+        }
+        $item_list = $this->where($where)->limit($limit)->select();
+        if(!empty($item_list)){
+            foreach( $item_list as $key => $goods ){
+                $goods['item_info'] = $goodsItemModel->getItemInfo($goods['goods_item_id']);
+                $item_list[$key] = $goods;
+            }
+        }
+        return $item_list;
+    }
+}

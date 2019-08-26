@@ -1,0 +1,17 @@
+.treeTable-empty {
+    width: 20px;
+    display: inline-block;
+}
+.treeTable-icon {
+    cursor: pointer;
+}
+/*箭头 关*/
+.treeTable-icon .layui-icon-triangle-d:before {
+    content: "\e623";
+}
+/*箭头 开*/
+.treeTable-icon.open .layui-icon-triangle-d:before {
+    content: "\e625";
+    background-color: transparent;
+}
+

@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * 店铺库存变动记录
+ */
+
+namespace app\depot\model;
+
+
+class ShopDepotChange extends Base
+{
+
+	
+
+	// 销售操作类型
+	const TYPE_SALES_SELL = 1;	    // 销售卖出
+	const TYPE_SALES_RETURN = 2;	// 销售退货
+	const TYPE_SALES_SWAP_IN = 3;	// 销售换入
+	const TYPE_SALES_SWAP_OUT = 4;	// 销售换出
+
+
+	// 实体店铺操作类型
+
+	// 进货
+	const TYPE_SHOP_PURCHASE = 5;	// 店铺进货
+	
+	// 退货
+	const TYPE_SHOP_RETURN = 6;	    // 店铺退货
+	const TYPE_SHOP_RETURN_WITH_HOLD = 61;   // 店铺退货预扣
+	const TYPE_SHOP_RETURN_WITH_REVERSE = 62;   // 店铺退货返还
+
+	// 调货
+	const TYPE_SHOP_TRANSFER = 7;   // 店铺调货
+	const TYPE_SHOP_TRANSFER_WITH_HOLD = 71;   // 店铺调货预扣
+	const TYPE_SHOP_TRANSFER_WITH_REVERSE = 72;   // 店铺调货返还
+
+	// 调整
+	const TYPE_SHOP_ADJUST = 8;   // 店铺调整单
+	const TYPE_SHOP_ADJUST_WITH_HOLD = 81;   // 店铺调整预扣
+	const TYPE_SHOP_ADJUST_WITH_REVERSE = 82;   // 店铺预扣返还
+
+
+	// 差异
+	const TYPE_SHOP_DIFFER = 9;   // 店铺进货差异单
+	const TYPE_SHOP_DIFFER_WITH_HOLD = 91;   // 店铺进货差异预扣
+	const TYPE_SHOP_DIFFER_WITH_REVERSE = 92;   // 店铺进货预扣返还
+
+}

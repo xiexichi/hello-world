@@ -1,0 +1,27 @@
+<table id="prop" lay-filter="test"></table>
+<script>
+    var table = layui.table;
+    // request.setHost(SHOP_DATA);
+    //执行渲染
+    table.render({
+        elem: '#prop' //
+        ,height: 'auto' //容器高度
+        ,url: '/goods/goods_prop/getGoodsPorps'
+        ,page: true
+        ,headers: {
+            ctrl: SHOP_DATA
+        }
+        ,cols: [[
+            {field: 'id', title: 'ID', width:80}
+            ,{field: 'prop_name', title: '属性类型', width:500}
+            ,{field: 'id', title: '操作', width:200, templet: '#ctrlTpl'}
+        ]]
+    });
+
+</script>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+    <a href="/goods/prop/detail_val.html?id={{d.id}}" class="layui-table-link">设置属性值</a>
+    <a href="/goods/prop/detail.html?id={{d.id}}" class="layui-table-link">详情</a>
+</script>

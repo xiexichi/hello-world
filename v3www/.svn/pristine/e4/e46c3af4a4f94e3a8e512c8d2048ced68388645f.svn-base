@@ -1,0 +1,14 @@
+{
+  "usingComponents": {
+    "van-tag": "/static/vant/tag/index",
+    "van-panel": "/static/vant/panel/index",
+    "van-cell": "/static/vant/cell/index",
+    "van-popup": "/static/vant/popup/index",
+    "van-button": "/static/vant/button/index",
+    "van-stepper": "/static/vant/stepper/index",
+    "van-goods-action": "/static/vant/goods-action/index",
+    "van-goods-action-icon": "/static/vant/goods-action-icon/index",
+    "van-goods-action-button": "/static/vant/goods-action-button/index"
+  },
+  "navigationBarTitleText": "商品详情"
+}

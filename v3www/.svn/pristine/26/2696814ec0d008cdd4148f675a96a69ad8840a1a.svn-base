@@ -1,0 +1,4 @@
+request.setHost('shop')
+request.get('/index/area/getAreas?type=1', function(res){
+  console.info(res);
+})

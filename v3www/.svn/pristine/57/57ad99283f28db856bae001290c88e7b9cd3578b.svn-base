@@ -1,0 +1,41 @@
+<include file="../application/common/view/common/header.html" />
+
+<div class="layui-fluid" id="app">
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<div class="layui-tab layui-tab-brief" lay-filter="systemTab">
+				<ul class="layui-tab-title">
+					<foreach name="tabs" item="vo" key="k">
+						<li class="{$k==0?'layui-this':''}">{$vo}</li>
+					</foreach>
+					<span class="float-right">
+						<button class="layui-btn layui-btn-normal layui-btn-sm" id="J-add">添加参数</button>
+					</span>
+				</ul>
+				<div class="layui-tab-content" id="systemTabContent">
+					<foreach name="formHtmlGroup" item="vo" key="k">
+					<div class="layui-tab-item {$k==0?'layui-show':''}">
+						<notempty name="vo">
+							<form class="layui-form">
+								{$vo}
+								<div class="layui-form-item">
+									<div class="layui-input-block">
+										<input type="hidden" name="group" value="{$k}">
+										<button class="layui-btn" lay-submit lay-filter="submit-system">立即提交</button>
+									</div>
+								</div>
+							</form>
+						</notempty>
+					</div>
+					</foreach>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<hea:js src="https://cdn.jsdelivr.net/npm/vue" />
+<hea:js src="https://cdn.jsdelivr.net/npm/form-create/dist/form-create.min.js" />
+<hea:js src="" />
+
+<include file="../application/common/view/common/footer.html" />

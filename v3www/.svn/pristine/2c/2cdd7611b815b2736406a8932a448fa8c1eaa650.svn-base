@@ -1,0 +1,14 @@
+<div class="layui-fluid" id="app">
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<table id="deliveryDataTable"></table>
+		</div>
+	</div>
+</div>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+	<a href="/system/delivery/detail?id={{d.id}}" class="layui-table-link">详情</a>
+</script>
+
+<hea:js src="" />

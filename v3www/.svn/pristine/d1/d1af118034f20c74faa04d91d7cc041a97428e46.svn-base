@@ -1,0 +1,462 @@
+<?php
+
+namespace app\order\model;
+use \app\common\controller\Service;
+use \app\cart\model\Cart;
+use think\Exception;
+
+class Order extends Base
+{
+    protected $name = 'order_info';
+    protected $shop_list;
+
+    public function getShopList(){
+        return $this->shop_list;
+    }
+
+    const SHOP_TYPE_ALL = 1;
+    const SHOP_TYPE_ONLINE = 2;
+    const SHOP_TYPE_OFFLINE = 3;
+
+    public static $map_shop_type = array(
+        self::SHOP_TYPE_ALL => array(
+            'desc' => '线上线下',
+        ),
+        self::SHOP_TYPE_ONLINE => array(
+            'desc' => '线上',
+        ),
+        self::SHOP_TYPE_OFFLINE => array(
+            'desc' => '线下',
+        ),
+    );
+
+    const ORDER_TYPE_ONLINE = 0;
+    const ORDER_TYPE_O2O = 1;
+    const ORDER_TYPE_O2O_ONLINE = 2;
+
+    public static $map_order_type = array(
+        self::ORDER_TYPE_ONLINE => array(
+            'desc' => '线上发货',
+        ),
+        self::ORDER_TYPE_O2O => array(
+            'desc' => '自提单',
+        ),
+        self::ORDER_TYPE_O2O_ONLINE => array(
+            'desc' => '门店线上发货',
+        ),
+    );
+
+    public function getOrderTypeDesc($order_type){
+        return self::$map_order_type[$order_type]['desc'];
+    }
+
+    const CHANNEL_PC = 1;
+    const CHANNEL_MOBILE = 2;
+    const CHANNEL_WEAPP = 3;
+    const CHANNEL_O2O = 4;
+    const CHANNEL_APP = 5;
+
+    public static $map_channel = array(
+        self::CHANNEL_PC => array(
+            'desc' => 'PC端',
+        ),
+        self::CHANNEL_MOBILE => array(
+            'desc' => '移动端',
+        ),
+        self::CHANNEL_WEAPP => array(
+            'desc' => '小程序',
+        ),
+        self::CHANNEL_O2O => array(
+            'desc' => '店铺',
+        ),
+        self::CHANNEL_APP => array(
+            'desc' => 'APP',
+        )
+    );
+
+    //创建单号
+    public function createSn($channel = self::CHANNEL_PC)
+    {
+        //下单渠道+年+月+日+时+时间戳后3位+随机数3位 总长度15位
+        $sn = $channel . substr(date('Y'),-2,2).date('m').date('d').date('H').substr(time(), -3, 3) . rand(100, 999);
+        return $sn;
+    }
+
+    public function orderStatusDesc($orderInfo){
+        $desc = '';
+        switch( $orderInfo['order_status'] ){
+            case '40' :
+                $desc = '已取消';
+                break;
+            case '45' :
+                $desc = '取消中';
+                break;
+            default :
+                if( $orderInfo['verify'] == 1 ){
+                    if( $orderInfo['finished_status'] == 1 ){
+                        $desc = '已完成';
+                    }
+                    if( $orderInfo['finished_status'] && $orderInfo['evaluation_status'] == 0 ){
+                        $desc = '待评价';
+                    }
+                    if( $orderInfo['order_type'] != self::ORDER_TYPE_O2O ){
+                        if( $orderInfo['finished_status'] == 0 ){
+                            $desc = '待收货';
+                        }
+                        if( $orderInfo['shipping_status'] == 0 ){
+                            $desc = '待发货';
+                        }
+                    }else{
+                        $desc = '待自提';
+                    }
+                }else if( $orderInfo['verify'] == 2 ){
+                    $desc = '审核不通过';
+                }else{
+                    $desc = '待审核';
+                }
+                if( $orderInfo['pay_status'] == 0 ){
+                    $desc = '待支付';
+                }
+                break;
+        }
+        return $desc;
+    }
+
+    public function indexBefore(){
+        $this->order('create_time','desc');
+    }
+
+    public function indexAfter(){
+        $orderGoodsModel = new \app\order\model\OrderGoods();
+        if( !empty($this->data) ){
+            $server = new Service();
+            $shop_list = [];//防止冗余查询
+            $user_list = [];//防止冗余查询
+            foreach( $this->data as $key => $order ){
+                //获取店铺信息
+                $shop_info = null;
+                if( empty($shop_list[$order['shop_id']]) ){
+                    $shop_info = $server->setHost('center_data')->post('merchant/shop/one',['id'=>$order['shop_id']]);
+                    if( empty($shop_info) ){
+                        $shop_info = null;
+                    }
+                    $shop_list[$order['shop_id']] = $shop_info;
+                }else{
+                    $shop_info = $shop_list[$order['shop_id']];
+                }
+                $order['order_type_desc'] = self::$map_order_type[$order['order_type']]['desc'];
+                $order['add_channel'] = self::$map_channel[$order['add_channel']]['desc'];
+                $shop_info['shop_sale_type_id'] = self::$map_shop_type[$shop_info['shop_sale_type_id']]['desc'];
+                $order['shop_info'] = $shop_info;
+                if( empty($user_list[$order['user_id']]) ){
+                    $order['user_info'] = $server->setHost('center_data')->post('user/user/one',['id'=>$order['user_id']]);
+                    $user_list[$order['user_id']] = $order['user_info'];
+                }else{
+                    $order['user_info'] = $user_list[$order['user_id']];
+                }
+                //获取商品列表
+                $order['goods_list'] = $orderGoodsModel->getItemList($order['order_id'],6);
+                $order['orderStatusDesc'] = $this->orderStatusDesc($order);
+                $this->data[$key] = $order;
+            }
+        }
+    }
+
+    /**
+     * 获取下单页预购商品
+     * @param int $user_id              会员id
+     * @param array $shop_delivery      商家物流方式
+     * @param int $shop_id              商家id
+     * @param int $channel              获取频道
+     */
+    public function getBuyGoodsList($user_id,$shop_id=0,$channel=self::CHANNEL_PC){
+        $cartModel = new Cart();
+        $cart_list = $cartModel->getCartList($user_id,$shop_id,$channel,true);
+        $cart_list = $cartModel->cartValid($cart_list);
+        if( empty($cart_list) ) {
+            return $cart_list;
+        }
+        //优惠券处理
+        //获取优惠券优惠信息 coupon * n
+        $coupon_list = [];
+        if( !empty($coupon_id) ){
+            $coupon_list = [];// $couponModel->getUseCouponList($coupon_id);
+        }
+        //积分处理 point //session预存
+        $point = 0;
+//        $point = 100.00;//测试用
+        if( !empty($point) ){
+            $proprotion = getSystemSet('INTEGRAL_TO_RMB_PRO');
+            //获取积分 rmb 抵扣比例 转 rmb 抵扣金额
+            $point = bcdiv($point ,$proprotion,2);
+        }
+        //余额抵扣
+        //获取合计信息 不含运费
+        $order_total = $this->getTotal($user_id,$cart_list,0,$shop_id,$channel);
+        if( $order_total === false ){
+            return $cart_list;
+        }
+        $deliveryModel = new \app\system\model\Delivery();
+        foreach( $cart_list as $skey => $shop ){
+            //获取物流方式列表
+            $shop['delivery_list'] = $deliveryModel->where('shop_id',$shop['shop_id'])
+                ->order('is_default','desc')
+                ->select();
+            //获取金额百分比占额
+            $shop_percent = bcdiv($shop['goods_price'],$order_total['goods_price'],2);
+            $shop['percent'] = $shop_percent;
+            if( !empty($coupon_list) ){
+                $coupon_sum = 0;
+                foreach( $coupon_list as $coupon ){
+                    $shop['coupon_price'] = bcmul($coupon['result'] * $shop_percent,2);
+                }
+            }
+            if( !empty($point)) {
+                $shop['discount_price'] = bcmul($point,$shop_percent,2);
+            }
+            foreach( $shop['goods_list'] as $gkey => $goods  ){
+                $goods_percent = bcdiv($goods['sum_price'],$shop['goods_price'],2);
+                $goods['percent'] = $goods_percent;
+                $goods['discount_price'] = bcmul($shop['discount_price'],$goods_percent,2);
+                $goods['coupon_price'] = bcmul($shop['coupon_price'],$goods_percent,2);
+                $shop['goods_list'][$gkey] = $goods;
+            }
+            $cart_list[$skey] = $shop;
+        }
+        return $cart_list;
+    }
+
+    /**
+     * 以购物车未基准计算代入运费
+     * @param $template     原使用统一平台运费模板使用参数 （现为使用商家独自的运费模板计算）
+     * @param $address_info
+     * @param $cart_list
+     * @param $shop_delivery    array('商家id'=>"物流方式id")
+     * @return mixed
+     */
+    public function setShopShip($address_info,$cart_list,$shop_delivery=array()){
+//        if( empty($template) || empty($cart_list) ){
+        if( empty($cart_list) || empty($address_info) ){
+            return $cart_list;
+        }
+        $deliveryModel = new \app\system\model\Delivery();
+        foreach( $cart_list as $key => $shop ) {
+            //获取商家运费模板
+            $shop_id = empty($shop_delivery[$shop['shop_id']]) ? 0 : $shop_delivery[$shop['shop_id']];
+            $deliveryTp = $deliveryModel->getDeliveryTp($shop['shop_id'],$shop_id,$address_info['prov_id']);
+            if($shop['shop_sale_type_id'] != self::SHOP_TYPE_OFFLINE){
+                $ship_weight = 0;//店铺商品总重
+                $ship_num = 0;//店铺商品总件
+                foreach ($shop['goods_list'] as $goods) {
+                    if( $goods['item_info']['ship_free'] == 0 ){
+                        //店铺商品总重量
+                        $ship_weight = bcadd($ship_weight,$goods['item_info']['weight'],2);
+                        //商品总数
+                        $ship_num = bcadd($ship_num,$goods['num'],0);
+                    }
+                }
+                //运费计算
+                $ship_price = $deliveryModel->getGoodsShipPrice($deliveryTp,$address_info['prov_id'], $ship_num, $ship_weight,bcsub($shop['goods_price'],bcadd($shop['discount_price'],$shop['coupon_price'],2),2));
+                if ($ship_price === false) {
+                    $shop['ship_status'] = 0;
+                    $ship_price = 0.00;
+                }
+                $shop['delivery_id'] = $deliveryTp['deli_id'];
+                $shop['ship_price'] = $ship_price;
+                $cart_list[$key] = $shop;
+            }
+        }
+        return $cart_list;
+    }
+
+    /**
+     * 获取订单运费
+     * @param int $user_id          会员id
+     * @param int $address_id       收货地址id
+     * @param int $delivery_id      物流公司id 已改 棄用
+     * @param array $delivery_id      店铺物流方式选中列表
+     * @param $shop_delivery    array('商家id'=>"物流方式id")
+     * @param int $shop_id      店铺id
+     * @param int $channel      下单渠道id
+     * @return array|bool
+     */
+    public function getTotal($user_id,$cart_list=array(),$address_id=0,$shop_delivery=array(),$channel=self::CHANNEL_PC){
+        //初始化合计信息
+        $order_total = [
+            'goods_num' => 0,
+//            'goods_ship_num' => 0,
+//            'goods_ship_weight' => 0.00,
+//            'goods_gift_num' => 0,
+            'coupon_price' => 0.00,
+            'discount_price' => 0.00,
+            'goods_price' => 0.00,
+            'ship_status' => 1,
+            'order_ship_price' => 0.00,
+            'order_price' => 0.00
+        ];
+        if( empty($cart_list) ){
+            return $order_total;
+        }
+        try{
+            //------------按店铺订单计算运费模式 用这部分 start----------------------
+            if( !empty($address_id) ){
+                $server = new Service();
+                //检查用户信息
+                $user_info = $server->setHost('center_data')->post('user/user/one',['id'=>$user_id]);
+                if( !empty($user_id) ) {
+                    //获取会员收货地址信息
+                    $address_info = $server->setHost('center_data')->post('user/address/one', ['id' => $address_id, 'user_id' => $user_info['id']]);
+                    if (!empty($address_info)) {
+                        //获取平台默认运费模板（ 已改为每个商家使用自己的运费模板 ）start
+//                        $deliveryModel = new \app\system\model\Delivery();
+//                        $deliveryTp = $deliveryModel->getDeliveryTp($delivery_id,$address_info['prov_id']);
+//                        if( !empty($deliveryTp) ){
+//                            $cart_list = $this->setShopShip($deliveryTp,$address_info,$cart_list);
+//                            $this->shop_list = $cart_list;
+//                        }
+                        //获取平台默认运费模板（ 已改为每个商家使用自己的运费模板 ）end
+                        $cart_list = $this->setShopShip($address_info,$cart_list,$shop_delivery);
+                        $this->shop_list = $cart_list;
+                    }else{
+                        $order_total['ship_status'] = 0;
+                    }
+                }else{
+                    throw new Exception('用户信息异常');
+                }
+            }
+            //------------按店铺订单计算运费模式 用这部分 end--------------------
+            foreach( $cart_list as $shop ){
+                //------------按店铺订单计算运费模式 用这部分 start--------------------
+                if( $shop['ship_status'] == 0){
+                    $order_total['ship_status'] = 0;
+                }else{
+                    $order_total['order_ship_price'] = bcadd( $order_total['order_ship_price'],$shop['ship_price'],2);
+                }
+                //------------按店铺订单计算运费模式 用这部分 end--------------------
+                foreach( $shop['goods_list'] as $goods ){
+                    $order_total['goods_num'] = bcadd($order_total['goods_num'],$goods['num'],0);
+                    //------------按总订单计算运费模式 用这部分 start----------------------
+//                    if( $goods['item_info']['ship_free'] == 0 ){
+                        //$order_total['goods_ship_num'] = bcadd($order_total['goods_ship_num'],$goods['num'],0);
+                        //$order_total['goods_ship_weight'] = bcadd($order_total['goods_ship_weight'],$goods['item_info']['weight'],0);
+//                    }
+                    //------------按总订单计算运费模式 用这部分 end----------------------
+                    //预留部分
+                    //是否存在活动礼物部分
+                    //获取礼物商品信息
+                    //$goodsItemModel = new \app\goods\model\GoodsItem();
+                    //$goodsItemModel->getItemInfo($item_id);
+
+                    //优惠券优惠
+                    $order_total['coupon_price'] = bcadd($order_total['coupon_price'],$goods['coupon_price'],2);
+                    //优惠金额
+                    $order_total['discount_price'] = bcadd($order_total['discount_price'],$goods['discount_price'],2);
+                    //商品金额计算
+                    $order_total['goods_price'] = bcadd($order_total['goods_price'],$goods['sum_price'],2);
+                }
+            }
+            //------------按总订单计算运费模式 用这部分 start----------------------
+            //运费部分
+//            $ship_price = 0;
+//            if( !empty($address_id) ){
+//                $server = new Service();
+//                //检查用户信息
+//                $user_info = $server->setHost('center_data')->post('user/user/one',['id'=>$user_id]);
+//                if( !empty($user_info) ) {
+//                    //获取会员收货地址信息
+//                    $address_info = $server->setHost('center_data')->post('user/address/one', ['id' => $address_id, 'user_id' => $user_info['id']]);
+//                    if (!empty($address_info)) {
+//                        //获取默认运费模板
+//                        $deliveryModel = new \app\system\model\Delivery();
+//                        $deliveryTp = $deliveryModel->getDeliveryTp($delivery_id,$address_info,$address_info['prov_id']);
+//                        $ship_price = 0.00;
+//                        if(!empty($deliveryTp)) {
+//                            $ship_price = $deliveryModel->getGoodsShipPrice($deliveryTp, $order_total['goods_ship_num'], $order_total['goods_ship_weight']);
+//                            if ($ship_price === false) {
+//                                $order_total['ship_status'] = 0;
+//                                $ship_price = 0.00;
+//                            }
+//                        }else{
+//                            $order_total['ship_status'] = 0;
+//                        }
+//                    }
+//                }else{;
+//                    throw new Exception('用户信息异常');
+//                }
+//            }
+//            $order_total['order_ship_price'] = $ship_price;
+            //------------按总订单计算运费模式 用这部分 end----------------------
+            //订单总金额计算
+            $order_total['order_price'] = bcadd($order_total['order_ship_price'],
+                bcsub(
+                    $order_total['goods_price'],
+                    bcadd(
+                        $order_total['coupon_price'],
+                        $order_total['discount_price'],
+                        2
+                    ),
+                    2
+                )
+            ,2);
+        }catch( Exception $e ){
+            $this->error = $e->getMessage();
+            return false;
+        }
+        return $order_total;
+    }
+
+    //商品运费计算
+    public function getItemShip($item_id,$num=1,$delivery_id,$prov_id){
+        $item_ship_info = [
+            'ship_status' => 1,
+            'ship_price' => 0.00
+        ];
+        //运费部分
+        $goodsItemModel = new \app\goods\model\GoodsItem();
+        $itemInfo = $goodsItemModel->getItemInfo($item_id);
+        //获取默认运费模板
+        $deliveryModel = new \app\system\model\Delivery();
+        $deliveryTp = $deliveryModel->getDeliveryTp($delivery_id,$prov_id);
+        $ship_price = 0.00;
+        if(!empty($deliveryTp)){
+            $ship_price = $deliveryModel->getGoodsShipPrice($deliveryTp,$num,bcmul($itemInfo['weight'],$num,2),bcmul($itemInfo['item_price'],$num,2));
+            if( $ship_price === false ){
+                $ship_price = 0.00;
+            }
+        }else{
+            $item_ship_info['ship_status'] = 0;
+        }
+        $item_ship_info['ship_price'] = $ship_price;
+        return $item_ship_info;
+    }
+
+    //管理员设置订单已支付状态
+    public function setPayStatus($order_id){
+        $orderLog = new \app\order\model\OrderLog();
+        $where['order_id'] = $order_id;
+        $order_info = $this->where($where)->find();
+        if( !empty($order_info) ){
+            $order_info = $order_info;
+        }
+        $admin_id = 1;
+        $updateData['pay_status'] = 1;
+        $updateData['pay_time'] = date('Y-m-d H:i:s');
+        if( !$this->where($where)->update($updateData) ){
+            $this->error = '状态更新失败';
+            return false;
+        }
+        if( !$orderLog->markLog($admin_id,$order_id,'平台设订单为已支付',$orderLog::OPERATOR_TYPE_ADMIN) ){
+            $this->errro = '订单记录失败';
+            return false;
+        }
+    }
+
+    /**
+     * 设置订单审核状态
+     * @param $order_id
+     */
+    public function setOrderVerify($order_id){
+
+    }
+
+}

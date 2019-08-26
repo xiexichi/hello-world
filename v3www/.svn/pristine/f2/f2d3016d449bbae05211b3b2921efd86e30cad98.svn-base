@@ -1,0 +1,121 @@
+<?php
+
+namespace app\order\validate;
+
+class OrderReturn extends Base
+{
+
+    public function index($data){
+        $rule = [
+            'type' => 'integer',
+            'verify' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'type' => '参数错误',
+            'verify' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function createOrderReturn($data){
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+            'order_goods_id' => 'require|integer|>:0',
+            'return_reason_id' => 'require|integer|>:0',
+            'return_type' => 'require|integer|>:0',
+            'return_num' => 'require|integer|>:0',
+            'description' => 'require',
+//            'img_list' => 'require|array',
+            'img_list' => 'array',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '缺少用户信息',
+            'order_goods_id' => '缺少商品订单信息',
+            'return_reason_id' => '缺少问题类型',
+            'return_type' => '申请类型错误',
+            'return_num' => '数量不能为空',
+            'description' => '描述内容不能为空',
+//            'img_list.require' => '图片不能为空',
+            'img_list.array' => '图片信息错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    //审核退换货
+    public function returnVerify($data){
+        $rule = [
+            'return_id' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'return_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    //商家确认收货
+    public function returnShopGetGoods($data){
+        $rule = [
+            'return_id' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'return_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    //商家确认收货
+    public function createReturnGoodsOrder($data){
+        $rule = [
+            'return_id' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'return_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    //会员寄回商品
+    public function sand_goods_back($data){
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+            'return_id' => 'require|integer|>:0',
+            'return_back_express' => 'require|max:80',
+            'return_back_express_sn' => 'require|max:255',
+            'remark' => 'max:255',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '缺少用户信息',
+            'return_id' => '参数错误',
+            'return_back_express' => '物流公司不能为空',
+            'return_back_express_sn' => '物流单号不能为空',
+            'remark' => '备注内容不能超过255个字',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    //审核退款
+    public function payBackVerify($data){
+        $rule = [
+            'return_id' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'return_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+}

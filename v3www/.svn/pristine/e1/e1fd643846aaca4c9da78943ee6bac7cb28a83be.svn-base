@@ -1,0 +1,33 @@
+<?php
+
+namespace app\goods\model;
+use think\Model;
+class Category extends Model
+{
+    protected $name = 'goods_categorys';
+
+    /**
+     * 处理树状结构数据集
+     * @param $arr_all      待处理数据集
+     * @param $parent_id    顶级父级id
+     * @param $relation     关联关系项 ['parent'=>'id','son'=>'pid']
+     * @return array        已处理的数据集
+     */
+    public function set_tree($arr_all,$parent_id=0,$relation=['parent'=>'id','son'=>'pid']){
+        $tree_arr = [];
+        if( empty($relation) || empty($arr_all) ){
+            return $arr_all;
+        }
+        $parent = isset($relation['parent']) ? 'id' : $relation['parent'];
+        $son = isset($relation['son']) ? 'pid' : $relation['son'];
+        if( !empty($arr_all) ){
+            foreach( $arr_all as $tkey => $t ){
+                if( $t[$son] == $parent_id ){
+                    $t['children'] = $this->set_tree($arr_all,$t[$parent],$relation);
+                    $tree_arr[] = $t;
+                }
+            }
+        }
+        return $tree_arr;
+    }
+}

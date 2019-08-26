@@ -1,0 +1,77 @@
+<?php
+
+/**
+ *  商品品牌
+ */
+
+namespace app\goods\validate;
+
+class GoodsBrands extends Base
+{
+
+    public function getBrandsAll($data){
+        if( !isset($data['limit']) ){
+            $data['limit'] = 10;
+        }
+        if( !isset($data['page']) ){
+            $data['page'] = 1;
+        }
+        $rule = [
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getGoodsTagSingle 获取单个信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getBrandInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function add($data){
+        $rule = [
+            'brand_name'    => 'require|chsDash',
+            'brand_letter'  => 'require|alpha',
+            'sort'          => 'integer',
+            'brand_logo'    => 'url',
+            'brand_img'     => 'url',
+            'brand_url'     => 'url',
+            'brand_desc'    => 'chsDash'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function edit($data){
+        $rule = [
+            'id'            => 'require|integer',
+            'brand_name'    => 'require',
+            'brand_letter'  => 'require|alpha',
+            'sort'          => 'integer',
+            'brand_logo'    => 'url',
+            'brand_img'     => 'url',
+            'brand_url'     => 'url',
+            'brand_desc'    => 'chsDash'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function deleted($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+}

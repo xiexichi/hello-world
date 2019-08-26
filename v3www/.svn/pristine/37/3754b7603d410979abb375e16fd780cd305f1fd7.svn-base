@@ -1,0 +1,98 @@
+<!--数据列表-->
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="order_return" lay-filter="test"></table>
+    </div>
+</div>
+<script>
+    var order_param = '';
+    var type = getUrlParam('type');
+    if( type != null ){
+        order_param += '&type='+type;
+    }
+    var verify_id = getUrlParam('verify');
+    if( verify_id != null ){
+        $('.layui-nav-item').removeClass('layui-this');
+        order_param += '&verify='+verify_id;
+        $('.layui-nav-item').eq(eval(verify_id+'+1')).addClass('layui-this');
+    }
+
+    var table = layui.table;
+    //执行渲染
+    table.render({
+        elem: '#order_return'
+        ,height: 'auto' //容器高度
+        ,url: '/order/order_return/index?'+order_param
+        ,page: true
+        ,headers: {
+            ctrl: SHOP_DATA
+        }
+        ,cols: [[
+            {field: 'id', title: 'ID', width:80}
+            ,{field: 'order_return_sn', title: '退换单号'}
+            ,{field: 'return_num', title: '数量', width:100}
+            ,{field: 'return_type_desc', title: '申请类型', width:100}
+            ,{field: 'return_status_desc', title: '状态', width:100}
+            ,{field: 'create_time', title: '申请时间', width:180}
+            ,{field: 'id', title: '操作', width:200, templet: '#ctrlTpl'}
+        ]]
+    });
+
+    function detail(id){
+        var toUrl = "/goods/brands/detail.html?id="+id;
+        layer.open({
+            title:'品牌详情',
+            type:2,
+            shadeClose: true,
+            closeBtn:1,
+            area:['100%','100%'],
+            content:toUrl
+        })
+    }
+
+    function orderDetail(order_id){
+        var toUrl = "/order/order/detail.html?id="+order_id;
+        layer.open({
+            title:'订单详情',
+            type:2,
+            shadeClose: true,
+            closeBtn:1,
+            area:['90%','90%'],
+            content:toUrl
+        });
+    }
+
+    function deleted(id){
+        layer.confirm("是否确认删除！", {
+            btn: ["确定","取消"] //按钮
+        }, function(){
+            var param = {};
+            param.id = id;
+            param.is_deleted = 1;
+            request.setHost(SHOP_DATA).post('/goods/goods_brands/deleted',param, function(res){
+                if (res.code == 0) {
+                    // 成功提示
+                    layer.msg(res.msg);
+                    setTimeout(function(){
+                        table.reload('order_return');
+                    },1000);
+                } else {
+                    // 错误提示
+                    layer.msg(res.msg);
+                }
+            });
+        });
+        return false;
+    }
+    function callback(){
+        table.reload('order_return');
+        layer.closeAll();
+    }
+</script>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+    <button class="layui-btn layui-btn-xs" style="margin:0;" onclick="detail({{d.id}})" >详情</button>
+    <button class="layui-btn layui-btn-xs" style="margin:0;" onclick="orderDetail({{d.order_id}})" >查看原订单</button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" style="margin:0;" onclick="deleted({{d.id}})" >删除</button>
+</script>

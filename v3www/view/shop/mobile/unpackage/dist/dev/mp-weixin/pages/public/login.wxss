@@ -1,0 +1,16 @@
+page {
+  background-color: #eeeeee;
+}
+.login {
+  padding: 30rpx;
+}
+.login-banner {
+  display: block;
+  width: 100%;
+  margin: 40rpx auto 80rpx auto;
+}
+.login-other {
+  text-align: center;
+  margin-top: 20rpx;
+}
+

@@ -1,0 +1,9 @@
+<!-- 使用iconfont图标 -->
+<view class="empty">
+    <view class="empty__box">
+		<van-icon class-prefix="iconfont" custom-class="empty__icon" wx:if="{{icon}}" name="{{icon}}" />
+        <view class="empty__text" wx:if="{{title}}">{{title}}</view>
+        <view class="empty__tip" wx:if="{{tip}}">{{tip}}</view>
+		<van-button wx:if="{{button}}" bindtap="emitEmptyTap" type="primary" custom-class="empty__btn">{{button}}</van-button>
+    </view>
+</view>

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "vant": "^1.6.13"
+  }
+}

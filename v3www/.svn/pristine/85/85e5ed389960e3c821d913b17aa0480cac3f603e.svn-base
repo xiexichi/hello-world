@@ -1,0 +1,247 @@
+$('.nav_list').eq(0).addClass('layui-this');
+var param = '/?';
+var state = getUrlParam('state');
+if( state != null ){
+    param += '&status='+state;
+    $('.nav_list').removeClass('layui-this');
+    if( state == 1 ){
+        $('.nav_list').eq(1).addClass('layui-this');
+    }else{
+        $('.nav_list').eq(2).addClass('layui-this');
+    }
+}
+var _del = getUrlParam('delete');
+if( _del != null && _del == 1 ){
+    $('.nav_list').removeClass('layui-this');
+    param += '&delete='+_del;
+    $('.nav_list').eq(3).addClass('layui-this');
+}
+var keyword = getUrlParam('keyword');
+if( keyword != null ){
+    param += '&keyword='+keyword;
+}
+var erp_code = getUrlParam('erp_code');
+if( erp_code != null ){
+    param += '&erp_code='+erp_code;
+}
+var cate_id = getUrlParam('cate_id');
+if( cate_id != null ){
+    param += '&cate_id='+cate_id;
+}
+var brand_id = getUrlParam('brand_id');
+if( brand_id != null ){
+    param += '&brand_id='+brand_id;
+}
+var form = layui.form;
+
+$(document).ready(function(){
+    loadlist();
+    layui.use('form', function(){
+        request.setHost(SHOP_DATA).get('/goods/category/getCateAll/',{'showType':'tree_list'}, function(res){
+            if( res.code == 0 ){
+                var cate_list = setTreeGrid(res.data);
+                var cate_html = '<option value="" >选择分类</option>';
+                for( var c = 0; c < cate_list.length; c++ ){
+                    cate_html += '<option value="'+cate_list[c].id+'" >'+cate_list[c].cate_name+'</option>';
+                }
+                $('#cate_box').html(cate_html);
+                form.render();
+            }
+        });
+        request.setHost(SHOP_DATA).get('/goods/goods_brands/getBrandsAll/',{'limit':'0'}, function(res){
+            if( res.code == 0 ){
+                var brand_list = res.data;
+                var brand_html = '<option value="" >选择品牌</option>';
+                for( var b = 0; b < brand_list.length; b++ ){
+                    brand_html += '<option value="'+brand_list[b].id+'" >'+brand_list[b].brand_name+'</option>';
+                }
+                $('#brand_box').html(brand_html);
+                form.render();
+            }
+        });
+        form.render();
+    });
+
+});
+//树状结构多维数组转一维数组
+function setTreeGrid(cate_list){
+    var nbsp = '';
+    var tree = '';
+    for( var i = 0; i < cate_list.length; i++ ){
+        tree = '';
+        nbsp = '';
+        if( cate_list[i].pNum > 0 ){
+            tree += '├';
+            for( var t = 0; t < cate_list[i].pNum; t++ ){
+                // nbsp += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                // tree += '─';
+                tree += '──';
+            }
+            cate_list[i].cate_name = nbsp+tree+cate_list[i].cate_name;
+        }
+    }
+    return cate_list;
+}
+
+
+var table = layui.table;
+function loadlist(){
+    //执行渲染
+    table.render({
+        elem: '#goods' //
+        ,height: 'auto' //容器高度
+        ,url: '/goods/goods/getGoodsAll'+param
+        ,page: true
+        , toolbar: '#toolbar'
+        ,headers: {
+            ctrl: SHOP_DATA
+        }
+        ,cols: [[
+            // {field:'id',type:'checkbox',width:50},
+            {field: 'id', title: 'ID', width:80},
+            {field: 'image', title: '主图', width:125,templet:function (d) { return '<div><img src='+d.image+' width="100" height="100"></div>' }},
+            {field: 'goods_name', title: '商品名', templet: function (d) {
+                    return d.goods_name+( d.is_hot == 1 ? ' <a href="javascript:void(0);"  onclick="set_hot('+d.id+','+d.is_hot+')" ><i class="layui-icon" style="color: #FF0000;" >&#xe756;</i></a>' : ' <a href="javascript:void(0);" style="color:#01AAED; font-size:12px;" onclick="set_hot('+d.id+','+d.is_hot+')">设置热卖推荐</a>' )
+                }},
+            {field: 'sku_sn', title: '货号', width:120},
+            {field: 'sort', title: '排序', width:60},
+            {field: 'update_time', title: '更新时间', width:170 },
+            {field: 'id', title: '操作', width:260,templet: '#ctrlTpl'}
+        ]]
+    });
+}
+function add(){
+    var toUrl = "/goods/goods/add.html";
+    layer.open({
+        title:'添加商品',
+        type:2,
+        shadeClose: true,
+        closeBtn:1,
+        area:['95%','95%'],
+        content:toUrl
+    })
+}
+function set_hot(id,is_hot){
+    var param = {};
+    var msg = "是否设置热卖推荐";
+    param.id = id;
+    param.is_hot = is_hot ? 0 : 1;
+    if( param.is_hot == 0 ){
+        msg = "是否取消热卖推荐！";
+    }
+    layer.confirm(msg, {
+        btn: ["确定","取消"] //按钮
+    }, function(){
+        request.setHost(SHOP_DATA).post('/goods/goods/edit',param, function(res){
+            if (res.code == 0) {
+                // 成功提示
+                layer.msg(res.msg);
+                setTimeout(function(){
+                    loadlist();
+                },1000);
+            } else {
+                // 错误提示
+                layer.msg(res.msg);
+            }
+        });
+    });
+    return false;
+}
+function detail(id){
+    var toUrl = "/goods/goods/detail.html?id="+id;
+    layer.open({
+        title:'商品编辑',
+        type:2,
+        shadeClose: true,
+        closeBtn:1,
+        area:['95%','95%'],
+        content:toUrl
+    })
+}
+
+function sales_detail(id){
+    var toUrl = "/goods/goods/sales_detail.html?id="+id;
+    layer.open({
+        title:'sku管理',
+        type:2,
+        shadeClose: true,
+        closeBtn:1,
+        area:['90%','60%'],
+        content:toUrl
+    })
+}
+
+function set_tag(id){
+    var toUrl = "/goods/goods/set_tag.html?id="+id;
+    layer.open({
+        title:'设置标签',
+        type:2,
+        shadeClose: true,
+        closeBtn:1,
+        area:['90%','60%'],
+        content:toUrl
+    })
+}
+
+function sales(id,sales_status,is_deleted){
+    if( is_deleted == 1 ){
+        layer.msg('已删除商品必须先恢复才能操作');
+        return false;
+    }
+    var param = {};
+    var msg = "是否确认下架！";
+    param.id = id;
+    param.sales_status = sales_status ? 0 : 1;
+    if( param.sales_status == 1 ){
+        msg = "是否确认上架！";
+    }
+    layer.confirm(msg, {
+        btn: ["确定","取消"] //按钮
+    }, function(){
+        request.setHost(SHOP_DATA).post('/goods/goods/edit',param, function(res){
+            if (res.code == 0) {
+                // 成功提示
+                layer.msg(res.msg);
+                setTimeout(function(){
+                    loadlist();
+                },1000);
+            } else {
+                // 错误提示
+                layer.msg(res.msg);
+            }
+        });
+    });
+    return false;
+}
+
+function deleted(id,is_deleted){
+    var param = {};
+    var msg = "是否确认恢复！恢复后商品默认下架！";
+    param.id = id;
+    param.is_deleted = is_deleted ? 0 : 1;
+    if( param.is_deleted == 1 ){
+        param.sales_status = 0;
+        msg = "是否确认删除！删除后相关商品关联将取消！";
+    }
+    layer.confirm(msg, {
+        btn: ["确定","取消"] //按钮
+    }, function(){
+        request.setHost(SHOP_DATA).post('/goods/goods/edit',param, function(res){
+            if (res.code == 0) {
+                // 成功提示
+                layer.msg(res.msg);
+                setTimeout(function(){
+                    loadlist();
+                },1000);
+            } else {
+                // 错误提示
+                layer.msg(res.msg);
+            }
+        });
+    });
+    return false;
+}
+function callback(){
+    loadlist();
+    layer.closeAll();
+}

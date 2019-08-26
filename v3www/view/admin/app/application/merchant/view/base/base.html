@@ -1,0 +1,48 @@
+<script>
+
+  var form = layui.form;
+  
+  /**
+   * [setAreas 设置区域下拉数据]
+   */
+  function setAreas(params, $obj, callback){
+
+    // 清空原有数据
+    $obj.empty();
+
+    // 获取地区信息
+    request.setHost(CENTER_DATA).get('/index/area/getAreas',params, function(res){
+      console.info(res);
+
+      for (var i = 0; i < res.data.length; i++) {
+        var area = res.data[i];
+        $obj.append('<option value="'+area.id+'">'+area.area_name+'</option>');
+      }
+
+      // 调用回调函数
+      if (undefined !== callback) {
+        callback()
+      }
+
+      // 渲染表单
+      form.render();
+    })
+  }
+
+
+  // 省份选择
+  form.on('select(province)', function(data){
+    // 设置城市信息
+    setAreas({type: 2, pid: data.value}, $('#city'));
+    // 区域也清空
+    $('#region').empty();
+  }); 
+
+  // 城市选择
+  form.on('select(city)', function(data){
+    // 设置城市信息
+    setAreas({type: 3, pid: data.value}, $('#region'));
+  });
+
+
+</script>

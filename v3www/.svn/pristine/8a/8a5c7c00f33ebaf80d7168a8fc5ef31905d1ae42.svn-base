@@ -1,0 +1,43 @@
+<?php
+
+namespace app\merchant\controller;
+
+use think\Db;
+
+class Merchant extends Base
+{
+
+	public function indexBefore(){
+		$this->model->data(input());
+	}
+
+
+	public function addBefore(){
+
+		// 1. 验证数据
+		if (!$checkData = $this->validate->add(input())) {
+			// 设置错误信息和错误码
+			$this->setExitErrorInfo($this->validate->getError(), 10001);
+			return false; 
+		}
+
+		// 2. 设置模型数据
+		$this->model->data($checkData);
+	}
+
+
+	public function editBefore(){
+
+		// 1. 验证数据
+		if (!$checkData = $this->validate->edit(input())) {
+			// 设置错误信息和错误码
+			$this->setExitErrorInfo($this->validate->getError(), 10001);
+			return false; 
+		}
+
+		// 2. 设置模型数据
+		$this->model->data($checkData);
+	}
+
+
+}

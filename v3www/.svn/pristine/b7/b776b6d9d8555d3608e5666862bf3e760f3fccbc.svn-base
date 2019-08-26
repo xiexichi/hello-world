@@ -1,0 +1,79 @@
+<div class="layui-card">
+  <div class="layui-card-body">
+
+    <form id="form" class="layui-form pr-2" action="">
+      
+      <input type="hidden" name="id">
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">预选类型</label>
+        <div class="layui-input-inline" style="width: 150px;">
+          <select name="type" lay-verify="required">
+            <option value="1">进货</option>
+            <option value="2">退货</option>
+            <option value="3">调整</option>
+            <option value="4">调拨</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">预选标记</label>
+        <div class="layui-input-block">
+          <input type="text" name="tag" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+          <textarea name="remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+ 
+  </div>
+</div>
+
+<script>
+//Demo
+
+var id = getUrlParam('id');
+
+var form = layui.form;
+form.render();
+
+// 获取数据
+request.get('/depot/shop_depot_pre_select/one?id='+id, function(res){
+  
+  for (let i in res.data) {
+    let value = res.data[i];
+    $('#form').find('input[name="'+i+'"]').val(value);
+    $('#form').find('select[name="'+i+'"]').val(value);
+    $('#form').find('textarea[name="'+i+'"]').val(value);
+  }
+
+})
+
+
+//监听提交
+form.on('submit(formDemo)', function(data){
+
+  // 添加测试员工id
+  data.field['staff_id'] = 1;
+
+  request.post('/depot/shop_depot_pre_select/edit', data.field, function(res){
+    console.info(res);
+  })
+
+  return false;
+});
+
+</script>

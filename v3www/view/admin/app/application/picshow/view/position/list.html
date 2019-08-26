@@ -1,0 +1,45 @@
+<div class="layui-fluid" id="app">
+	<div class="layui-card">
+		<form class="layui-form" id="searchForm" lay-filter="searchForm">
+			<div class="layui-card-header p-1">
+				<button class="layui-btn" lay-submit>搜索</button> 
+				<a href="{:url()}" class="layui-btn layui-btn-primary">重置</a>
+			</div>
+			<div class="layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item layui-inline">
+					<label class="layui-form-label">平台</label>
+					<div class="layui-input-inline">
+						<select name="platform_code" id="platformCode">
+							<option value="">选择平台</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item layui-inline">
+					<label class="layui-form-label">广告位名称</label>
+					<div class="layui-input-inline">
+						<input type="text" name="position_name" placeholder="模糊匹配" class="layui-input" value="{$Request.param.position_name}">
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="layui-card-body">
+			<table id="myDataTable" lay-filter="myDataTable"></table>
+		</div>
+	</div>
+</div>
+
+<!-- 操作模板 -->
+<script type="text/html" id="ctrlTpl">
+	<button class="layui-btn layui-btn-xs" lay-event="edit">修改</button>
+	<a class="layui-btn layui-btn-xs" href="/picshow/index/list?position_id={{d.id}}">广告列表</a>
+	<button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</button>
+</script>
+<script type="text/html" id="toolbarTpl">
+	<button class="layui-btn layui-btn-sm" lay-event="add">添加广告位</button>
+</script>
+
+<script type="text/javascript">
+const query = {$Request.param|json_encode}
+</script>
+<hea:js src="" />

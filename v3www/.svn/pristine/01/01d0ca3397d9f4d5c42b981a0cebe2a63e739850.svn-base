@@ -1,0 +1,8 @@
+<?php
+
+namespace app\activity\model;
+
+class Coupon extends Base
+{
+
+}

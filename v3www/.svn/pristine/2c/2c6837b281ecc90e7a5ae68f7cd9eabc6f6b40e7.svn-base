@@ -1,0 +1,103 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div>
+                <button class="layui-btn layui-btn-sm" id="addMenu">添加菜单</button>
+                <button class="layui-btn layui-btn-sm" id="addAccess">添加权限</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="access_view"></div>
+<style type="text/css">
+    #access_view{padding: 10px;}
+    .ctrl_div{padding: 0 20px 20px 20px;background-color: #fff;}
+    .ctrl_div .layui-row{background-color: #f2f2f2}
+    fieldset{background-color: #fff;}
+</style>
+<script id="access_tpl" type="text/html">
+    {{# layui.each(d, function(index1,item1){  }}
+    <fieldset class="layui-elem-field site-demo-button" style="margin-top: 20px;">
+        <legend>{{ item1.title }}</legend>
+        <div class="ctrl_div">
+            <div class="layui-row layui-col-space10">
+
+                {{# layui.each(item1.children, function(index2,item2){ }}
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">{{ item2.title }}</div>
+                        <div class="layui-card-body">
+                            {{# layui.each(item2.children, function(index3,item3){ }}
+                            <button class="layui-btn layui-btn-sm" style="margin:5px 0;">{{ item3.title }}</button>
+                            {{# }) }}
+                        </div>
+                    </div>
+                </div>
+                {{# }) }}
+
+            </div>
+        </div>
+    </fieldset>
+    {{# }); }}
+</script>
+
+<script>
+        var $ = layui.jquery;
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        var element = layui.element;
+        var laytpl = layui.laytpl;
+        function loadTpl(){
+            // 获取分类信息
+            request.setHost(CENTER_DATA).get('/admin/admin_access/getAllList',{}, function(res){
+                console.log(res);
+                if( res.code == 0 ){
+                    var getTpl = access_tpl.innerHTML,view = document.getElementById('access_view');
+                    laytpl(getTpl).render(res.data, function(html){
+                      view.innerHTML = html;
+                    });
+                }
+            });
+        }
+    layui.use(['layer', 'table','laytpl'], function(){
+
+        loadTpl();
+
+        //绑定事件
+        $(document).on('click', '#addAccess', function(data) {
+            layer.open({
+                title:'添加权限配置',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','60%'],
+                content:"/admin/admin_access/page_add_access.html",
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        }).on('click', '#addMenu', function(data) {
+            layer.open({
+                title:'添加菜单',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['60%','60%'],
+                content:"/admin/admin_access/page_add_menu.html",
+                success:function (layero,index){
+                    LayuiOpenView = window[layero.find('iframe')[0]['name']];
+                }
+            });
+        });
+        
+
+
+    });
+
+    function callback(){
+        loadTpl()
+        layer.closeAll();
+    }
+ 
+</script>

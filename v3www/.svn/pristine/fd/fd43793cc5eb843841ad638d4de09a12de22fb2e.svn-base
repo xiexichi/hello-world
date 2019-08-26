@@ -1,0 +1,59 @@
+<?php
+
+namespace app\order\model;
+
+class OrderDiscount extends Base
+{
+    protected $name = 'order_discount';
+
+    public function discountLog($order_id,$orderInfo,$discountContent){
+        if( empty($order_id) ){
+            return false;
+        }
+        if( empty($discountContent) ){
+            return true;
+        }
+        $discount_list = [];//优惠列表
+        foreach( $discountContent as $key => $cont ){
+            switch($key){
+                case 'point' ://积分
+                    $discount_list[] = [
+                        'order_id' => $order_id,
+                        'discount_type' => 0,
+                        'discount_title' => '积分抵扣',
+                        'discount_content' => '使用比例: '.$cont.' : 1',
+                        'discount_price' => $orderInfo['point_price']
+                    ];
+                    break;
+                case 'coupon' ://优惠券 未有数据结构
+                    foreach( $cont as $coupon ){
+                        //根据类型拼接内容
+                        $content = '';
+                    }
+                    $discount_list[] = [
+                        'order_id' => $order_id,
+                        'discount_type' => 0,
+                        'discount_title' => '优惠券',
+                        'discount_content' => $content,
+                        'discount_price' => $orderInfo['discount_price']
+                    ];
+                    break;
+                case 'activity' ://营销活动优惠 未有现成功能
+                    foreach( $cont as $k => $v ){
+                        $discount_list[] = [
+                            'order_id' => $order_id,
+                            'discount_type' => 0,
+                            'discount_title' => '营销活动',
+                            'discount_content' => $v,
+                            'discount_price' => $orderInfo['discount_price']
+                        ];
+                    }
+                    break;
+            }
+        }
+        if( !$this->insertAll($discount_list) ){
+            return false;
+        }
+        return true;
+    }
+}

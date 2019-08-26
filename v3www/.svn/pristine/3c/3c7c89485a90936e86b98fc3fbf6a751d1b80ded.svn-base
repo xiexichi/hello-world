@@ -1,0 +1,599 @@
+<?php
+
+namespace app\goods\controller;
+
+use think\Exception;
+
+class Goods extends Base
+{
+    public function indexBefore(){
+        $param = $this->validate->index(input());
+        if( $param === false ){
+            $this->isExit = false;
+            $this->code = 010101;
+            $this->error = $this->validate->getError();
+        }
+        $goodsItemModel = new \app\goods\model\GoodsItem();
+        $categoryModel = new \app\goods\model\Category();
+        $goodsBrandsModel = new \app\goods\model\GoodsBrands();
+        $this->model->alias('g')
+            ->field('g.*,c.cate_name,b.brand_name,img.image')
+            ->join($categoryModel->getTable().' c','c.id = g.cate_id')
+            ->join($goodsBrandsModel->getTable().' b','b.id = g.brand_id','LEFT')
+            ->join('goods_images img','img.goods_id = g.id');
+        $where['g.is_deleted'] = ['=',0];
+        //是否删除
+        if( isset($param['delete']) && $param['delete'] != '' ){
+            $where['g.is_deleted'] = ['=',$param['delete']];
+        }
+        //上下架
+        if( isset($param['status']) && $param['status'] != ''  ){
+            $where['g.sales_status'] = ['=',$param['status']];
+        }
+        //分类筛选
+        if( isset($param['cate_id']) && $param['cate_id'] != ''  ){
+            $where['g.cate_id'] = ['=',$param['cate_id']];
+        }
+        //品牌筛选
+        if( isset($param['brand_id']) && $param['brand_id'] != '' ){
+            $where['g.brand_id'] = ['=',$param['brand_id']];
+        }
+        //关键词筛选
+        if( isset($param['keyword']) && !empty($param['keyword']) ){
+            $where['g.goods_name'] = ['like',trim($param['keyword'])];
+        }
+        //货号筛选
+        if( isset($param['erp_code']) && !empty($param['erp_code']) ){
+            $where['g.erp_code'] = ['=',trim($param['erp_code'])];
+        }
+        //属性只筛选
+        if( isset($param['prop_value_id']) && !empty($param['prop_value_id']) ){
+            $goodsItemPropValModel = new \app\goods\model\GoodsItemPropVal();
+            $this->model->join($goodsItemModel->getTable().' i','i.goods_id = g.id')
+                ->join($goodsItemPropValModel->getTable().' ipv','ipv.goods_item_id = i.id')
+                ->group('i.goods_id');
+            $where['ipv.goods_prop_val_id'] = ['=',$param['prop_value_id']];
+        }
+        //规格值筛选
+        if( ( isset($param['attr_id']) && !empty($param['attr_id']) ) && ( isset($param['attr_value']) && !empty($param['attr_value']) ) ){
+            $goodsAttrModel = new \app\goods\model\GoodsAttr();
+            $this->model->join($goodsAttrModel->getTable().' ga','ga.goods_id = g.id');
+            $where['ga.goods_attr_cate_id'] = ['=',$param['attr_id']];
+            $where['ga.attr_value'] = ['=',$param['attr_value']];
+        }
+        //价格筛选
+
+        $this->model->where($where)->order(['g.sort'=>'desc','g.create_time'=>'desc']);
+    }
+
+    public function getGoodsTag(){
+        if( !$checkData = $this->validate->getGoodsTag(input('post.')) ){
+            return errorJson(020101, $this->validate->getError());
+        }
+        $tagBindModel = new \app\goods\model\GoodsTagBind();
+        $bind_list = $tagBindModel->field('tag_id')
+            ->where('goods_id',$checkData['id'])
+            ->select();
+        $list = [];
+        if(!empty($bind_list)){
+            foreach( $bind_list as $v ){
+                $list[] = $v['tag_id'];
+            }
+        }
+        return successJson($list,'success');
+    }
+
+    public function bindTag(){
+        if( !$checkData = $this->validate->bindTag(input('post.')) ){
+            return errorJson(020101, $this->validate->getError());
+        }
+        $tagBindModel = new \app\goods\model\GoodsTagBind();
+        $where['goods_id'] = $checkData['id'];
+        $_tag = $tagBindModel->where($where)->find();
+        if( !empty($_tag) ){
+            if( !$tagBindModel->where($where)->delete() ){
+                return errorJson(020110,'网络错误，绑定失败');
+            }
+        }
+        if( !empty($checkData['tag']) ){
+            $insert_data = [];
+            foreach( $checkData['tag'] as $tag_id){
+                $insert_data[] = [
+                    'goods_id' => $checkData['id'],
+                    'tag_id' => $tag_id
+                ];
+            }
+            if( !$tagBindModel->insertAll($insert_data) ){
+                return errorJson(020111,'网络错误，绑定失败');
+            }
+        }
+        return successJson('SUCCESS','保存成功');
+    }
+
+    //创建商品
+    public function createGoods(){
+        //参数检查
+        $param = input('post.',[]);
+        if( empty($param) ){
+            return errorJson(020101, '参数错误');
+        }
+        if( !$goodsInfo = $this->validate->goodsCreateData($param) ){
+            return errorJson(020101, $this->validate->getError());
+        }
+        //商品详情不验证
+        $goodsInfo['content'] = empty($param['goods_content']) ? '' : $param['goods_content'];
+        //创建商品
+        $returnCode = 0;
+        $this->model->startTrans();
+        try{
+            //创建主商品
+            $data['goods_name'] = $goodsInfo['goods_name'];
+            $data['adv_desc'] = $goodsInfo['adv_desc'];
+            $data['seo_keyword'] = trim($goodsInfo['seo_keyword']);
+            $data['seo_description'] = trim($goodsInfo['seo_description']);
+            $data['cate_id'] = $goodsInfo['cate_id'];
+            $data['brand_id'] = $goodsInfo['brand_id'];
+            $data['goods_code'] = $goodsInfo['goods_code'];
+            $data['erp_code'] = $goodsInfo['erp_code'];
+            $data['sku_sn'] = empty($goodsInfo['sku_sn']) ? $data['erp_code'] : trim($goodsInfo['sku_sn']);
+            $data['market_price'] = empty($goodsInfo['market_price']) ? '0.00' : bcadd($goodsInfo['market_price'],0,2);
+            $data['sell_price'] = empty($goodsInfo['sell_price']) ? '0.00' : bcadd($goodsInfo['sell_price'],0,2);
+            $data['is_shop_goods'] = $goodsInfo['is_shop_goods'];
+            $data['is_user_goods'] = $goodsInfo['is_user_goods'];
+            $data['is_materials'] = $goodsInfo['is_materials'];
+            $data['is_commission'] = $goodsInfo['is_commission'];
+            $data['is_sell_goods'] = $goodsInfo['is_sell_goods'];
+            $data['content'] = $goodsInfo['content'];
+            $data['weight'] = empty($goodsInfo['weight']) ? 0 : bcadd($goodsInfo['weight'],0,3);
+            $data['ship_free'] = empty($goodsInfo['ship_free']) ? 0 : intval($goodsInfo['ship_free']);
+            //这个商品模板设定不存在了 请不要想它
+            //$data['delivery_id'] = $goodsInfo['delivery_id'];
+            $data['create_time'] = date('Y-m-d H:i:s');
+            $data['update_time'] = $data['create_time'];
+            //添加是否默认审核
+            if( getSystemSet('ADMIN_GOODS_VERIFY') == 'on' ){
+                $data['verify'] = 1;
+            }
+            //添加为默认下架
+            if( !$goods_id = $this->model->insertGetId($data) ){
+                $returnCode = 020110;
+                throw new Exception('主商品创建失败');
+            }
+            //记录金额变动日志
+            if( !$this->model->setGoodsPriceLog($goods_id,0,0,$data['sell_price'],'创建商品基础售价',$data['create_time']) ){
+                $returnCode = 020110;
+                throw new Exception('日志记录失败');
+            }
+            //商品图片信息处理
+            $goodsImagesModel = new \app\goods\model\GoodsImages();
+            if( $goodsImagesModel->setGoodsImages($goods_id,$goodsInfo) === false ){
+                $returnCode = 020111;
+                throw new Exception('网络错误，商品图片处理错误');
+            }
+            //商品规格参数执行参数配置
+            if( !empty($goodsInfo['attr_list']) ){
+                $goodsAttrModel = new \app\goods\model\GoodsAttr();
+                if( $goodsAttrModel->setBind($goods_id,$goodsInfo['attr_list']) === false ){
+                    $returnCode = 020112;
+                    throw new Exception('网络错误，商品参数详情处理错误');
+                }
+            }
+            //商品sku配置
+            if( empty($goodsInfo['sku_param']) ){
+                $returnCode = 020113;
+                throw new Exception('必须设置商品sku');
+            }
+            $goodsItemModel = new \app\goods\model\GoodsItem();
+            if( $goodsItemModel->createGoodsSku($goods_id,$goodsInfo) === false ){
+                $returnCode = 020114;
+                throw new Exception('网络错误,sku商品处理出错');
+            }
+            $returnCode = $goods_id;
+            $this->model->commit();
+            actionLogs('创建商品'.$goods_id,$this->model);
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($returnCode, $e->getMessage());
+        }
+        return successJson($returnCode,'商品添加成功');
+    }
+
+    //获取商品信息
+    public function getGoodsInfo(){
+        if( !$goodsInfo = $this->validate->getGoodsInfo(input('post.')) ){
+            return errorJson(020101, $this->validate->getError());
+        }
+        $ids = $goodsInfo['id'];
+        $returnCode = $ids;
+        try{
+            if( empty($ids) ){
+                $returnCode = 020101;
+                throw new Exception('参数错误');
+            }
+            //获取主商品
+            $info = $this->model->where('id',$ids)->find();
+            if( empty($info) ){
+                $returnCode = 020110;
+                throw new Exception('商品不存在');
+            }
+            //获取商品图片
+            $goodsImagesModel = new \app\goods\model\GoodsImages();
+            $imageInfo = $goodsImagesModel->where('goods_id',$ids)->find();
+            $info['goods_image'] = empty($imageInfo['image']) ? '' : $imageInfo['image'];
+            $info['goods_images_list'] = empty($imageInfo['image']) ? [] : json_decode($imageInfo['images_list'],true);
+            //获取规格信息
+            $goodsAttrModel = new \app\goods\model\GoodsAttr();
+            $AttrCateModel = new \app\goods\model\AttributeCate();
+            $attrInfo = $goodsAttrModel->field('ga.attr_value,ga.goods_attr_cate_id,a.attr_name')
+                ->alias('ga')
+                ->join($AttrCateModel->getTable().' a','a.id = ga.goods_attr_cate_id')
+                ->where('ga.goods_id',$ids)
+                ->select();
+            $attr_list = [];
+            if( !empty($attrInfo) ){
+                //信息处理
+                foreach( $attrInfo as $attr ){
+                    $attr_list[$attr['goods_attr_cate_id']] = [
+                        'val' => $attr['attr_value'],
+                        'name' => $attr['attr_name']
+                    ];
+                }
+            }
+            $info['attr_list'] = $attr_list;
+            //获取商品含有的所有属性
+            $goodsItemPropValModel = new \app\goods\model\GoodsItemPropVal();
+            $prop_all = $goodsItemPropValModel->getGoodsProp($ids);
+            $prop_val_all = $goodsItemPropValModel->getGoodsPropVal($ids,$goodsItemPropValModel::GOODS);
+            $info['prop_list'] = $prop_all;
+            $info['prop_val_list'] = $prop_val_all;
+            //获取sku配置
+            $sku_list = [];
+            $goodsItemModel = new \app\goods\model\GoodsItem();
+            //sku筛选条件
+            $where = [];
+            if(!empty($goodsInfo['sku_filter']) && is_array($goodsInfo['sku_filter'])){
+                foreach( $goodsInfo['sku_filter'] as $k => $v ){
+                    $where[$k] = $v;
+                }
+            }
+            $sku_all = $goodsItemModel->getGoodsItems($ids,$where);
+            if(!empty($sku_all)){
+                foreach( $sku_all as $sku){
+                    $pv_erp_code = empty($sku['erp_code']) ? [] : explode(',',$sku['erp_code']);
+                    if( count($pv_erp_code) > 1 ){
+                        $pv_erp_code = $pv_erp_code[1];
+                    }else{
+                        $pv_erp_code = $sku['erp_code'];
+                    }
+                    $sku_list[empty($sku['pv_id']) ? 0 : $sku['pv_id']] = [
+                        'item_id'           => $sku['id'],
+                        'pv_name'           =>  '',
+                        'pv_id'             => empty($sku['pv_id']) ? [] : explode(',',$sku['pv_id']),
+                        'pv_erp_code'       => $pv_erp_code,
+                        'erp_code'          => $sku['erp_code'],
+                        'sku_sn'            => $sku['sku_sn'],
+                        'price'             => $sku['item_price'],
+                        'item_code'         => $sku['item_code'],
+                        'remark'            => $sku['description'],
+                        'item_image'        => $sku['item_img'],
+                        'sales_status'      => $sku['sales_status'],
+                        'is_deleted'        => $sku['is_deleted']
+                    ];
+                }
+            }
+            $info['sku_list'] = $sku_list;
+        }catch( Exception $e ){
+            return errorJson($returnCode, $e->getMessage());
+        }
+        return successJson($info);
+    }
+
+    //前端获取商品详情
+    public function getInfo(){
+        $code = 000001;
+        if( !$param = $this->validate->getInfo(input()) ){
+            return errorJson($code, $this->validate->getError());
+        }
+        $ids = $param['id'];
+        $user_id = isset($param['user_id']) ? $param['user_id'] : 0;
+        $goodsItemModel = new \app\goods\model\GoodsItem();
+        $goodsImagesModel = new \app\goods\model\GoodsImages();
+        $info = [];
+        try{
+            //预留获取会员等级信息（用于商品是否可见）
+            if( $user_id > 0){
+                //这里去center库 搞事情
+            }
+            $goodsWhere = [
+                'g.verify' => 1,
+                'g.sales_status' => 1,
+                'g.is_deleted' => 0,
+                'i.sales_status' => 1,
+                'i.is_invalid' => 0,
+                'i.is_deleted' => 0
+            ];
+            //检查id类型
+            if( isset($param['getType']) && $param['getType'] == 'item' ){
+                $goodsWhere['i.id'] = $ids;
+            }else{
+                $goodsWhere['g.id'] = $ids;
+                $this->model->group('i.goods_id')->order(['i.item_price'=>'desc','i.id'=>'asc']);
+            }
+            $goodsInfo = $this->model
+                ->field('g.*,i.id as item_id,img.image,images_list')
+                ->alias('g')
+                ->join($goodsItemModel->getTable().' i','i.goods_id = g.id')
+                ->join($goodsImagesModel->getTable().' img','img.goods_id = g.id')
+                ->where($goodsWhere)->find();
+            if( empty($goodsInfo) ){
+                $code = 000001;
+                throw new Exception('商品已下架');
+            }
+            $ids = $goodsInfo['id'];//goods_id 元神归位
+            //图片参数处理
+            $goodsInfo['image'] = empty($info['image']) ? '' : $info['image'];
+            $goodsInfo['images_list'] = empty($info['image']) ? [] : json_decode($info['images_list'],true);
+            $info['goods_info'] = $goodsInfo;
+            //获取规格信息
+            $goodsAttrModel = new \app\goods\model\GoodsAttr();
+            $AttrCateModel = new \app\goods\model\AttributeCate();
+            $attrInfo = $goodsAttrModel->field('ga.attr_value,a.attr_name')
+                ->alias('ga')
+                ->join($AttrCateModel->getTable().' a','a.id = ga.goods_attr_cate_id')
+                ->where('ga.goods_id',$ids)
+                ->select();
+            $info['attr_list'] = $attrInfo;
+            //sku属性匹配更变赋值
+            //获取商品含有的所有属性
+            $goodsItemPropValModel = new \app\goods\model\GoodsItemPropVal();
+            $info['prop_list'] = $goodsItemPropValModel->getGoodsProp($ids);
+            $info['prop_val_list'] = $goodsItemPropValModel->getGoodsPropVal($ids,$goodsItemPropValModel::GOODS);
+            $info['item_prop_val'] = $goodsItemPropValModel->getGoodsPropVal($goodsInfo['item_id'],$goodsItemPropValModel::SKU);
+            $info['item_info'] = $goodsItemModel->getItemInfo($goodsInfo['item_id']);
+            //获取sku配置
+            $prop_all = [];
+            $sku_checked_default = [];
+            foreach( $info['prop_list'] as $prop_id => $prop_val ){
+                $prop_all[] = $prop_id;
+                $sku_checked_default[] = $info['item_prop_val'][$prop_id];
+            }
+            $info['item_prop_val'] = $sku_checked_default;
+            $itemWhere = [
+                'sales_status' => 1,
+                'is_invalid' => 0,
+                'is_deleted' => 0
+            ];
+            $item_all = $goodsItemModel->getGoodsItems($ids,$itemWhere);
+            $item_list = [];
+            foreach( $item_all as $key => $item ){
+                $item_list[$item['pv_id']] = $item['id'];
+            }
+            foreach( $prop_all as $pro_key => $prop_id ) {
+                //设置动态行
+                $sku_checked = $sku_checked_default;
+                foreach( $info['prop_val_list'][$prop_id] as $pv_id => $pv_name ){
+                    $list_info = [
+                        'pv_name' => $pv_name,
+                    ];
+                    $sku_checked[$pro_key] = $pv_id;
+                    $list_info['item_id'] = isset($item_list[implode(',',$sku_checked)]) ? $item_list[implode(',',$sku_checked)] : 0;
+                    $info['prop_val_list'][$prop_id][$pv_id] = $list_info;
+                }
+            }
+        }catch( Exception $e ){
+            return errorJson($code, $e->getMessage());
+        }
+        return successJson($info);
+    }
+
+    public function resetItemInfo(){
+        if( !$param = $this->validate->resetItemInfo(input()) ){
+            return errorJson(000001, $this->validate->getError());
+        }
+        $info = [];
+        $goodsItemModel = new \app\goods\model\GoodsItem();
+        $item_id = $param['item_id'];
+        $itemInfo = $goodsItemModel->getItemInfo($item_id);
+        $info['item_info'] = $itemInfo;
+        //获取商品含有的所有属性
+        $goodsItemPropValModel = new \app\goods\model\GoodsItemPropVal();
+        $info['prop_list'] = $goodsItemPropValModel->getGoodsProp($itemInfo['goods_id']);
+        $info['prop_val_list'] = $goodsItemPropValModel->getGoodsPropVal($itemInfo['goods_id'],$goodsItemPropValModel::GOODS);
+        $info['item_prop_val'] = $goodsItemPropValModel->getGoodsPropVal($itemInfo['id'],$goodsItemPropValModel::SKU);
+        //获取sku配置
+        $prop_all = [];
+        $sku_checked_default = [];
+        foreach( $info['prop_list'] as $prop_id => $prop_val ){
+            $prop_all[] = $prop_id;
+            $sku_checked_default[] = $info['item_prop_val'][$prop_id];
+        }
+        $info['item_prop_val'] = $sku_checked_default;
+        $itemWhere = [
+            'sales_status' => 1,
+            'is_invalid' => 0,
+            'is_deleted' => 0
+        ];
+        $item_all = $goodsItemModel->getGoodsItems($itemInfo['goods_id'],$itemWhere);
+        $item_list = [];
+        foreach( $item_all as $key => $item ){
+            $item_list[$item['pv_id']] = $item['id'];
+        }
+        foreach( $prop_all as $pro_key => $prop_id ) {
+            //设置动态行
+            $sku_checked = $sku_checked_default;
+            foreach( $info['prop_val_list'][$prop_id] as $pv_id => $pv_name ){
+                $list_info = [
+                    'pv_name' => $pv_name,
+                ];
+                $sku_checked[$pro_key] = $pv_id;
+                $list_info['item_id'] = isset($item_list[implode(',',$sku_checked)]) ? $item_list[implode(',',$sku_checked)] : 0;
+                $info['prop_val_list'][$prop_id][$pv_id] = $list_info;
+            }
+        }
+        return successJson($info);
+    }
+
+    //编辑更新商品
+    public function updateGoods(){
+        //参数检查
+        $param = input('post.',[]);
+        if( empty($param) ){
+            return errorJson(020101, '参数错误');
+        }
+        if( !$goodsInfo = $this->validate->goodsUpdateData($param) ){
+            return errorJson(020101, $this->validate->getError());
+        }
+        //商品详情不验证
+        $goodsInfo['content'] = empty($param['goods_content']) ? '' : $param['goods_content'];
+        $goods_id = $goodsInfo['id'];
+        //检查商品是否存在
+        $info = $this->model->where('id',$goods_id)->find();
+        if( empty($info) ){
+            return errorJson(020104, '商品不存在');
+        }
+        $info = $info->toArray();
+        //创建商品
+        $returnCode = 0;
+        $this->model->startTrans();
+        try{
+            $t = date('Y-m-d H:i:s');
+            //参数映射
+            $updateData = [];
+            unset($info['id']);
+            unset($info['create_time']);
+            foreach( $info as $k => $v ){
+                if( isset($goodsInfo[$k]) && $goodsInfo[$k] != $v ){
+                    $updateData[$k] = $goodsInfo[$k];
+                    if( $k == 'sell_price' || $k == 'market_price' ){
+                        $updateData[$k] = bcadd($goodsInfo[$k],0,2);
+                    }
+                }
+            }
+            $updateData['update_time'] = $t;
+            $updateData['verify'] = 0;
+            if( getSystemSet('ADMIN_GOODS_VERIFY') == 'on' ){
+                $updateData['verify'] = 1;
+            }
+            if( !$this->model->where('id',$goods_id)->update($updateData) ){
+                $returnCode = 020110;
+                throw new Exception('主商品更新失败');
+            }
+            //是否有价格变动
+            if( isset($updateData['sell_price']) ){
+                if( !$this->model->setGoodsPriceLog($goods_id,0,$info['sell_price'],$updateData['sell_price'],'更改商品基础售价',$t) ){
+                    $returnCode = 020110;
+                    throw new Exception('主商品更新失败');
+                }
+            }
+            //商品图片信息处理
+            $goodsImagesModel = new \app\goods\model\GoodsImages();
+            if( $goodsImagesModel->setGoodsImages($goods_id,$goodsInfo) === false ){
+                $returnCode = 020111;
+                throw new Exception('网络错误，商品图片处理错误');
+            }
+            //商品规格参数执行参数配置
+            if( !empty($goodsInfo['attr_list']) ){
+                $goodsAttrModel = new \app\goods\model\GoodsAttr();
+                if( $goodsAttrModel->setBind($goods_id,$goodsInfo['attr_list']) === false ){
+                    $returnCode = 020112;
+                    throw new Exception('网络错误，商品参数详情处理错误');
+                }
+            }
+            //商品sku配置
+            if( empty($goodsInfo['sku_param']) ){
+                $returnCode = 020113;
+                throw new Exception('必须设置商品sku');
+            }
+            $goodsItemModel = new \app\goods\model\GoodsItem();
+            if( $goodsItemModel->updateGoodsSku($goods_id,$goodsInfo) === false ){
+                $returnCode = 020114;
+                throw new Exception('网络错误,sku商品处理出错');
+            }
+            $returnCode = $goods_id;
+            $this->model->commit();
+            actionLogs('编辑主商品:'.$goods_id,$this->model);
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($returnCode, $e->getMessage());
+        }
+        return successJson($returnCode,'商品保存成功');
+    }
+
+    //保存sku信息
+    public function saveSku(){
+        $param = input('post.',[]);
+        if( empty($param) || empty($param['sku_param']) ){
+            return errorJson(020101, '参数错误');
+        }
+        if( !$goodsInfo = $this->validate->saveSku($param) ){
+            return errorJson(020101, $this->validate->getError());
+        }
+        $returnCode = 0;
+        $goods_id = $goodsInfo['id'];
+        //检查商品是否存在
+        $info = $this->model->where('id',$goods_id)->find();
+        if( empty($info) ){
+            return errorJson(020104, '商品不存在');
+        }
+        $info = $info->toArray();
+        $this->model->startTrans();
+        try{
+            $t = date('Y-m-d H:i:s');
+            $updateData['update_time'] = $t;
+            foreach( $info as $k => $v ){
+                if( isset($goodsInfo[$k]) && $goodsInfo[$k] != $v ){
+                    $updateData[$k] = $goodsInfo[$k];
+                    if( $k == 'sell_price' || $k == 'market_price' ){
+                        $updateData[$k] = bcadd($goodsInfo[$k],0,2);
+                    }
+                }
+            }
+            if( !$this->model->where('id',$goods_id)->update($updateData) ){
+                $returnCode = 020110;
+                throw new Exception('商品主信息更新失败');
+            }
+            //是否有价格变动
+            if( isset($updateData['sell_price']) ){
+                if( !$this->model->setGoodsPriceLog($goods_id,0,$info['sell_price'],$updateData['sell_price'],'更改商品基础售价',$t) ){
+                    $returnCode = 020111;
+                    throw new Exception('主商品更新失败');
+                }
+            }
+            //商品sku配置
+            $goodsItemModel = new \app\goods\model\GoodsItem();
+            if( $goodsItemModel->updateGoodsSku($goods_id,$goodsInfo) === false ){
+                $returnCode = 020112;
+                throw new Exception('网络错误,sku商品处理出错');
+            }
+            $returnCode = $goods_id;
+            $this->model->commit();
+            actionLogs('编辑商品:'.$goods_id.' SKU配置',$this->model);
+        }catch( Exception $e ){
+            $this->model->rollback();
+            return errorJson($returnCode, $e->getMessage());
+        }
+        return successJson($returnCode,'销售内容保存成功');
+    }
+
+    /**
+     * 获取获取商品筛选类型 和 内容列表
+     * @return \think\response\Json
+     */
+    public function getFilterAll(){
+        //品牌筛选项
+        $brandModel = new \app\goods\model\GoodsBrands();
+        $data['brand_list'] = $brandModel->getFilterList();
+        //分类筛选项
+        $goodsCategoryModel = new \app\goods\model\Category();
+        $category_all = $goodsCategoryModel->getCateAll(['field'=>'id,pid,cate_name,cate_icon','showType'=>'tree']);
+        $data['cate_list'] = $category_all;
+        //属性筛选
+        $goodsPropModel = new \app\goods\model\GoodsProp();
+        $data['prop_list'] = $goodsPropModel->getFilterList();
+        //规格筛选
+        $attrCateModel = new \app\goods\model\AttributeCate();
+        $data['attr_list'] = $attrCateModel->getFilterList();
+        return successJson($data,'success');
+    }
+
+}

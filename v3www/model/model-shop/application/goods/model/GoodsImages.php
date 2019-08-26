@@ -1,0 +1,44 @@
+<?php
+
+namespace app\goods\model;
+
+class GoodsImages extends Base
+{
+    protected $name = 'goods_images';
+
+    public function setGoodsImages($goods_id,$goodsInfo){
+        $data = [];
+        if(!empty($goodsInfo['goods_image'])){
+            $data['image'] = $goodsInfo['goods_image'];
+        }
+        $data['images_list'] = '';
+        if( !empty($goodsInfo['goods_images_list']) && is_array($goodsInfo['goods_images_list']) ){
+            //去除空项
+            $images_list = [];
+            foreach( $goodsInfo['goods_images_list'] as $key => $val ){
+                if( !empty($val) ){
+                    $images_list[] = $val;
+                }
+            }
+            $data['images_list'] = json_encode($images_list);
+        }
+        //检查id是否存在
+        $where['goods_id'] = $goods_id;
+        $imgInfo = $this->where($where)->find();
+        if( !empty($imgInfo) ){//更新内容
+            if( $imgInfo['image'] == $data['image'] && $imgInfo['images_list'] == $data['images_list'] ){
+                return true;
+            }
+            if( !$this->where($where)->update($data)){
+                return false;
+            }
+        }else{
+            $data['goods_id'] = $goods_id;
+            if( !$this->insert($data) ){
+                return false;
+            }
+        }
+        return true;
+    }
+
+}

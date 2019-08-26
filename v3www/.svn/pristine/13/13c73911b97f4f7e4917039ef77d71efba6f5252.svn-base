@@ -1,0 +1,96 @@
+<?php
+
+namespace app\article\model;
+
+class Article extends Base
+{
+    protected $name = 'article';
+
+    public function getArticleAll($paramData,$getCount=false){
+        $where['is_deleted'] = 0;
+        
+        if( isset($paramData['title']) && !empty($paramData['title']) ){
+            $where['title'] = ['like',trim($paramData['title'])];
+        }
+
+        if ( isset($paramData['categorys_id']) && !empty($paramData['categorys_id'])) {
+            $where['categorys_id'] = $paramData['categorys_id'];
+        }
+
+        // pe($where);
+        $page = isset($paramData['page']) ? intval($paramData['page']) : 1;
+        $limit = $paramData['limit'] ? intval($paramData['limit']) : 10;
+        $pageSize = ( $page - 1 ) * $limit.','.$limit;
+        if($limit=0){
+            $pageSize = '';
+        }
+
+        $data['list'] = $this->alias('a')
+            ->field('a.*')
+            ->where($where)
+            ->order('sort','desc')
+            ->limit($pageSize)
+            ->select();
+
+        $length =count($data['list']);
+
+        for ($i=0; $i < $length; $i++) { 
+            if ($data['list'][$i]['categorys_id'] == 0) {
+                $data['list'][$i]['cate_name'] = "顶级分类";
+            }else{
+                $whereCate['id'] = $data['list'][$i]['categorys_id'];
+                $whereCate['is_deleted'] = 0;
+                $res = db('article_categorys')
+                    ->where($whereCate)
+                    ->field('name')
+                    ->find();
+                if ($res) {
+                    $data['list'][$i]['cate_name'] = $res['name'];
+                }else{
+                    $data['list'][$i]['cate_name'] = "该分类已删除";
+                }
+                
+            }
+        }
+
+        if($getCount){
+            $info = $this->alias('a')
+                ->field('count(*) as num')
+                ->where($where)
+                ->find();
+            $data['count'] = $info['num'];
+        }
+        return $data;
+    }
+
+    public function getArticleInfo($id){
+        $info = $this->where('id',$id)->find();
+        if (empty($info)) {
+            $this->code = 200404;
+            $this->error = "参数出错";
+            return false;
+        }
+        return $info;
+    }
+
+    public function checkRepeatArticleName($where=[]){
+        if(!empty($this->data['title'])){//前置方法使用
+            $this->where('title',$this->data['title']);
+        }
+        if(!empty($where) ){
+            foreach( $where as $key => $val ) {
+                $this->where($key,$val[0],$val[1]);
+            }
+        }
+        $info = $this->find();
+        if($info){
+            $this->code = 200402;
+            $this->isExit = true;
+            $this->error = "分类名已存在！";
+            return false;
+        }
+        return true;
+    }
+
+
+}

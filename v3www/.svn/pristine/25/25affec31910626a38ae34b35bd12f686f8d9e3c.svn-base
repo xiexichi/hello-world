@@ -1,0 +1,130 @@
+<?php
+namespace app\power\controller;
+
+use app\power\model\PowerRole;
+use app\merchant\model\Merchant;
+
+class Admin extends Base
+{
+    public function addBefore(){
+        if (!$checkData = $this->validate->add(input())) {
+            $this->setExitErrorInfo($this->validate->getError(), 10001);
+            return false;
+        }
+        //插入前先判断当前的人的角色身份,账号类型，商户持有者只能创建商户员工
+        //...................
+
+        switch ($checkData['account_type']){
+            case 3://商户持有人
+            case 4://商户员工
+                if(empty($checkData['merchant_id'])){
+                    $this->setExitErrorInfo('请选择商户主体', 10001);
+                    return false;
+                }
+                break;
+            case 2://后台管理员
+            default:
+                $checkData['merchant_id'] = 0;
+                break;
+        }
+        
+        $pwdData = $this->model::makePassword($checkData['password']);
+        $checkData['password'] = $pwdData['pwd'];
+        $checkData['salt']  =  $pwdData['salt'];
+        $this->model->data($checkData);
+    }
+    
+    public function editBefore(){
+        if (!$checkData = $this->validate->edit(input())) {
+            $this->setExitErrorInfo($this->validate->getError(), 10001);
+            return false;
+        }
+        //插入前先判断当前的人的角色身份,账号类型，商户持有者只能创建商户员工
+        //...................
+        
+        switch ($checkData['account_type']){
+            case 3://商户持有人
+            case 4://商户员工
+                if(empty($checkData['merchant_id'])){
+                    $this->setExitErrorInfo('请选择商户主体', 10001);
+                    return false;
+                }
+                break;
+            case 2://后台管理员
+            default:
+                $checkData['merchant_id'] = 0;
+                break;
+        }
+        
+        if(!empty($checkData['password'])){
+            $pwdData = $this->model::makePassword($checkData['password']);
+            $checkData['password'] = $pwdData['pwd'];
+            $checkData['salt']  =  $pwdData['salt'];
+        }else{
+            unset($checkData['password']);
+        }
+        $this->model->data($checkData);
+    }
+    
+    
+    public function getAdminList(){
+        $checkData = $this->validate->getAdminList(input());
+        if(false === $checkData){
+            return errorJson(123, $this->validate->getError());
+        }
+        
+        $this->model->alias('a')
+                    ->join('merchant m','a.merchant_id = m.id', 'LEFT')
+                    ->field('a.id,a.realname,a.code,a.account_type,a.status,a.last_ip,a.last_time,m.name AS merchant_name')
+                    ->where('a.id','<>',1);
+        if(!empty($checkData['realname'])){
+            $this->model->where('a.realname','LIKE',"%{$checkData['realname']}%");
+        }
+        if(!empty($checkData['status'])){
+            $this->model->where('a.status',$checkData['status']);
+        }
+        if(!empty($checkData['merchant_id'])){
+            $this->model->where('a.merchant_id',$checkData['merchant_id']);
+        }
+
+        return $this->index();
+    }
+    
+    public function getAdminEdit(){
+        $checkData = $this->validate->getAdminDetail(input());
+        if(false === $checkData){
+            return errorJson(123, $this->validate->getError());
+        }
+        //获取某管理员详情
+        $adminDetail = $this->model->getAdminDetail($checkData['id']);
+        if(empty($adminDetail)){
+            return errorJson(123, '没有数据');
+        }
+        unset($adminDetail['password']);
+        
+        $merchantList = [];
+        //如果该管理员是【商户持有者】或者【商户员工】，就顺便获取商户主体列表
+        if($adminDetail['account_type'] == 3 || $adminDetail['account_type'] == 4){
+            $merchantList = (new Merchant())->getAll();
+        }
+
+        //获取角色组
+        $roleList = (new PowerRole())->getParentRoles();
+        if(1==1){//超级管理员可以创建父级角色身份
+            array_unshift($roleList, ['id'=>0,'pid'=>0,'title'=>'顶级角色']);
+        }
+        
+        return successJson(['adminData'=>$adminDetail,'roleList'=>$roleList, 'merchantList'=>$merchantList]);
+    }
+    
+    public function login(){
+        if (!$checkData = $this->validate->login(input())) {
+            return errorJson(10001, $this->validate->getError());
+        }
+        
+        if (!$adminData = $this->model->data($checkData)->login()) {
+            return errorJson(10001, $this->model->getError());
+        }
+        return successJson($adminData);
+    }
+}

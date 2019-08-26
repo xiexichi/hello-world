@@ -1,0 +1,49 @@
+// layui;
+	layui.use('form', function (){
+	  	const form = layui.form;
+	 	form.render();
+	  	loadUser();
+	  	// var data = new FormData();
+
+	  	//监听添加层提交
+	  	form.on('submit(formAdd)', function (data) {
+	  	console.log(data);
+	    // adddoc
+	    request.setHost(CENTER_DATA).post('/document/seller_document/add',data.field,function(res){
+    		if (res.code == 0) {
+    				layer.msg(res.msg);
+	                setTimeout(function(){
+	                    parent.location.reload();
+	                },1500);
+    			}else{
+    				layer.msg(res.msg);
+    			}
+    		});
+
+	    	return false;
+	    	form.render();
+	  	})
+	  	//会员列表
+	  	function loadUser(){
+	        request.setHost(CENTER_DATA).get('/document/seller/all/', function(res){
+		        if( res.code == 0 ){
+		            var seller_list = res.data;
+		            var seller_html = '<option value="" >选择会员</option>';
+		            for( var i = 0; i < seller_list.length; i++ ){
+		                seller_html += '<option value="'+seller_list[i].id+'" >'+seller_list[i].user_name+'</option>';
+		            }
+		            $('#seller_box').html(seller_html);
+		            form.render();
+		        }
+		    });
+    	}
+
+	});
+
+
+
+
+
+
+
+    

@@ -1,0 +1,116 @@
+    var param = '/?';
+    var table = layui.table;
+
+    //执行渲染
+    table.render({
+        id:'article',
+        elem: '#article' ,
+        height: 'auto', //容器高度
+        url: '/article/article/index'+param,
+        page: true,
+        toolbar: '#toolbar',
+        headers: {
+            ctrl: CENTER_DATA
+        }
+        ,cols: [[
+            // {field:'id',type:'checkbox',width:50},
+            {field: 'id', title: 'ID', width:'5%',align:'center'},
+            {field: 'cate_name', title: '所属分类', width:'10%',align:'center'},
+            {field: 'title', title: '文章名称', width:'30%'},
+            {field: 'image', title: '主图', width:'10%',align:'center',templet:function (d) { return '<div><img src="'+d.image+'!w200" width="100" height="100"></div>' }},
+            {field: 'desc', title: '描述', width:'10%'},
+            {field: 'sort', title: '排序', width:'5%',align:'center'},
+            {field: 'read_num', title: '阅读量', width:'5%',align:'center'},
+            {field: 'update_time', title: '更新时间', width:'15%',align:'center' },
+            {field: 'id', title: '操作', width:'10%',templet: '#ctrlTpl',align:'center'}
+        ]],
+        done: function () {
+            layer.closeAll('loading');
+        }
+    });
+
+
+    //监听工具栏事件
+    table.on('toolbar(article)', function (obj) {
+        const data = obj.data
+        const layEvent = obj.event
+        if (layEvent === 'add') {
+          layer.open({
+            title: '添加文章',
+            type: 2,
+            shadeClose:true,
+            scrollbar:false,
+            area:['90%','95%'],
+            content: '/article/article/article_add'
+          })
+        }
+    });
+
+    //监听行工具事件
+    table.on('tool(article)', function (obj) {
+        const data = obj.data
+        const layEvent = obj.event
+        const tr = obj.tr
+        if (layEvent === 'edit') {
+            layer.open({
+                title: '编辑文章',
+                type: 2,
+                shadeClose:true,
+                scrollbar:false, 
+                area: ['90%', '95%'],
+                content: '/article/article/article_edit?id='+data.id
+            })
+        }
+        else if (layEvent == 'del') {
+            layer.confirm("是否确认删除！删除后 无法恢复！", {btn: ["确定","取消"] },
+             function(){
+                request.setHost(CENTER_DATA).get('/article/article/delete',{ids: data.id}, function(res){
+                    if (res.code == 0) {
+                        // 成功提示
+                        layer.msg('删除成功');
+                        setTimeout(function(){
+                            location.reload();
+                        },1000);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            });
+            return false;
+        }
+    });
+
+    var form = layui.form;
+    layui.use('form', function(){
+    request.setHost(CENTER_DATA).get('/article/categorys/getCateAll/',{'showType':'tree'}, function(res){
+        if( res.code == 0 ){
+            res.data = setTreeList(res.data,'children');
+            //分层标题处理
+            res.data = setTreeGrid(res.data);
+            $('select[name=categorys_id]').append('<option value="0">请选择分类</option>');
+            for( var l = 0; l < res.data.length; l++ ){
+                $('select[name=categorys_id]').append('<option value="'+res.data[l].id+'">'+res.data[l].name+'</option>');
+            }
+            form.render();
+        }
+    });
+
+        form.on('submit', function(data){
+            searchData = data.field;
+            table.reload('article', {
+                where: searchData,
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+        form.render();
+    });
+
+
+    function callback(){
+        table.reload('article');
+        layer.closeAll();
+    }

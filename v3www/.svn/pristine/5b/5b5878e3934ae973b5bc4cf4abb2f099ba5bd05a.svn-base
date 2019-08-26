@@ -1,0 +1,13 @@
+<?php
+/*
+ * 由后台生成的配置文件 system/system/updateConfigFile
+ * 请勿直接修改此文件
+ * 最后更新时间：2019-01-21 18:18:42
+*/
+
+return [
+	'WEB_SITE_TITLE' => '25BOY原创国潮品牌',
+	'WEB_SITE_ICP' => 'abccddds',
+	'M_LOGO' => 'http://api.25boy.cn/Public/images/logo.png',
+	'LOGS_EDIT_FUNC' => 'edit,update',
+];

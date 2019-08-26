@@ -1,0 +1,13 @@
+<?php
+namespace app\order\controller;
+
+class OrderGoods extends Base
+{
+    public function getOrderGoodsList(){
+        if( !$param = $this->validate->getOrderGoodsList(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $goods_list = $this->model->getItemList($param['order_id']);
+        return successJson($goods_list,'success');
+    }
+}

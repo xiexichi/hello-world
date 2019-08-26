@@ -1,0 +1,44 @@
+var items = [
+	{
+    brcode: '6180000125321',
+    item_name: '纯棉短袖T恤',
+    item_code: 'HART1559',
+    prop: '白色A M',
+    price: '78.00',
+    quantity: '5',
+    send_num: '5',
+    real_num: '5',
+		retrial_num: '',
+	}, {
+		brcode: '6180000125321',
+    item_name: '纯棉短袖T恤',
+    item_code: 'HART1559',
+    prop: '白色A M',
+    price: '78.00',
+    quantity: '5',
+    send_num: '5',
+    real_num: '3',
+    retrial_num: '',
+	}
+]
+
+// layui
+layui.use('table', function (){
+  const table = layui.table
+})
+
+
+// vuejs
+var app = new Vue ({
+  el: '#app',
+  data: {
+  	items: items,
+  	just_different: false
+  },
+  mounted: function () {
+  },
+	computed: {
+	},
+  methods: {
+  }
+})

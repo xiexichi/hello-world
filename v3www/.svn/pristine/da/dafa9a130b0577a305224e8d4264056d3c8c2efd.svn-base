@@ -1,0 +1,83 @@
+<?php
+
+namespace app\system\validate;
+
+use app\common\validate\CommonValidate;
+
+class Delivery extends CommonValidate
+{
+
+	/**
+	 * [add 添加]
+	 * @param [type] $data [验证数据]
+	 */
+	public function add($data)
+	{
+		$rule = [
+			'shop_id' => 'require|number',
+			'delivery_name' => 'require',
+			'delivery_code' => 'require|alpha',
+			'delivery_desc' => 'min:1',
+			'after_pay' => 'number',
+			'after_fee' => 'number',
+			'is_default' => 'number',
+			'status' => 'number',
+		];
+
+		// 错误提示信息
+		$message = [
+			'delivery_code.alpha' => '配送代码只允许是英文字母',
+		];
+
+		// 返回验证结果
+		return $this->validate($rule, $data, $message);
+	}
+
+	/**
+	 * [edit 修改]
+	 * @param [type] $data [验证数据]
+	 */
+	public function edit($data)
+	{
+		$rule = [
+			'id' => 'require|number',
+			'shop_id' => 'require|number',
+			'delivery_name' => 'require',
+			'delivery_code' => 'require|alpha',
+			'delivery_desc' => 'min:1',
+			'after_pay' => 'number',
+			'after_fee' => 'number',
+			'is_default' => 'number',
+			'status' => 'number',
+		];
+
+		// 错误提示信息
+		$message = [
+			'delivery_code.alpha' => '配送代码只允许是英文字母',
+		];
+
+		// 返回验证结果
+		return $this->validate($rule, $data, $message);
+	}
+
+	/**
+	 * 删除
+	 */
+	public function delete($data)
+	{
+		$rule = [
+			'id' => 'require|number',
+			'delivery_name' => 'require',
+			'delivery_code' => 'require|alpha',
+			'delivery_desc' => 'min:1',
+			'after_pay' => 'number',
+			'after_fee' => 'number',
+			'is_default' => 'number',
+			'status' => 'number',
+		];
+
+		// 返回验证结果
+		return $this->validate($rule, $data);
+	}
+
+}

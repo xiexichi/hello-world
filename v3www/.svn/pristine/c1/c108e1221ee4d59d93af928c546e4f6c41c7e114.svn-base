@@ -1,0 +1,84 @@
+// layui
+layui.use(['table', 'form'], function (){
+  const table = layui.table
+  const form = layui.form
+  form.render()
+
+  // 数据表格
+  table.render({
+    elem: '#myDataTable',
+    height: 'auto',
+    url: '/depot/goods/index',
+    limit: 20,
+    defaultToolbar: false,
+    headers: {
+      ctrl: SHOP_DATA
+    },
+    page: true,
+    cols: [[
+      {field: 'id', title: 'ID', width:50},
+      {field: 'image', title: '图片', width:130, templet: function(d){
+        return '<img src="' + d.image + '!w200" width="100" />'
+      }},
+      {field: 'goods_name', title: '商品名称', width:220},
+      {field: 'sku_sn', title: '商品编码', width:100},
+      {field: 'sell_price', title: '售价', width:80},
+      {field: 'color', title: '颜色', width:80},
+      {field: 'stocks.length', title: '尺码'},
+      {field: 'stocks.length', title: '总仓库存'},
+      {field: 'stocks.length', title: '库存数量'},
+      {field: 'stocks.length', title: '可销售数'},
+      {field: 'stocks.length', title: '在途数'},
+      {field: 'stocks.length', title: '7天销量'},
+      {field: 'stocks.length', title: '加入进货'}
+    ]],
+    done: function (res, curr, count) {
+      layuiRowspan(['id', 'image', 'goods_name', 'sku_sn', 'sell_price'], 1);
+      layuiRowspan('color', 1);
+    }
+  })
+
+  // 商品分类
+  request.setHost(SHOP_DATA).get('/goods/category/getCateAll/',{'showType':'tree_list'}, function(res){
+    if( res.code === 0 ){
+      let cate_list = setTreeGrid(res.data)
+      let _html = '<option value="">选择分类</option>'
+      for (var c = 0; c < cate_list.length; c++){
+        _html += '<option value="'+cate_list[c].id+'" >'+cate_list[c].cate_name+'</option>'
+      }
+      $('#category_id').html(_html)
+      form.render('select', 'searchForm')
+    }
+  })
+
+  // 商品品牌
+  request.setHost(SHOP_DATA).get('/goods/goods_brands/all', function(res){
+    if( res.code === 0 ){
+      let _html = '<option value="">选择品牌</option>'
+      for (let i in res.data) {
+        let item = res.data[i]
+        _html += '<option value="'+item.id+'">'+item.brand_name+'</option>'
+      }
+      $('#brand_id').html(_html)
+      form.render('select', 'searchForm')
+    }
+  })
+  
+  // 商品标签
+  request.setHost(SHOP_DATA).get('/goods/goods_tag/all', function(res){
+    if( res.code === 0 ){
+      let _html = '<option value="">选择标签</option>'
+      for (let i in res.data) {
+        let item = res.data[i]
+        _html += '<option value="'+item.id+'">'+item.tag_name+'</option>'
+      }
+      $('#goods_tag_id').html(_html)
+      form.render('select', 'searchForm')
+    }
+  })
+
+  $('.label-toggle .layui-nav-child a').on('click', function (){
+    $('.label-toggle .text').html($(this).html())
+  })
+
+})

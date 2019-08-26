@@ -1,0 +1,67 @@
+<?php
+
+/**
+ *  商品品牌
+ */
+
+namespace app\goods\validate;
+
+class Brands extends Base
+{
+
+    public function getBrandsAll($data){
+        if( !isset($data['limit']) ){
+            $data['limit'] = 10;
+        }
+        if( !isset($data['page']) ){
+            $data['page'] = 1;
+        }
+        $rule = [
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getGoodsTagSingle 获取单个信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getBrandsInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function addBefore($data){
+        $rule = [
+            'tag_name' => 'require',
+            'sort' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function editBefore($data){
+        $rule = [
+            'id' => 'require|integer',
+            'brand_name' => 'require',
+            'sort' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function deleted($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+}

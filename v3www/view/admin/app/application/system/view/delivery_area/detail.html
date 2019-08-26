@@ -1,0 +1,221 @@
+<div class="p-1" id="app">
+	<form class="layui-form layui-form-pane" id="openAddForm" lay-filter="layer">
+		<div class="layui-form-item">
+			<label class="layui-form-label">区域名称</label>
+			<div class="layui-input-block">
+        <input type="text" name="area_name" placeholder="配送区域名称"  class="layui-input" required lay-verify="required" v-model="row.area_name">
+      </div>
+    </div>
+    <div class="layui-form-item" pane>
+      <label class="layui-form-label">费用计算方式</label>
+      <div class="layui-input-block">
+        <input type="radio" name="fee_mode" value="0" title="按重量" lay-verify="required" v-bind:checked="!row.fee_mode || row.fee_mode==0">
+        <input type="radio" name="fee_mode" value="1" title="按件数" lay-verify="required" v-bind:checked="row.fee_mode==1">
+      </div>
+    </div>
+    <div class="layui-form-item bg-white">
+      <label class="layui-form-label">首件数量(件)</label>
+      <div class="layui-input-block">
+        <input type="text" name="base_num" placeholder="起步件数"  class="layui-input" required lay-verify="required" v-model="row.base_num">
+      </div>
+    </div>
+    <div class="layui-form-item bg-white">
+      <label class="layui-form-label">首件运费(元)</label>
+      <div class="layui-input-block">
+        <input type="text" name="base_num_fee" placeholder="首件运费起步价"  class="layui-input" required lay-verify="required" v-model="row.base_num_fee">
+      </div>
+    </div>
+    <div class="layui-form-item bg-white">
+      <label class="layui-form-label">每增加(件)</label>
+      <div class="layui-input-block">
+        <input type="text" name="step_num" placeholder="续重每增加件数"  class="layui-input" required lay-verify="required" v-model="row.step_num">
+      </div>
+    </div>
+    <div class="layui-form-item bg-white">
+      <label class="layui-form-label">续重运费(元)</label>
+      <div class="layui-input-block">
+        <input type="text" name="step_num_fee" placeholder="续重增加运费"  class="layui-input" required lay-verify="required" v-model="row.step_num_fee">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">免费额度(元)</label>
+      <div class="layui-input-block">
+        <input type="text" name="free_money" placeholder="订单满此金额免运费，0为不免费"  class="layui-input" required lay-verify="required" v-model="row.free_money">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">可到达地区</label>
+      <div class="layui-input-block">
+        <select name="regions" xm-select="regions" xm-select-search xm-select-search-type="dl" xm-select-show-count="8">
+          <option :value="item.id" v-for="(item, key) in regions" :key="key" v-bind-selected="item.selected">{{item.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item" pane>
+      <label class="layui-form-label">已选地区</label>
+      <div class="layui-input-block selectTable">
+        <table class="layui-table" v-if="selectArray.length > 0">
+          <tbody>
+            <tr>
+              <td v-for="(item, key) in selectArray" :key="key">
+                <i class="layui-icon layui-icon-close" title="删除" @click="delSelect(item)"></i>
+                {{item.name}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+        <input type="hidden" name="id" v-if="id" v-model="id">
+				<input type="hidden" name="delivery_id" v-model="delivery_id">
+        <button class="layui-btn" lay-submit lay-filter="edit-layer">立即提交</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<style type="text/css">
+.layui-form-pane .layui-form-label{width:150px;}
+.layui-form-pane .layui-input-block{margin-left:150px;}
+.selectTable{overflow:auto;}
+.selectTable table{margin:0;}
+.selectTable .layui-icon-close{position:absolute;top:7px;right:10px;border-radius:50%;border:1px solid #ddd;font-size:14px;width:20px;height:20px;display:block;text-align:center;line-height:20px;cursor:pointer;}
+</style>
+<hea:js src="/static/js/vue.js" />
+<hea:css src="/static/layui/module/formSelects/formSelects-v4.css" />
+<script type="text/javascript">
+const id = getUrlParam('id')
+const delivery_id = getUrlParam('delivery_id')
+var app = new Vue({
+  el: '#app',
+  data: {
+    id: '',
+  	delivery_id: delivery_id,
+    row: {},
+    regions: {},
+    selectArray: [],
+    selectIds: []
+  },
+  watch: {
+    selectIds: function (newQuestion, oldQuestion) {
+      setTimeout(function () {
+        layui.formSelects.value('regions', newQuestion)
+      }, 500)
+    }
+  },
+  mounted: function () {
+  	if (id && id != 0) this.getOne()
+    this.getRegions()
+  },
+  methods: {
+  	// 获取数据
+  	getOne: function() {
+  		let _this = this
+  		_this.id = id
+  		request.setHost('shop_data').get('/system/delivery_area/one?id='+id, function (json) {
+  			if (json.code === 0) {
+          // 整理数据
+          const delivery_region = json.data.delivery_region
+          let selectArray = []
+          let selectIds = []
+          for (var i in delivery_region) {
+            selectIds.push(delivery_region[i].id)
+            selectArray.push({
+              disabled: false,
+              name: delivery_region[i].name,
+              value: delivery_region[i].id
+            })
+          }
+          // 赋值
+          _this.selectArray = selectArray
+          _this.selectIds = selectIds
+          _this.row = json.data
+          _this.$nextTick().then (function () {
+            layui.form.render('radio')
+          })
+        } else {
+          layer.alert(json.msg)
+        }
+      })
+    },
+    // 获取地区信息
+    getRegions: function () {
+      let _this = this
+      request.setHost('shop_data').get('/system/region/all?level=1', function (json) {
+        if (json.code === 0) {
+          _this.regions = json.data
+          _this.$nextTick().then (function () {
+            layui.formSelects.render('regions')
+          })
+        }else{
+          layer.alert(json.msg)
+        }
+      })
+    },
+    delSelect: function (item) {
+      const selectArray = this.selectArray
+      let array = []
+      // 删除选择
+      layui.formSelects.value('regions', [item.value], false);
+      // 选整数组
+      for (var i in selectArray) {
+        if (item.value != selectArray[i].value) {
+          array.push(selectArray[i])
+        }
+      }
+      this.selectArray = array
+    }
+  }
+})
+
+// layui
+layui.config({
+    base: '/static/layui/module/formSelects/'
+}).extend({
+    formSelects: 'formSelects-v4'
+})
+layui.use(['form', 'formSelects'], function () {
+  const form = layui.form
+  form.render()
+
+  //监听添加层提交
+  form.on('submit(edit-layer)', function (data) {
+  	const loadLayer = layer.load()
+  	let url = '/system/delivery_area/add'
+  	if (id && id !=0){
+  		url = '/system/delivery_area/edit'
+  	}
+    request.setHost('shop_data').post(url, data.field, function (json){
+    	if (json.code === 0) {
+    		layer.msg(json.msg, {
+    			icon: 1,
+    			time: 2000
+    		}, function () {
+    			// 刷新父页面
+    			parent.location.reload()
+    		})
+    	}else{
+	    	layer.close(loadLayer)
+    		layer.alert(json.msg, function (index) {
+    			layer.close(index)
+    		})
+    	}
+    })
+    return false
+  })
+
+  // 监听地区多选事件
+  layui.formSelects.on('regions', function(id, vals, val, isAdd, isDisabled){
+    //id:           点击select的id
+    //vals:         当前select已选中的值
+    //val:          当前select点击的值
+    //isAdd:        当前操作选中or取消
+    //isDisabled:   当前选项是否是disabled
+    //如果return false, 那么将取消本次操作
+    app.selectArray = vals
+  }, true);
+
+})
+</script>

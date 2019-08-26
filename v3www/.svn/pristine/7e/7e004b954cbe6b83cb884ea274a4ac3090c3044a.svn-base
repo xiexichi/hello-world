@@ -1,0 +1,24 @@
+<div class="p-1">
+	<div class="layui-btn-group">
+	  <button class="layui-btn layui-btn-primary layui-btn-sm" id="add-btn">
+	    <i class="layui-icon">&#xe654;</i>
+	  </button>
+	  <button class="layui-btn layui-btn-primary layui-btn-sm">
+	    <i class="layui-icon">&#xe642;</i>
+	  </button>
+	  <button class="layui-btn layui-btn-primary layui-btn-sm">
+	    <i class="layui-icon">&#xe640;</i>
+	  </button>
+	</div>
+</div>
+
+
+
+<script type="text/javascript">
+		
+	// 添加进货单
+	$('#add-btn').on('click', function(){
+		location.href = '/depot/purchase/add_purchase';
+	})
+
+</script>

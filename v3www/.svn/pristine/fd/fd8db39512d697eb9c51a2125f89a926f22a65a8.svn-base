@@ -1,0 +1,25 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div>
+                <button class="layui-btn layui-btn-sm layui-btn-primary" id="btn-refresh" style="display:none;">刷新表格</button>
+                <table id="cateTable" class="layui-table" lay-filter="cateTable"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<hea:js src=""/>
+
+<!-- 操作模板 -->
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加分类</button>
+        <button class="layui-btn layui-btn-sm" lay-event="btn-expand" >全部展开</button>
+        <button class="layui-btn layui-btn-sm" lay-event="btn-fold">全部折叠</button>
+    </div>
+</script>
+
+<script type="text/html" id="ctrlTpl" >
+    <button class="layui-btn layui-btn-xs" style="margin:0;" lay-event="edit" >编辑</button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" style="margin:0;"  lay-event="del">删除</button>
+</script>

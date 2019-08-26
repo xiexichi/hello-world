@@ -1,0 +1,14 @@
+<?php
+
+/**
+ *	进货单
+ */
+
+namespace app\depot\controller;
+
+class ShopPurchaseOrder extends Base
+{
+
+
+
+}

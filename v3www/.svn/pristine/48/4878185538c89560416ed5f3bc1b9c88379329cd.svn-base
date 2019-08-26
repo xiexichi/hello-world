@@ -1,0 +1,130 @@
+<style>
+    .table-box{margin-top:20px;}
+</style>
+<div class="layui-fluid">
+    <form class="layui-form table-box" action="" id="form" lay-filter="form">
+        <input type="hidden" name="id" value="0">
+        <div class="layui-card">
+            <div class="layui-card-body" id="upload_main" >
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formEdit">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button id="delBtn" class="layui-btn layui-btn-danger">删除</button>
+                        <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                    </div>
+                </div>
+                <div class="layui-tab layui-tab-card">
+                    <div class="layui-tab-content" >
+                        <div class="layui-tab-item layui-show">
+                            <input type="hidden" name="id" value="0">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">服务器类型</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="server_type" value="center_data" title="center_data">
+                                    <input type="radio" name="server_type" value="shop_data" title="shop_data">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">显示名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="title" name="title" lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">代码名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="name" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">是否显示</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="is_show" value="1" title="显示">
+                                    <input type="radio" name="is_show" value="2" title="隐藏">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">排序</label>
+                                <div class="layui-input-inline">
+                                    <input type="number" min="0" max="255" name="sort" placeholder="0-255" value="50" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">(排序由大到小排列)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    var form = layui.form;
+    var moduleID = getUrlParam('id');
+    $(document).ready(function(){
+
+        layui.use('form', function(){
+
+            request.setHost(CENTER_DATA).post('/power/power_module/one',{'id':moduleID}, function(res) {
+                if( res.code == 0 ){
+                    info = res.data;
+                    form.val("form", {
+                        "id": info.id,
+                        "title": info.title,
+                        "name":info.name,
+                        "server_type":info.server_type,
+                        "is_show":String(info.is_show),
+                        "sort":info.sort
+                    });
+                    form.render();
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+
+            //监听提交
+            form.on('submit(formEdit)', function(data){
+                request.setHost(CENTER_DATA).post('/power/power_module/edit', data.field, function(res){
+                    if (res.code == 0) {
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            parent.window.callback();
+                        },1000);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                });
+                return false;
+            });
+
+
+            $(document).on('click', '#delBtn', function(data) {
+                layer.confirm("是否确认删除！删除后【无法恢复】，且所有子项目都被删除！", {btn: ["确定","取消"] },function(){
+                    request.setHost(CENTER_DATA).post('/power/power_module/delete',{ids: moduleID}, function(res){
+                        if (res.code == 0) {
+                            // 成功提示
+                            layer.msg('删除成功');
+                            setTimeout(function(){  
+                                parent.window.callback();
+                            },1000);
+                        } else {
+                            // 错误提示
+                            layer.msg(res.msg);
+                        }
+                    });
+                });
+                return false;
+            })
+        });
+        form.render();
+    });
+
+
+
+</script>
+

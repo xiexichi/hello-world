@@ -1,0 +1,63 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">属性选择</label>
+    <div class="layui-input-block" id="prop_box">
+        <input type="checkbox" class="prop_list" :value="index" name="prop[]" v-for="(prop,index) in show_list.prop_list" lay-filter="prop" :checked="prop.checked" :title="prop.prop_name">
+    </div>
+</div>
+<div id="prop_val_box" >
+    <div class="layui-form-item" v-for="(prop,p_index) in show_list.prop_list" v-if="prop.checked">
+        <label class="layui-form-label">{{prop.prop_name}}</label>
+        <div class="layui-input-block">
+            <input type="checkbox" class="prop_val" lay-filter="prop_val" name="prop_val[]" v-for="(prop_val,pv_index) in prop.val_list" :value="pv_index" :data-prop-index="p_index" v-model="prop_val.checked" :title="prop_val.pv_name" lay-skin="primary">
+        </div>
+    </div>
+</div>
+<div id="sku_table" v-if="set_sku.sku_tab.length > 0" >
+    <table class="layui-table">
+        <colgroup>
+            <col>
+            <col v-for="(prop,p_index) in show_list.prop_list" v-if="prop.checked" >
+            <col width="150px">
+            <col width="150px">
+            <col width="150px">
+            <!--<col>-->
+            <col width="80px">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>商品名</th>
+            <th v-for="(prop,p_index) in show_list.prop_list" v-if="prop.has_checked" style="padding:0 10px;">{{ prop.prop_name }}</th>
+            <th>价格</th>
+            <th>erp货号<br />(不填将自动生成)</th>
+            <th>备注</th>
+            <!--<th>商品图片</th>-->
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr :class="{'layui-bg-cyan':sku.is_deleted}" v-for="(sku,s_index) in set_sku.sku_tab" >
+                <td>{{set_info.goods_name}}</td>
+                <td v-for="(name,pv_name_index) in sku.pv_name" colspan="1">{{ name }}</td>
+                <td>
+                    <input type="text" required lay-verify="required" class="layui-input" onblur="validateFloatEmpty(this)" onkeyup="validateFloat(this)" v-model="sku.price" v-if="sku.is_deleted == 0" >
+                    <input v-else type="text" placeholder="该项已删除" disabled="disabled" >
+                </td>
+                <td>
+                    <input type="text" class="layui-input" :placeholder="set_info.erp_code+' '+sku.pv_erp_code" v-model="sku.erp_code"  v-if="sku.is_deleted == 0" >
+                    <input v-else type="text" placeholder="该项已删除" disabled="disabled" >
+                </td>
+                <td>
+                    <input type="text" class="layui-input" v-model="sku.remark" v-if="sku.is_deleted == 0" >
+                    <input v-else type="text" placeholder="该项已删除" disabled="disabled" >
+                </td>
+                <!--<td><input type="text" class="layui-input" v-model="sku.item_image" v-if="sku.is_deleted == 0" >
+                    <input v-else type="text" placeholder="该项已删除">
+                </td>-->
+                <td>
+                        <i class="layui-icon layui-icon-delete"  v-on:click="sku.is_deleted = 1" v-if="sku.is_deleted == 0 " ></i>
+                        <i class="layui-icon layui-icon-add-1"  v-on:click="sku.is_deleted = 0" v-else ></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

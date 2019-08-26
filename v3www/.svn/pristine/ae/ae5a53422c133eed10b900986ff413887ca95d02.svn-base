@@ -1,0 +1,24 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">商品重量</label>
+    <div class="layui-input-inline">
+        <input type="text" name="weight" required  lay-verify="required" placeholder="请输入商品重量" v-model="set_ship.weight" onblur="validateFloatEmpty(this)" onkeyup="validateFloat(this)" autocomplete="off" class="layui-input" >
+    </div>
+    <div class="layui-form-mid layui-word-aux">kg</div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">是否免邮</label>
+    <div class="layui-input-block">
+        <input type="radio" name="ship_free" lay-filter="ship_free"  v-model="set_ship.ship_free" value="1" title="是" >
+        <input type="radio" name="ship_free" lay-filter="ship_free"  v-model="set_ship.ship_free" value="0" title="否" checked>
+    </div>
+    <div class="layui-form-mid layui-word-aux">仅为此商品单独免邮</div>
+    <!--<div class="layui-form-mid layui-word-aux">免邮运费模板将失效</div>-->
+</div>
+<!--<div class="layui-form-item">-->
+    <!--<label class="layui-form-label">运费模板</label>-->
+    <!--<div class="layui-input-inline">-->
+        <!--<select name="delivery_id" lay-filter="delivery" lay-search v-model="set_ship.delivery_id" >-->
+            <!--<option :value="delivery.id" v-for="(delivery,index) in show_list.delivery_list">{{delivery.delivery_name}}</option>-->
+        <!--</select>-->
+    <!--</div>-->
+<!--</div>-->

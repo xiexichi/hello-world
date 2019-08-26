@@ -1,0 +1,99 @@
+// layui
+var detailLayer
+layui.use(['table', 'form'], function (){
+  const table = layui.table
+  const form = layui.form
+  form.render()
+
+
+  //监听表格工具栏事件
+  table.on('toolbar(myDataTable)', function (obj) {
+    const data = obj.data
+    const layEvent = obj.event
+    if (layEvent === 'add') {
+      detailLayer = layer.open({
+        title: '添加广告位',
+        type: 2,
+        area: ['520px', '480px'],
+        content: '/picshow/position/detail'
+      })
+    }
+  })
+
+  //监听行工具事件
+  table.on('tool(myDataTable)', function (obj) {
+    const loadlayer = layer.load()
+    const data = obj.data
+    const layEvent = obj.event
+    const tr = obj.tr
+    if (layEvent === 'edit') {
+      detailLayer = layer.open({
+        title: '修改广告位',
+        type: 2,
+        area: ['520px', '480px'],
+        content: '/picshow/position/detail?id=' + data.id
+      })
+      layer.close(loadlayer)
+    } else if (layEvent == 'del') {
+      layer.confirm('删除后不能恢复', {icon: 3, title: '删除确认'}, function (index) {
+        request.setHost('center_data').post('/picshow/position/delete', {ids: data.id}, function(json) {
+          layer.close(loadlayer)
+          layer.msg(json.msg, {
+            time: 1000
+          },function () {
+            window.location.reload()
+          })
+        })
+      })
+    }
+  })
+
+  // 查询平台列表
+  request.setHost('center_data').get('/apps/app_auth/all', function(json) {
+    if(json.code === 0) {
+      $('#platformCode').empty();
+      const items = json.data
+      for (var j = 0; j < items.length; ++j) {
+        $('#platformCode').append('<option value="' + items[j].platform_code + '">' + items[j].app_name + '</option>')
+      }
+
+      // 查询参数 platform_code
+      if (empty(query.platform_code)) {
+        query.platform_code = $('#platformCode').val()
+      }else{
+        $('#platformCode').val(query.platform_code)
+      }
+      let url = '/picshow/position/index'
+      const parseUrl = parseParams(query)
+      if(parseUrl){
+        url += '?' + parseUrl
+      }
+      // 数据表格
+      table.render({
+        elem: '#myDataTable',
+        height: 'auto',
+        url: url,
+        limit: 20,
+        toolbar: '#toolbarTpl',
+        defaultToolbar: false,
+        headers: {
+          ctrl: CENTER_DATA
+        },
+        page: true,
+        cols: [[
+          {field: 'id', title: 'ID', width:60},
+          {field: 'position_name', title: '广告位名称'},
+          {field: 'width', title: '建议尺寸', templet: function(d){
+            return '宽:' + d.width + '，高:' + d.height
+          }},
+          {field: 'desc', title: '备注'},
+          {field: 'ctrl', title: '操作', width:200, toolbar: '#ctrlTpl'}
+        ]]
+      })
+
+      // 重新渲染select
+      form.render('select')
+    }
+  })
+
+})

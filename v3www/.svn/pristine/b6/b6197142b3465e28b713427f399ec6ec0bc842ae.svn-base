@@ -1,0 +1,29 @@
+<?php
+/**
+ * 商品属性值
+ */
+namespace app\goods\controller;
+
+class GoodsPropVal extends Base
+{
+    //获取所有标签列表
+    public function getPropValAll(){
+        if( !$checkData = $this->validate->getPropValAll(input('get.')) ){
+            return errorJson(200301, $this->validate->getError());
+        }
+        $list = $this->model->getPropValAll($checkData['prop_id'],$checkData['page'],$checkData['limit'],true);
+        return successJson($list['list'],'',$list['count']);
+    }
+
+    public function getPropValInfo(){
+        $param = input('post.');
+        if( !$checkData = $this->validate->getPropValInfo($param) ){
+            return errorJson(200301, $this->validate->getError());
+        }
+        $info = $this->model->getPropValInfo($checkData['id']);
+        if( empty($info) ){
+            return errorJson(200002, '属性类型不存在');
+        }
+        return successJson($info);
+    }
+}

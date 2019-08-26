@@ -1,0 +1,21 @@
+<?php
+
+namespace app\order\model;
+
+class Order extends Base
+{
+    protected $name = 'order_info';
+
+    const CHANNEL_PC = 0;
+    const CHANNEL_MOBILE = 1;
+    const CHANNEL_O2O = 2;
+
+    /**
+     * 创建主订单
+     * @param $orderData
+     * @param int $channel
+     */
+    public function createMasterOrder($orderData,$channel=self::CHANNEL_PC){
+        
+    }
+}

@@ -1,0 +1,28 @@
+<?php
+
+namespace app\order\model;
+
+class OrderLog extends Base
+{
+    protected $name = 'order_log';
+
+    public function markLog($operator_id,$order_id,$content,$operator_type=0,$order_type=0,$t=''){
+        if( empty($t) ) {
+            $t = date('Y-m-d H:i:s');
+        }
+        $insertData = [];
+        $insertData['operator_id'] = $operator_id;
+        $insertData['operator_type'] = $operator_id;
+        $insertData['order_id'] = $order_id;
+        $insertData['order_type'] = $order_type;
+        $insertData['content'] = $content;
+        $insertData['ip'] = Request()->ip();
+        $insertData['create_time'] = $t;
+        if( !$this->insert($insertData) ){
+            return false;
+        }
+        return true;
+    }
+
+
+}

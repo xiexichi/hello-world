@@ -1,0 +1,60 @@
+<div class="layui-fluid" id="app">
+	<div class="layui-card">
+
+		<form class="layui-form" id="searchForm" lay-filter="searchForm">
+			<div class="layui-card-header p-1">
+				<button class="layui-btn" lay-submit>搜索</button> 
+				<a href="{:url()}" class="layui-btn layui-btn-primary">重置</a>
+			</div>
+			<div class="pt-1 pb-1">
+				<div class="layui-form-item layui-inline">
+					<label class="layui-form-label">名称</label>
+					<div class="layui-input-inline">
+						<input type="text" name="name" placeholder="物流公司名称" class="layui-input" value="{$Request.param.name}">
+					</div>
+				</div>
+				<div class="layui-form-item layui-inline">
+					<label class="layui-form-label">代码</label>
+					<div class="layui-input-inline">
+						<input type="text" name="code" placeholder="物流公司代码" class="layui-input" value="{$Request.param.code}">
+					</div>
+				</div>
+				<div class="layui-form-item layui-inline">
+					<label class="layui-form-label">第三方代码</label>
+					<div class="layui-input-inline">
+						<input type="text" name="third_code" placeholder="第三方对应物流代码" class="layui-input" value="{$Request.param.third_code}">
+					</div>
+				</div>
+				<div class="layui-form-item layui-inline">
+					<label class="layui-form-label">状态</label>
+					<div class="layui-input-inline">
+						<input type="checkbox" name="status" lay-skin="primary" title="禁用" {$Request.param.status ? 'checked' : ''}>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="layui-card-body">
+			<table id="dataTable" lay-filter="dataTable"></table>
+		</div>
+	</div>
+</div>
+
+
+<!-- 操作模板 -->
+<script type="text/html" id="toolbarTpl">
+	<button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+</script>
+<script type="text/html" id="ctrlTpl">
+	<button class="layui-btn layui-btn-xs" lay-event="edit">修改</button>
+	{{#  if(d.status == 1){ }}
+	<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="disable">禁用</button>
+	{{#  } else { }}
+	<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enable">启用</button>
+	{{#  } }} 
+</script>
+
+<script type="text/javascript">
+const query = {$Request.param|json_encode}
+</script>
+<hea:js src="" />

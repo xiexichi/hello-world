@@ -1,0 +1,10 @@
+<?php
+
+namespace app\depot\controller;
+
+class DepotPreSelect extends Base
+{
+
+	
+
+}

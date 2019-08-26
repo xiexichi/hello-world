@@ -1,0 +1,37 @@
+---------------------------------------------------------------
+[ 2019-01-07T10:51:03+08:00 ] 127.0.0.1 GET o2ov3.25boy.com/index/index/home
+[运行时间：0.052602s] [吞吐率：19.01req/s] [内存消耗：3,406.38kb] [文件加载：43]
+[ info ] [ LANG ] E:\APMServ5.2.6\www\htdocs\25boyV3\view\shop\shop-o2o\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'index',
+    2 => 'home',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'host' => 'o2ov3.25boy.com',
+  'connection' => 'keep-alive',
+  'cache-control' => 'max-age=0',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'cookie' => 'UM_distinctid=1674ea7a29259b-0f0e0d96573d7f-4446062d-1fa400-1674ea7a2935aa; Hm_lvt_80360653ae2f506a1a158ec1bc5a5f20=1545561133; pgv_pvi=1528111104; PHPSESSID=6ons3iebom7p2q404pkif6vto3; pgv_si=s5898216448; ci_session=bdnhq6lksnhst161q5d29ikg034b4bnu',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ RUN ] app\common\controller\Common->_empty[ E:\APMServ5.2.6\www\htdocs\25boyV3\view\shop\shop-o2o\application\common\controller\Common.php ]
+[ info ] [ VIEW ] E:\APMServ5.2.6\www\htdocs\25boyV3\view\shop\shop-o2o\public/../application//index/view/index/home.html [ array (
+) ]
+[ info ] [ LOG ] INIT File

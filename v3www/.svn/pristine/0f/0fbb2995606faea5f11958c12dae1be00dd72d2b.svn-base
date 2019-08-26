@@ -1,0 +1,79 @@
+<div class="layui-form-item" id="prop_box" >
+    <label class="layui-form-label">属性选择</label>
+    <div class="layui-input-block" >
+        <input type="checkbox" class="prop_list" :value="index" name="prop[]" v-for="(prop,index) in show_list.prop_list" lay-filter="prop" :checked="prop.checked" :title="prop.prop_name">
+    </div>
+</div>
+<div id="prop_val_box" >
+    <div class="layui-form-item" v-for="(prop,p_index) in show_list.prop_list" v-if="prop.checked">
+        <label class="layui-form-label" ><a href="javascript:void(0);"  v-on:click="getPropValList(p_index,1)" >{{prop.prop_name}}</a></label>
+        <div class="layui-input-block" >
+            <input type="checkbox" class="prop_val" lay-filter="prop_val" name="prop_val[]" v-for="(prop_val,pv_index) in prop.val_list" :value="pv_index" :data-prop-index="p_index" v-model="prop_val.checked" :title="prop_val.pv_name+'('+prop_val.pv_erp_code+')'" lay-skin="primary">
+        </div>
+    </div>
+</div>
+<div id="sku_table" v-if="set_sku.sku_tab.length > 0" >
+    <table class="layui-table">
+        <colgroup>
+            <col width="80px">
+            <col>
+            <col v-for="(prop,p_index) in show_list.prop_list" v-if="prop.checked" >
+            <col width="150px">
+            <col width="150px">
+            <col width="150px">
+            <col width="150px">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>图片</th>
+            <th>商品名</th>
+            <th v-for="(prop,p_index) in show_list.prop_list" v-if="prop.has_checked" style="padding:0 10px;">{{ prop.prop_name }}</th>
+            <th>价格</th>
+            <th>erp货号<br />(不填将自动生成)</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr :class="{'layui-bg-gray':sku.is_deleted,'layui-bg-gray':!sku.sales_status,}" v-for="(sku,s_index) in set_sku.sku_tab" >
+                <td style="padding:5px;" >
+                    <div v-if="sku.is_deleted == 0" >
+                        <div class="upload_box" style="width:80px; height:80px; border:none;" >
+                            <input type="hidden" name="sku_image[s_index]" v-model="sku.item_image" class="hid-val-box" readonly />
+                            <div class="upload-view" id="goods_image" style="height:68px;" v-on:click="uploadImg('sku',s_index)" >
+                                <img alt="" :src="sku.item_image" onerror="this.src='/static/jwt/images/upload_add.png'" >
+                            </div>
+                        </div>
+                        <div v-if="!sku.sales_status" class="upload-del-box" style="width:80px; text-align:center;" ><a href="javascript:void(0);" v-on:click="uploadDel('sku',s_index)">删除</a></div>
+                    </div>
+                    <input v-else type="text" placeholder="该项已删除">
+                    <div class="clear"></div>
+                </td>
+                <td :title="sku.item_id">{{set_info.goods_name}}</td>
+                <td v-for="(name,pv_name_index) in sku.pv_name" colspan="1">{{ name }}</td>
+                <td>
+                    <input type="text" class="layui-input" :placeholder="'默认'+set_sales.sell_price" onkeyup="validateFloat(this)" v-model="sku.price" v-if="sku.is_deleted == 0" >
+                    <input v-else type="text" placeholder="该项已删除" disabled="disabled" >
+                </td>
+                <td>
+                    <input type="text" class="layui-input" :placeholder="set_info.erp_code+','+sku.pv_erp_code" v-model="sku.erp_code"  v-if="sku.is_deleted == 0" >
+                    <input v-else type="text" placeholder="该项已删除" disabled="disabled" >
+                </td>
+                <td>
+                    <input type="text" class="layui-input" v-model="sku.remark" v-if="sku.is_deleted == 0" >
+                    <input v-else type="text" placeholder="该项已删除" disabled="disabled" >
+                </td>
+                <td>
+                    <span v-if="sku.sales_status == 0">
+                        <a href="javascript:void(0);" class="layui-btn layui-btn-danger layui-btn-sm" v-on:click="sku.is_deleted = 1" v-if="sku.is_deleted == 0" >删除</a>
+                        <a href="javascript:void(0);" class="layui-btn layui-btn-danger layui-btn-sm" v-on:click="sku.is_deleted = 0" v-else >添加</a>
+                    </span>
+                    <span v-if="set_sku.control_sales && sku.is_deleted == 0" >
+                        <a href="javascript:void(0);" class="layui-btn layui-btn-normal layui-btn-sm" v-on:click="sku.sales_status = 1" v-if="sku.sales_status == 0" >上架</a>
+                        <a href="javascript:void(0);" class="layui-btn layui-btn-normal layui-btn-sm" v-on:click="sku.sales_status = 0" v-else >下架</a>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

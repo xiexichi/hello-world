@@ -1,0 +1,16 @@
+<?php
+
+namespace app\activity\controller;
+
+class CouponUser extends Base
+{
+    public function getUserList(){
+        if( !$param = $this->validate->getUserList(input()) ){
+            $this->isExit = true;
+            $this->code = 000001;
+            $this->error = $this->validate->getError();
+        }
+        $coupon_list = $this->model->getUserList($param['user_id']);
+        return $coupon_list;
+    }
+}

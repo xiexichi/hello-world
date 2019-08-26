@@ -1,0 +1,52 @@
+<?php
+/**
+ * JWT助手
+ */
+namespace app\common\library;
+use app\common\library\Jwt;
+
+class JwtHelper
+{
+    const CONSUMER_KEY = 'photos25boy'; // please replace YOUR_XX
+    const CONSUMER_SECRET = 'd6yUSJiw4CisWYxaabFET5xIXCxv9bii'; // please replace YOUR_XX
+    const CONSUMER_TTL = 86400;
+
+    public function __construct()
+    {
+        $this->JWT = new Jwt();
+    }
+
+    // create token
+    public static function create($userid = NULL)
+    {
+        $token = Jwt::encode(array(
+            'consumerKey' => self::CONSUMER_KEY,
+            'data' => $userid,
+            'issuedAt' => date(DATE_ISO8601, strtotime("now")),
+            'ttl' => self::CONSUMER_TTL
+        ), self::CONSUMER_SECRET);
+        return $token;
+    }
+
+    // validate token
+    public static function validate($token)
+    {
+        try {
+            Jwt::decode($token, self::CONSUMER_SECRET);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    // decode token
+    public static function decode($token)
+    {
+        try {
+            $decodeToken = Jwt::decode($token, self::CONSUMER_SECRET);
+            return $decodeToken;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}

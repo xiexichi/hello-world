@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "van-search": "/static/vant/search/index",
+    "van-panel": "/static/vant/panel/index",
+    "van-row": "/static/vant/row/index",
+    "van-col": "/static/vant/col/index",
+    "van-popup": "/static/vant/popup/index",
+    "van-nav-bar": "/static/vant/nav-bar/index"
+  },
+  "navigationBarTitleText": "商品列表",
+  "enablePullDownRefresh": true
+}

@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * 进货单模型
+ */
+
+namespace app\depot\model;
+
+class ShopPurchaseOrder extends Base
+{
+
+
+	public function addBefore(){
+		pe($this->data);
+		
+		
+		// 1.创建订单数据
+		
+
+	}
+
+
+
+}

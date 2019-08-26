@@ -1,0 +1,64 @@
+<?php
+
+/**
+ *  商品销售参数规格
+ */
+
+namespace app\goods\validate;
+
+class AttributeCate extends Base
+{
+
+    /**
+     * [getGoodsTagSingle 获取单个信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getAttrCateList($data){
+        $rule = [
+            'page' => 'integer',
+            'limit' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getGoodsTagSingle 获取单个信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getGoodsAttrCateInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function add($data){
+        $rule = [
+            'attr_name' => 'require',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function edit($data){
+        $rule = [
+            'id' => 'require|integer',
+            'attr_name' => 'require',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function deleted($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+}

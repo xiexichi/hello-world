@@ -1,0 +1,247 @@
+$('.nav_list').eq(0).addClass('layui-this');
+var param = '/?';
+var state = getUrlParam('state');
+if( state != null ){
+    param += '&status='+state;
+    $('.nav_list').removeClass('layui-this');
+    if( state == 1 ){
+        $('.nav_list').eq(1).addClass('layui-this');
+    }else{
+        $('.nav_list').eq(2).addClass('laformyui-this');
+    }
+}
+var _del = getUrlParam('delete');
+if( _del != null && _del == 1 ){
+    $('.nav_list').removeClass('layui-this');
+    param += '&delete='+_del;
+    $('.nav_list').eq(3).addClass('layui-this');
+}
+var table = layui.table;
+var form = layui.form;
+//执行渲染
+table.render({
+    id:'goods',
+    elem: '#goods' //
+    ,height: 'auto' //容器高度
+    ,url: '/goods/goods/getGoodsAll'+param
+    ,page: true
+    , toolbar: '#toolbar'
+    ,headers: {
+        ctrl: SHOP_DATA
+    }
+    ,cols: [[
+        // {field:'id',type:'checkbox',width:50},
+        {field: 'id', title: 'ID', width:80},
+        {field: 'image', title: '主图', width:125,templet:function (d) { return '<div><img src='+d.image+' width="100" height="100"></div>' }},
+        {field: 'goods_name', title: '商品名', templet: function (d) {
+                return d.goods_name+( d.is_hot == 1 ? ' <a href="javascript:void(0);" lay-event="set_hot" ><i class="layui-icon" style="color: #FF0000;" >&#xe756;</i></a>' : ' <a href="javascript:void(0);" style="color:#01AAED; font-size:12px;" lay-event="set_hot" >设置热卖推荐</a>' )
+            }},
+        {field: 'sku_sn', title: '货号', width:120},
+        {field: 'sort', title: '排序', width:60},
+        {field: 'update_time', title: '更新时间', width:170 },
+        {field: 'id', title: '操作', width:260,templet: '#ctrlTpl'}
+    ]]
+});
+//头部按钮事件
+table.on('toolbar(test)', function(obj) {
+    var data = obj.data;
+    var layEvent = obj.event;
+    switch( layEvent ){
+        case 'add' :
+            layer.open({
+                title:'添加商品',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['95%','95%'],
+                content:"/goods/goods/add.html"
+            });
+            break;
+        default :
+            return false;
+            break;
+    }
+    return false;
+});
+//列表项事件
+table.on('tool(test)', function(obj) {
+    var data = obj.data;
+    var layEvent = obj.event;
+    switch(layEvent) {
+        case 'set_hot' :
+            var param = {};
+            param.id = data.id;
+            param.is_hot = data.is_hot ? 0 : 1;
+            var msg = "是否设置热卖推荐";
+            if( param.is_hot == 0 ){
+                msg = "是否取消热卖推荐！";
+            }
+            layer.confirm(msg, {
+                btn: ["确定","取消"] //按钮
+            }, function(){
+                request.setHost(SHOP_DATA).post('/goods/goods/edit',param, function(res){
+                    if (res.code == 0) {
+                        // 成功提示
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            table.reload('goods');
+                        },1000);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            });
+            break;
+        case 'sales_detail' :
+            layer.open({
+                title:'销售管理',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['90%','90%'],
+                content:"/goods/goods/sales_detail.html?id="+data.id
+            });
+            break;
+        case 'set_tag' :
+            layer.open({
+                title:'设置标签',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['90%','60%'],
+                content:"/goods/goods/set_tag.html?id="+data.id
+            })
+            break;
+        case 'sales' :
+            if( data.is_deleted == 1 ){
+                layer.msg('已删除商品必须先恢复才能操作');
+                return false;
+            }
+            var param = {};
+            var msg = "是否确认下架！";
+            param.id = data.id;
+            param.sales_status = data.sales_status ? 0 : 1;
+            if( param.sales_status == 1 ){
+                msg = "是否确认上架！";
+            }
+            layer.confirm(msg, {
+                btn: ["确定","取消"] //按钮
+            }, function(){
+                request.setHost(SHOP_DATA).post('/goods/goods/edit',param, function(res){
+                    if (res.code == 0) {
+                        // 成功提示
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            table.reload('goods');
+                        },1000);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            });
+            break;
+        case 'detail' ://详情
+            layer.open({
+                title:'商品编辑',
+                type:2,
+                shadeClose: true,
+                closeBtn:1,
+                area:['95%','95%'],
+                content:"/goods/goods/detail.html?id="+data.id
+            });
+            break;
+        case 'deleted' ://删除
+            var param = {};
+            var msg = "是否确认恢复！恢复后商品默认下架！";
+            param.id = data.id;
+            param.is_deleted = data.is_deleted ? 0 : 1;
+            if( param.is_deleted == 1 ){
+                param.sales_status = 0;
+                msg = "是否确认删除！";
+            }
+            layer.confirm(msg, {
+                btn: ["确定","取消"] //按钮
+            }, function(){
+                request.setHost(SHOP_DATA).post('/goods/goods/edit',param, function(res){
+                    if (res.code == 0) {
+                        // 成功提示
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            table.reload('goods');
+                        },1000);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            });
+            break;
+        default :
+            return false;
+            break;
+    }
+    return false;
+});
+layui.use('form', function(){
+    request.setHost(SHOP_DATA).get('/goods/category/getCateAll/',{'showType':'tree_list'}, function(res){
+        if( res.code == 0 ){
+            var cate_list = setTreeGrid(res.data);
+            var cate_html = '<option value="" >选择分类</option>';
+            for( var c = 0; c < cate_list.length; c++ ){
+                cate_html += '<option value="'+cate_list[c].id+'" >'+cate_list[c].cate_name+'</option>';
+            }
+            $('#cate_box').html(cate_html);
+            form.render();
+        }
+    });
+    request.setHost(SHOP_DATA).get('/goods/goods_brands/getBrandsAll/',{'limit':'0'}, function(res){
+        if( res.code == 0 ){
+            var brand_list = res.data;
+            var brand_html = '<option value="" >选择品牌</option>';
+            for( var b = 0; b < brand_list.length; b++ ){
+                brand_html += '<option value="'+brand_list[b].id+'" >'+brand_list[b].brand_name+'</option>';
+            }
+            $('#brand_box').html(brand_html);
+            form.render();
+        }
+    });
+    form.on('submit', function(data){
+        searchData = data.field;
+        //上述方法等价于
+        table.reload('goods', {
+            where: searchData,
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+        });
+        return false;
+    });
+    form.render();
+});
+
+//树状结构多维数组转一维数组
+function setTreeGrid(cate_list){
+    var nbsp = '';
+    var tree = '';
+    for( var i = 0; i < cate_list.length; i++ ){
+        tree = '';
+        nbsp = '';
+        if( cate_list[i].pNum > 0 ){
+            tree += '├';
+            for( var t = 0; t < cate_list[i].pNum; t++ ){
+                // nbsp += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                // tree += '─';
+                tree += '──';
+            }
+            cate_list[i].cate_name = nbsp+tree+cate_list[i].cate_name;
+        }
+    }
+    return cate_list;
+}
+
+function callback(){
+    table.reload('goods');
+    layer.closeAll();
+}

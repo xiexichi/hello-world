@@ -1,0 +1,42 @@
+<template>
+  <div class="goodsCol-item" v-if="item">
+    <a :href="'/pages/products/index?id='+item.product_id">
+      <img :src="item.url+'!w200'" lazy-load class="goodsCol-image" mode="widthFix">
+    </a>
+    <div class="goodsCol-text">
+      <div class="goodsCol-brand van-ellipsis">{{item.brand_name}}</div>
+      <div class="goodsCol-name van-ellipsis">{{item.product_name}}</div>
+      <div class="goodsCol-price van-ellipsis">
+				<j-price :value="item.price" icon="sub" />
+			</div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Jprice from '../components/j-price'
+
+export default {
+	components: {
+		'j-price': Jprice
+	},
+  props: {
+    item: Object
+  }
+}
+</script>
+
+<style lang="less">
+.goodsCol{
+  display:flex;flex-wrap:wrap;
+  &-image{width:100%;display:block;height:auto;}
+  &-item{padding:10upx 0;width:50%;box-sizing:border-box;}
+  &-item:nth-child(2n){padding-left:10upx;}
+  &-item:nth-child(2n-1){padding-right:10upx;}
+  &-text{padding:10upx;}
+  &-name{font-size:26upx;color:#666;}
+  &-brand{font-size:26upx;color:#000;}
+  &-price{font-size:30upx;}
+  &-recharge{font-size:26upx;color:red;}
+}
+</style>

@@ -1,0 +1,85 @@
+<!-- 进行初始化 -->
+
+<!-- 路径常量ctrl -->
+<script>
+  // 数据
+  var DC = 'center_data';
+</script>
+
+<!-- layui -->
+<script>
+  // 弹层组件文档
+  var layer   = undefined;
+  // 图片懒加载
+  var flow    = undefined;
+  // 回到top
+  var util    = undefined;
+  // 分页组件
+  var laypage = undefined;
+  // 日期
+  var laydate = undefined;
+  // 使用表单组件
+  var form    = undefined;
+  // 使用表格
+  var table   = undefined;
+  // 常用元素
+  var element = undefined;
+  // 搜索数据
+  var searchData  = undefined;
+  // 当前页数
+  var currentPage = 1;
+  // iframes窗口
+  var iframes     = {};
+  // layui组件使用初始化
+  var laymods = ['layer','flow','util','laypage','laydate','form','table','element'];
+
+  // 加载模块
+  layui.use(laymods, function () {
+    layer   = layui.layer,
+    flow    = layui.flow,
+    util    = layui.util,
+    laypage = layui.laypage,
+    laydate = layui.laydate,
+    form    = layui.form,
+    table   = layui.table,
+    element = layui.element
+
+    //执行top
+    util.fixbar({})
+    // 更新渲染
+    form.render()
+    // 当你执行这样一个方法时，即对页面中的全部带有lay-src的img元素开启了懒加载（当然你也可以指定相关img）
+    flow.lazyimg()
+
+    // 执行主函数
+    if(typeof main === "function") main()
+  })
+
+/* 样例一：表格 */
+/*
+  function onTable() {
+    var tableLoading = layer.load(2)
+    tableIns = table.render({
+      id: 'table',
+      elem: '#table',
+      url: '/index/index/getList',
+      page: true,
+      cols: [[
+        {field: 'id', title: '#', width: 50},
+      ]],
+      parseData: function (res) {
+        return {
+          "code": res.code, //解析接口状态
+          "msg": res.msg, //解析提示文本
+          "count": res.data.page.total, //解析数据长度
+          "data": res.data.items //解析数据列表
+        };
+      },
+      done: function () {
+        layer.close(tableLoading)
+      }
+    });
+  }
+
+*/
+</script>

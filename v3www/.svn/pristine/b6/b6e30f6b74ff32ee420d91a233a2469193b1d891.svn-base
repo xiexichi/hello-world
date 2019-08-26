@@ -1,0 +1,127 @@
+<?php
+
+namespace app\article\controller;
+
+use think\Exception;
+use think\db;
+
+class Article extends Base
+{
+
+    //获取所有标签列表
+    public function getArticleAll(){
+        $param = input('get.');
+        if( !$checkData = $this->validate->getArticleAll($param) ){
+            return errorJson(020101, $this->validate->getError());
+        }
+        $checkData['title'] = empty($param['title']) ? '': $param['title'];
+        $checkData['categorys_id'] = empty($param['categorys_id']) ? '': $param['categorys_id'];
+        // return $checkData['title'];
+        $list = $this->model->getArticleAll($checkData,true);
+        // return $list;
+        return successJson($list['list'],'',$list['count']);
+    }
+
+    /**
+     * /删除文章
+     * @return [is_deleted] [删除状态,0否，1是]
+     */
+    public function articleDel(){
+        if (!$checkDate = $this->validate->checkArticleId(input()) ) {
+            return errorJson(200201, $this->validate->getError());
+        }
+        $res = Db::table('article')->where('id',$checkDate['ids'])->update(['is_deleted'=>1]);
+        if ($res) {
+            return successJson($code=0,$msg="success");
+        }else{
+            return errorJson(200201,'参数错误');
+        }
+        
+    }
+
+
+    // 添加文章
+    public function addArticle(){
+        $param = input('post.',[]);
+        // $param = input();
+        if (empty($param)) {
+            return errorJson(020101,'参数错误');
+        }
+        if(!$articleData = $this->validate->checkArticleData($param)){
+            return errorJson(020101,$this->validate->getError());
+        }
+        $articleData['sort'] = empty($param['sort']) ? '' : $param['sort'];
+        $articleData['desc'] = empty($param['desc']) ? '' : $param['desc'];
+        $articleData['image'] = empty($param['image']) ? '' : $param['image'];
+        $articleData['content'] = empty($param['content']) ? '' : trim($param['content']);
+        $articleData['create_time'] = date('Y-m-d H:i:s');
+        $articleData['update_time'] = $articleData['create_time'];
+
+        // pe($articleData);
+        $res = $this->model->insert($articleData);
+        // return $res;
+        if (!$res) {
+           return errorJson(200201,'参数错误');
+        }
+        return successJson($code = 0,$msg = "添加成功");
+    }
+
+
+    // 编辑文章
+    public function editArticle(){
+        $param = input('post.',[]);
+        if (empty($param)) {
+            return errorJson(020101,'参数错误1');
+        }
+        if (empty($param['id'])) {
+            return errorJson(020101,'参数错误2');
+        }
+        if (!$articleData = $this->validate->checkArticleData($param)) {
+            return errorJson(020101,$this->validate->getError());
+        }
+
+        $articleData['title'] = $param['title'];
+        $articleData['categorys_id'] = $param['categorys_id'];
+        $articleData['sort'] = empty($param['sort']) ? '' : $param['sort'];
+        $articleData['desc'] = empty($param['desc']) ? '' : $param['desc'];
+        $articleData['image'] = empty($param['image']) ? '' : $param['image'];
+        $articleData['content'] = empty($param['content']) ? '' : trim($param['content']);
+        $articleData['update_time'] = date('Y-m-d H:i:s');
+
+        $res = $this->model->where('id',$param['id'])->update($articleData);
+        // pe($res);
+        if ($res) {
+            return successJson($code = 0,$msg = "更新成功");
+        }
+        
+        return errorJson(020101,'参数错误');
+    }
+
+
+    // 文章详情
+    public function getArticleInfo(){
+        if (!$checkDate = $this->validate->getArticleInfo(input())) {
+            return errorJson(200201, $this->validate->getError());
+        }
+        $info = $this->model->getArticleInfo($checkDate['id']);
+        return successJson($info);
+    }
+
+    // 文章名是否重复
+    public function checkRepeatArticleName(){
+        $param = input("post.");
+        if( empty($param['title']) ){
+            return errorJson(200201, '参数错误');
+        }
+        if( isset($param['id']) ){
+            $where['id'] = ['<>',$param['id']];
+        }
+        $where['title'] = ['=',$param['title']];
+        return successJson(!$this->model->checkRepeatArticleName($where));
+
+    }
+
+
+
+
+}

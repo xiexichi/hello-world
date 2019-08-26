@@ -1,0 +1,615 @@
+<?php
+
+/**
+ * 店铺库存
+ */
+
+namespace app\depot\model;
+
+
+class ShopDepot extends Base
+{
+
+	const HEAD_OFFICE = 1;// 总店id
+
+	const TYPE_SALES = 1;		// 销售类型
+	const TYPE_MATERIALS = 2;	// 物料类型
+
+	// 库存操作规则
+	const DEPOT_RULES_QUEUE = 1;	// 先进先出
+	const DEPOT_RULES_STACK = 2;	// 先进后出
+
+
+	public function indexBefore(){
+		// 将提交参数保存到临时数据中
+		$this->tempData = $this->data;
+
+		// 查找商品图片地址
+		$image = "(SELECT item_img FROM goods_item WHERE erp_code = CONCAT(s.item_code,',',s.sku_code) LIMIT 1) image";
+
+		// 查找stock表的颜色
+		$this->alias('a')
+			 ->field("a.*,SUM(a.quantity) quantity,SUM(a.availavle_quantity) availavle_quantity,s.item_code,s.product_color_id,pc.color,{$image},g.goods_name,g.sku_sn,g.erp_code,g.market_price,g.sell_price")
+			 ->join('stock s', 'a.stock_id = s.id')
+			 ->join('goods g', 's.item_code = g.erp_code')
+			 ->join('product_color pc', 's.product_color_id = pc.id')
+			 ->where('s.warehouse_code', self::PRODUCT_WAREHOUSE_CODE)
+			 ->group('s.item_code, s.product_color_id');
+
+		// $this->tempData['print_sql'] = true;
+ 	}
+
+	public function indexAfter(){
+		// pe(modelList2Array($this->data));
+
+		$shopDepotPreSelectId = NULL;
+		// 如果有
+		if (!empty($this->tempData['shop_depot_pre_select_id'])) {
+			$shopDepotPreSelectId = $this->tempData['shop_depot_pre_select_id'];
+		}
+
+		// 店铺id
+		$shopId = NULL;
+		
+		if (!empty($this->tempData['shop_id'])) {
+			$shopId = $this->tempData['shop_id'];
+		}
+
+
+		// 查找商品库存
+		// pe($this->getLastSql());
+		$stockModel = new Stock();
+
+		// 查找销量
+		$this->tempData['sales_volume'] = true;
+		// 设置查找数据
+		$stockModel->data($this->tempData);
+
+		foreach ($this->data as $k => $v) {
+
+			$stocks = $stockModel->getItems($v['item_code'], $v['product_color_id'], $shopId, 'size', $shopDepotPreSelectId);
+
+			// 查找商品库存
+			$this->data[$k]['stocks'] = $stocks;
+		}
+	}
+
+
+	public function addBefore(){
+		if (empty($this->data['availavle_quantity'])) {
+			$this->data['availavle_quantity'] = $this->data['quantity'];
+		}
+	}
+
+
+	public function editBefore(){
+		if (empty($this->data['availavle_quantity'])) {
+			$this->data['availavle_quantity'] = $this->data['quantity'];
+		}
+	}
+
+	/**
+	 * [SaleInventoryOperation 销售库存操作]
+	 * @param [type] $order_sn       [订单号]
+	 * @param [type] $operation_type [库存变动类型]
+	 * @param [type] $shop_id        [店铺id]
+	 * @param [type] $item_code      [商品货号]
+	 * @param [type] $sku_code       [商品型号]
+	 * @param [type] $quantity       [操作库存数量（可以是正负数）]
+	 */
+	public function SaleInventoryOperation($order_sn ,$operation_type, $shop_id, $item_code, $sku_code, $quantity){
+
+		// 1. 商品对应的库存
+		$item = $this->alias('a')
+					 ->field('a.*,s.id stock_id')
+					 ->join('stock s', 'a.stock_id = s.id')
+					 ->where('a.shop_id', $shop_id)
+					 ->where('s.item_code', $item_code)
+					 ->where('s.sku_code', $sku_code)
+					 ->where('a.type', self::TYPE_SALES)
+					 ->find();
+
+		// 店铺模型
+		$shopModel = new Shop();
+		$shop = $shopModel->getOne($shop_id);
+		if (!$shop) {
+			$shop['name'] = '';
+		}
+
+		// if ($item_code == 'YLTW4391' && $sku_code == 'AXXL') {
+		// 	pe($item);
+		// }
+
+		if (!$item) {
+			$this->error = $shop['name'] . '店铺不存在的商品库存';
+			return false;
+		}
+
+		// 2.如果是销售卖出或销售换出，检查库存是否足够
+		if ($operation_type == ShopDepotChange::TYPE_SALES_SELL || $operation_type == ShopDepotChange::TYPE_SALES_SWAP_OUT) {
+			// 强制转换数量为正数
+			$quantity = abs($quantity);
+
+			if ($item->availavle_quantity < abs($quantity)) {
+				$this->error = $shop['name'] . '店铺可用库存只有' . $item->availavle_quantity . '小于' . $quantity;
+				return false;
+			}
+
+			// 转换为负数
+			$quantity *= -1;
+
+		} else {
+			// 退货或换入，则是正数
+
+			// 强制转换数量为正数
+			$quantity = abs($quantity);
+		}
+
+
+		// 库存操作
+		$res = $this->inventoryOperation($order_sn ,$operation_type, $shop_id, $item['stock_id'], $quantity, NULL, self::TYPE_SALES);
+
+		// 返回操作结果
+		return $res;
+	}
+
+
+
+	/**
+	 * [inventoryOperation 库存操作]
+	 * @param  [type] $order_sn           [订单号]
+	 * @param  [type] $operation_type     [操作类型]
+	 * @param  [type] $shop_id            [description]
+	 * @param  [type] $stock_id           [description]
+	 * @param  [type] $quantity           [description]
+	 * @param  [type] $availavle_quantity [description]
+	 * @param  [type] $type               [库存类型]
+	 * @return [type]                     [description]
+	 */
+	public function inventoryOperation($order_sn , 
+									   $operation_type, 
+									   $shop_id, 
+									   $stock_id,
+									   $quantity, 
+									   $availavle_quantity = NULL, 
+									   $type = self::TYPE_SALES)
+	{
+		// 1.查找当前店铺是否存在对应库存记录
+		/**
+		 *	判断条件：$shop_id, $stock_id, $type
+		 */
+
+		// 开启事务（用于测试）
+		// $this->startTrans();
+
+
+		// 变动数据
+		$changeInfo = [
+			'order_sn' => $order_sn,
+			'shop_id' => $shop_id,
+			'shop_depot_change_type_id' => $operation_type,
+			'quantity' => $quantity,
+			'create_time' => date('Y-m-d H:i:s')
+		];
+
+		// 查找商品项数据
+		$item = $this->where('shop_id', $shop_id)
+					 ->where('stock_id', $stock_id)
+					 ->where('type', $type)
+					 ->find();
+
+		if ($item) {
+			// 1.更新店的总库存
+
+			// 变动前数量
+			$changeInfo['before_quantity'] = $item->quantity;
+
+			// 有则更新
+			$item->quantity += $quantity;
+
+			// 变动后数量
+			$changeInfo['after_quantity'] = $item->quantity;
+			// 库存id
+			$changeInfo['shop_depot_id'] = $item->id; 
+
+			// 如果有可用数量
+			if ($availavle_quantity) {
+				$item->availavle_quantity = $availavle_quantity;
+			} else {
+				// 计算可用数量
+				$item->availavle_quantity += $quantity;
+			}
+
+			// 返回更新结果
+			$res = $item->save();
+
+			// 预扣
+			$withholdArr = [
+				ShopDepotChange::TYPE_SHOP_RETURN_WITH_HOLD
+			];
+
+
+
+			// 判断是否非预扣库存，非预扣库存 && 不是总店库存 才操作批次库存
+			if ( !in_array($operation_type, $withholdArr) && $shop_id != self::HEAD_OFFICE ) {
+
+				// 2.更新批次库存
+				if (!$this->batchDepotOperating($order_sn, $operation_type, $shop_id, $stock_id, $quantity)) {
+					return false;
+				}
+
+			}
+
+		} else {
+
+			// 如果操作类型不是店铺进货或调货
+			if ($operation_type != ShopDepotChange::TYPE_SHOP_PURCHASE && $operation_type != ShopDepotChange::TYPE_SHOP_TRANSFER) {
+				// 报错
+				$this->error = '店铺没有此商品的库存！';
+				return false;
+			}
+
+			// 没有则新增
+			$addData = [
+				'shop_id' => $shop_id,
+				'stock_id' => $stock_id,
+				'quantity' => $quantity,
+				'type' => $type,
+				'create_time' => date('Y-m-d H:i:s'),
+			];
+
+			// 变动前数量
+			$changeInfo['before_quantity'] = 0;
+			// 变动后数量
+			$changeInfo['after_quantity'] = $quantity;
+
+			// 如果有可用数量
+			if ($availavle_quantity) {
+				$addData['availavle_quantity'] = $availavle_quantity;
+			} else {
+				$addData['availavle_quantity'] = $addData['quantity'];
+			}
+
+			// 返回插入结果
+			$res = $this->insert($addData);
+
+			// 库存id
+			$changeInfo['shop_depot_id'] = $this->getLastInsID();
+
+		}
+
+		// 添加库存变动记录
+		if (!$this->addShopDepotChange($changeInfo)) {
+			$this->error = '添加库存变动记录失败！';
+			return false;
+		}
+
+		return $res;
+	}
+
+	/**
+	 * [batchDepotOperating 批次库存操作]
+	 * @param  [type] $shop_id  [店铺id]
+	 * @param  [type] $stock_id [stock表id]
+	 * @param  [type] $quantity [操作数量]
+	 * @return [type]           [description]
+	 */
+	public function batchDepotOperating($order_sn, $operation_type, $shop_id, $stock_id, $quantity){
+
+		/**
+		 * 操作库存规则:
+		 *
+		 * STACK   栈：先进后出
+		 * QUEUE 队列：先进先出
+		 */
+
+		// 排序规则
+		$sort = 'desc';
+
+		// 判断是否先进先出
+		if ($this->getDepotRules() == self::DEPOT_RULES_QUEUE) {
+			// 先进先出
+			$sort = 'asc';
+		}
+
+		// 进货单商品项模型
+		$spiModel = new ShopPurchaseItem();
+
+		// 判断quantity是正数还是负数
+		if ($quantity > 0) {
+
+			/*如果是销售退货或销售换入,则查找对应批次*/
+			if ($operation_type == ShopDepotChange::TYPE_SALES_RETURN 
+				|| $operation_type == ShopDepotChange::TYPE_SALES_SWAP_IN) {
+
+				// 销售入库： 销售退货、销售换入
+				return $this->salesWarehousing($order_sn, $operation_type, $shop_id, $stock_id, $quantity);
+
+			} else {
+
+				// 正数的话只查找1条数据
+				$item = $spiModel->alias('a')
+								 ->field('a.*')
+								 ->join('shop_purchase_order spo', 'spo.id = a.shop_purchase_order_id')
+								 ->where('spo.shop_id', $shop_id)
+								 ->where('a.stock_id', $stock_id)
+								 ->order("a.id {$sort}")
+								 ->find();	
+
+				if (!$item) {
+					$this->error = '店铺没有对应商品的批次库存';
+					return false;
+				}
+
+				// 整合批次变动记录
+				$changeInfo = [
+					'shop_purchase_item_id' => $item['id'],
+					'quantity' => $quantity,
+					'before_quantity' => $item['availavle_quantity'],
+					'after_quantity' => $item['availavle_quantity'] + $quantity,
+					'shop_depot_change_type' => $operation_type,
+					'order_sn' => $order_sn,
+					'shop_id'  => $shop_id
+				];
+
+				// 如果是进货类型
+				if ($operation_type == ShopDepotChange::TYPE_SHOP_PURCHASE) {
+					// 变动前数量为：0
+					$changeInfo['before_quantity'] = 0;
+					$changeInfo['after_quantity'] = $quantity;
+				}
+
+				// 添加批次库存变动记录
+				$spicModel = new ShopPurchaseItemChange();
+				if (!$spicModel->data($changeInfo)->add()) {
+					$this->error = '添加批次库存变动记录失败';
+					return false;
+				}
+			
+			}
+		} else {
+			// 负数，扣减操作
+			if (!$this->batchDepotOperatingReduce($order_sn,$operation_type, $shop_id, $stock_id, $quantity, $sort)) {
+				return false;
+			}
+			
+		}
+
+		return true;
+	}
+
+	/**
+	 * [salesWarehousing 销售入库]
+	 * @param  [type] $order_sn       [单号]
+	 * @param  [type] $operation_type [操作类型]
+	 * @param  [type] $shop_id        [店铺id]
+	 * @param  [type] $stock_id       [库存id]
+	 * @param  [type] $quantity       [库存数量]
+	 * @return [type]                 [description]
+	 */
+	protected function salesWarehousing($order_sn, $operation_type, $shop_id, $stock_id, $quantity){
+
+		// 查看批次库存变动记录
+		// 店铺库存批次变动记录表
+		$spicModel = new ShopPurchaseItemChange();
+
+		$items = $spicModel->alias('spic')
+						  ->field('spic.*')
+						  ->join('shop_purchase_item spi', 'spic.shop_purchase_item_id = spi.id')
+						  ->where('spic.order_sn', $order_sn)
+						  ->where('spi.stock_id', $stock_id)
+						  ->where('quantity < 0')	// 查找负数的记录，即出库记录
+						  ->select();
+
+		if (!$items) {
+			$this->error = '没有对应订单的出库记录';
+			return false;
+		}
+
+
+		foreach ($items as $k => $v) {
+
+			// 计算剩余返还库存
+			if ($quantity <= 0) {
+				// 返回库存完成后，直接返回结果
+				return true;
+			}
+
+			// 查找批次库存
+			$spiModel = new ShopPurchaseItem();
+
+			$item = $spiModel->where('id', $v['shop_purchase_item_id'])->find();
+
+			// 变动前库存
+			$beforeQuantity = $item['availavle_quantity'];
+
+			/**
+			 * 1.如果实发数量大于 剩余数量 + 返还数量
+			 */
+
+			// 计算最大返还数
+			$maxReturnQuantity = $item['real_quantity'] - $item['availavle_quantity'];
+
+			// 如果最大返回库存等于0，则直接跳过
+			if ($maxReturnQuantity == 0) {
+				continue;
+			}
+
+			// 批次最大返还库存 >= 返还库存
+			if ($maxReturnQuantity >= $quantity) {
+				 $item['availavle_quantity'] += $quantity;
+				 // 剩余返还数量清0
+				 $quantity = 0;
+			} else {
+				//批次最大返还库存 < 返还库存
+
+				$item['availavle_quantity'] += $maxReturnQuantity;
+				// 计算剩余返还数量
+				$quantity -= $maxReturnQuantity;
+			}
+
+			// 更新批次库存
+			if (!$item->save()) {
+				$this->error = '更新批次库存失败';
+				return false;
+			}
+
+			// 整合批次变动记录
+			$changeInfo = [
+				'shop_purchase_item_id' => $item['id'],
+				'quantity' => abs($v['quantity']),
+				'before_quantity' => $beforeQuantity,
+				'after_quantity' => $item['availavle_quantity'],
+				'shop_depot_change_type' => $operation_type,
+				'order_sn' => $order_sn,
+				'shop_id'  => $shop_id
+			];
+
+			// p($changeInfo);
+
+			// 添加批次库存变动记录
+			$spicModel = new ShopPurchaseItemChange();
+			if (!$spicModel->data($changeInfo)->add()) {
+				$this->error = '添加批次库存变动记录失败';
+				return false;
+			}
+			
+		}
+
+		// 如果还有未返还库存，则报错
+		if ($quantity > 0) {
+			$this->error = "还有{$quantity}件未返还，请检测批次库存数量！";			
+			return false;
+		}
+
+
+		return true;
+	}
+
+
+	/**
+	 * [batchDepotOperatingReduce 扣减操作]
+	 * @param  [type] $shop_id  [description]
+	 * @param  [type] $stock_id [description]
+	 * @param  [type] $quantity [description]
+	 * @return [type]           [description]
+	 */
+	protected function batchDepotOperatingReduce($order_sn, $operation_type, $shop_id, $stock_id, $quantity, $sort){
+
+		// 进货单商品项模型
+		$spiModel = new ShopPurchaseItem();
+
+		// 
+		$stockModel = new Stock();
+
+		// 循环数量
+		$whileQuantity = abs($quantity);
+
+		// 需要操作的商品项
+		$items = [];
+
+		// 排除查找的id
+		$excludeIds = '0';
+
+		while ( $whileQuantity > 0 ) {
+			$item = $spiModel->alias('a')
+							 ->field('a.*,s.item_code,s.sku_code')
+							 ->join('shop_purchase_order spo', 'spo.id = a.shop_purchase_order_id')
+							 ->join('stock s', 'a.stock_id = s.id')
+							 ->where('spo.shop_id', $shop_id)
+							 ->where('a.stock_id', $stock_id)
+							 ->where('a.availavle_quantity > 0')
+							 ->where('a.id', 'NOT IN', $excludeIds)
+							 ->order("a.id {$sort}")
+							 ->find();
+			// 库存信息
+			$stockInfo = $stockModel->getStockField($stock_id, 'item_code') .' '. $stockModel->getStockField($stock_id, 'sku_code');
+
+			if (!$item) {
+				$error = $stockInfo . "库存数量不足，剩余{$whileQuantity}件，没有可用库存";
+				$this->error = $error;
+				return false;
+			}
+
+			// 操作项数据
+			$operatItem = $item;
+
+			// 添加排除查找id
+			$excludeIds .= ',' . $operatItem['id'];
+
+			// 计算剩余多少数量
+			$whileQuantity -= $item['availavle_quantity'];
+
+			// 计算操作库存
+			if ($whileQuantity < 0) {
+				$operatItem['operat_quantity'] = ($item['availavle_quantity'] + $whileQuantity) * -1;
+			} else {
+				$operatItem['operat_quantity'] = $item['availavle_quantity'] * -1;
+			}
+
+			// 添加到数组中
+			$items[] = $operatItem;
+		}
+
+
+		// 批次库存操作
+		foreach ($items as $k => $v) {
+			// 整合批次变动记录
+			$changeInfo = [
+				'shop_purchase_item_id' => $v['id'],
+				'quantity' => $v['operat_quantity'],
+				'before_quantity' => $v['availavle_quantity'],
+				'after_quantity' => $v['availavle_quantity'] + $v['operat_quantity'],
+				'shop_depot_change_type' => $operation_type,
+				'order_sn' => $order_sn,
+				'shop_id'  => $shop_id
+			];
+
+			// 计算可用库存
+			$v['availavle_quantity'] += $v['operat_quantity'];
+
+			// 可用库存异常检测
+			if ($v['availavle_quantity'] < 0) {
+				$this->error = $stockInfo . '库存扣减异常：可用库存' . $v['availavle_quantity'];
+				return false;
+			}
+
+			if (!$v->save()) {
+				$this->error = $stockInfo . '库存扣减失败';
+				return false;
+			}
+
+			// 添加批次库存变动记录
+			$spicModel = new ShopPurchaseItemChange();
+			if (!$spicModel->data($changeInfo)->add()) {
+				$this->error = $stockInfo . '添加批次库存变动记录失败';
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * 获取库存操作规则
+	 * @return [type] [description]
+	 */
+	protected function getDepotRules(){
+		// 默认返回先进先出
+		return self::DEPOT_RULES_QUEUE;
+	}
+
+
+	/**
+	 * [addShopDepotChange 添加店铺库存变动记录]
+	 * @param [type] $item [数据项]
+	 */
+	protected function addShopDepotChange($item){
+		$sdcMolde = new ShopDepotChange();
+		return $sdcMolde->insert($item);
+	}
+
+
+
+}

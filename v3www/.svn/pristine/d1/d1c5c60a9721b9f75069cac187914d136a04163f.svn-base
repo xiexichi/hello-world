@@ -1,0 +1,77 @@
+<?php
+
+namespace app\cart\controller;
+use \app\common\controller\Service;
+
+class Cart extends Base
+{
+    //获取购物车列表
+    public function getCartList(){
+        if( !$cartParam = $this->validate->getCartList(input('post.')) ) {
+            return errorJson(0000001, $this->validate->getError());
+        }
+        $user_id = $cartParam['user_id'];
+        $channel = empty($cartParam['channel_id']) ? '' : $cartParam['channel_id'];
+        $shop_id = empty($cartParam['shop_id']) ? 0 : $cartParam['shop_id'];
+        $this->model->cartReset($user_id);
+        $list = $this->model->getCartList($user_id,$shop_id,$channel);
+        return successJson($list);
+    }
+
+    //加入购物车
+    public function addCart(){
+        if( !$param = $this->validate->addCart(input('post.')) ) {
+            return errorJson(000001, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $item_id = $param['item_id'];
+        $shop_id = $param['shop_id'];
+        $num = $param['num'];
+        $channel = empty($param['channel']) ? '' : $param['channel'];
+        $buy_now = empty($param['buy_now']) ? false : true;//是否理解购买参数
+        if( !$this->model->addCart($user_id,$item_id,$num,$shop_id,$channel,$buy_now) ){
+            return errorJson($this->model->getCode(),$this->model->getError());
+        }
+        return successJson('success','添加成功');
+    }
+
+    //购物车操作
+    public function updateCart(){
+        if( !$param = $this->validate->addCart(input('post.')) ) {
+            return errorJson(000001, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $item_id = $param['item_id'];
+        $num = $param['num'];
+        $shop_id = $param['shop_id'];
+        $channel = empty($param['channel']) ? '' : $param['channel'];
+        //检查购物车
+        $where['user_id'] = $user_id;
+        $where['goods_item_id'] = $item_id;
+        $where['shop_id'] = $shop_id;
+        $cartItemInfo = $this->model->where($where)->find();
+        if( !empty($cartItemInfo) && $num == 0 ){
+            if( $this->model->where('id',$cartItemInfo['id'])->delete() ){
+                return successJson('success','删除成功');
+            }else{
+                return errorJson(000014,'网络错误');
+            }
+        }
+        if( $this->model->updateCart($cartItemInfo['id'],$item_id,$num,$shop_id,$channel) ){
+            return successJson('success','更新成功');
+        }else{
+            return errorJson($this->model->getCode(),$this->model->getError());
+        }
+    }
+
+    public function selectGoods(){
+        if( !$param = $this->validate->selectGoods(input('post.')) ) {
+            return errorJson(000001, $this->validate->getError());
+        }
+        if( !$this->model->selectCartItem($param['id'],$param['user_id'],$param['shop_id']) ){
+            return errorJson(000010, '网络错误');
+        }
+        return successJson('success','操作成功');
+    }
+
+}

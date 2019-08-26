@@ -1,0 +1,77 @@
+<?php
+
+/**
+ *  商品标签
+ */
+
+namespace app\activity\validate;
+
+class Coupon extends Base
+{
+    public function index($data){
+        $rule = [
+            'coupon_id' => 'integer',
+            'title' => 'max:255',
+            'description' => 'max:255',
+            'type' => 'integer',
+            'status' => 'integer',
+            'is_goods' => 'integer',
+            'limit_price' => 'float|>=:0',
+            'discount_value' => 'float|>:0',
+            'start_time' => 'date',
+            'end_time' => 'date',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+
+    public function detailCoupon($data){
+        $rule = [
+            'coupon_id' => 'require|integer',
+            'title' => 'require',
+            'description' => 'max:255',
+            'type' => 'require|integer',
+            'is_goods' => 'require|integer',
+            'limit_price' => 'require|float|>=:0',
+            'discount_value' => 'require|float|>:0',
+            'start_time' => 'date',
+            'end_time' => 'date',
+            'goods_list' => 'array'
+        ];
+        // 错误提示信息
+        $message = [
+            'coupon_id' => '缺少id',
+            'title' => '标题不能为空',
+            'type' => '券类型参数错误',
+            'is_goods' => '是否制定商品参数错误',
+            'limit_price' => '金额要求不能为空',
+            'discount_value' => '优惠额度必须为数字且大于0',
+            'start_time' => '请填写时间格式',
+            'end_time' => '请填写时间格式',
+            'goods_list' => '商品参数格式错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function edit($data){
+        $rule = [
+            'id' => 'require|integer',
+            'status' => 'integer',
+            'is_invalid' => 'integer',
+            'is_deleted' => 'integer',
+            'qty' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'status' => '参数错误',
+            'is_invalid' => '参数错误',
+            'is_deleted' => '参数错误',
+            'qty' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+}

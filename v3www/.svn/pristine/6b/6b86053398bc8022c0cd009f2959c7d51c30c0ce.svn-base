@@ -1,0 +1,40 @@
+<?php
+/**
+ * 25boy v3 运费模板模块
+ * 2019-01-10 张文杰
+ */
+namespace app\system\controller;
+
+class Delivery extends Base
+{
+	/**
+   * 修改后置方法
+   */
+  public function editAfter()
+  {
+    // 修改默认模板
+    $data = $this->model->getData();
+  	if( !empty($data['is_default']) ) {
+  		$this->model->where('id', 'NEQ', $data['id'])->setField('is_default', 0);
+  	}
+
+    // 添加操作日志
+    actionLogs('修改运费模板', $this->model);
+  }
+
+  /**
+   * 添加后置方法
+   */
+  public function addAfter()
+  {
+  	// 修改默认模板
+    $data = $this->model->getData();
+  	if( !empty($data['is_default']) ) {
+  		$this->model->where('id', 'NEQ', $data['id'])->setField('is_default', 0);
+  	}
+
+    // 添加操作日志
+    actionLogs('添加运费模板', $this->model);
+  }
+
+}

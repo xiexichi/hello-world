@@ -1,0 +1,90 @@
+
+    function checkSort(obj){
+        var num = $(obj).val();
+        if(num > 255){
+            $(obj).val(255);
+        }else if(num < 0){
+            $(obj).val(0);
+        }
+    }
+
+    var form = layui.form;
+    layui.use('form',function () {
+        const id = getUrlParam('id');
+        const form = layui.form;
+        request.setHost(SHOP_DATA).post('/article/categorys/getCateInfo/',{'id':id}, function(res) {
+            if( res.code == 0 ){
+                info = res.data;
+                // info = res.data;
+                form.val("edit", {
+                    "id": info.id,
+                    "name": info.name, // "name": "value"
+                    "desc": info.desc,
+                    "sort": info.sort,
+                })
+                loadCate();
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+
+        form.render();
+        form.on('submit(formEdit)', function(data){
+            // console.log(data['field']);
+            var id = data['field'].id;
+            request.setHost(SHOP_DATA).post('/article/categorys/checkRepeatCateName', data.field, function(res){
+                if (res.code == 0) {
+                    if( res.data ){
+                        layer.confirm("分类名已存在，是否继续添加", {
+                            btn: ["确定","取消"] //按钮
+                        }, function() {
+                            add_submit(data.field);
+                        });
+                    }else{
+                        add_submit(data.field);
+                    }
+                } else {
+                    layer.msg(res.msg);
+                }
+            });
+
+            return false; 
+        });
+    });
+
+    function add_submit(data){
+        request.setHost(SHOP_DATA).post('/article/categorys/edit', data, function(res){
+            // console.log(data);
+            if (res.code == 0) {
+                // 成功提示
+                layer.msg(res.msg);
+                setTimeout(function(){
+                    parent.location.reload();
+                },1500);
+            } else {
+                // 错误提示
+                layer.msg(res.msg);
+            }
+        });
+    }
+
+    function loadCate(){
+        // 获取分类信息
+        request.setHost(SHOP_DATA).get('/article/categorys/getCateAll/',{'showType':'tree'}, function(res){
+            if( res.code == 0 ){
+                res.data = setTreeList(res.data,'children');
+                //分层标题处理
+                res.data = setTreeGrid(res.data);
+                $('select[name=parent_id]').append('<option value="0">为顶级分类</option>');
+                var selected = '';
+                for( var l = 0; l < res.data.length; l++ ){
+                    selected = '';
+                    if( info.parent_id == res.data[l].id ){
+                        selected = 'selected';
+                    }
+                    $('select[name=parent_id]').append('<option value="'+res.data[l].id+'" '+selected+'>'+res.data[l].name+'</option>');
+                }
+                form.render();
+            }
+        });
+    }

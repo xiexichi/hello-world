@@ -1,0 +1,173 @@
+{
+	"pages": [
+		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "25BOY国潮品牌",
+				"enablePullDownRefresh": true,
+				"usingComponents": {
+					"van-search": "/static/vant/search/index",
+					"van-row": "/static/vant/row/index",
+					"van-col": "/static/vant/col/index",
+					"van-tabs": "/static/vant/tabs/index",
+					"van-tab": "/static/vant/tab/index"
+				}
+			}
+		}, {
+			"path": "pages/products/list",
+			"style": {
+				"navigationBarTitleText": "商品列表",
+				"enablePullDownRefresh": true,
+				"usingComponents": {
+					"van-search": "/static/vant/search/index",
+					"van-panel": "/static/vant/panel/index",
+					"van-row": "/static/vant/row/index",
+					"van-col": "/static/vant/col/index",
+					"van-popup": "/static/vant/popup/index",
+					"van-nav-bar": "/static/vant/nav-bar/index"
+				}
+			}
+		}, {
+			"path": "pages/products/index",
+			"style": {
+				"navigationBarTitleText": "商品详情",
+				"usingComponents": {
+					"van-tag": "/static/vant/tag/index",
+					"van-panel": "/static/vant/panel/index",
+					"van-cell": "/static/vant/cell/index",
+					"van-popup": "/static/vant/popup/index",
+					"van-button": "/static/vant/button/index",
+					"van-stepper": "/static/vant/stepper/index",
+					"van-goods-action": "/static/vant/goods-action/index",
+					"van-goods-action-icon": "/static/vant/goods-action-icon/index",
+					"van-goods-action-button": "/static/vant/goods-action-button/index"
+				}
+			}
+		}, {
+			"path": "pages/users/index",
+			"style": {
+				"navigationBarTitleText": "我的二五",
+				"navigationBarBackgroundColor": "#ffffff",
+				"usingComponents": {
+					"van-tag": "/static/vant/tag/index",
+					"van-cell": "/static/vant/cell/index",
+					"van-cell-group": "/static/vant/cell-group/index"
+				}
+			}
+		}, {
+			"path": "pages/public/login",
+			"style": {
+				"navigationBarTitleText": "25BOY会员",
+				"navigationBarBackgroundColor": "#eeeeee",
+				"usingComponents": {
+					"van-button": "/static/vant/button/index"
+				}
+			}
+		}, {
+			"path": "pages/public/register",
+			"style": {
+				"navigationBarTitleText": "25BOY会员",
+				"navigationBarBackgroundColor": "#eeeeee",
+				"usingComponents": {
+					"van-button": "/static/vant/button/index"
+				}
+			}
+		}, {
+			"path": "pages/public/verify",
+			"style": {
+				"navigationBarTitleText": "25BOY会员",
+				"navigationBarBackgroundColor": "#eeeeee",
+				"usingComponents": {
+					"van-button": "/static/vant/button/index"
+				}
+			}
+		}, {
+			"path": "pages/cart/index",
+			"style": {
+				"navigationBarTitleText": "购物车",
+				"usingComponents": {
+					"van-notice-bar": "/static/vant/notice-bar/index",
+					"van-button": "/static/vant/button/index",
+					"van-cell": "/static/vant/cell/index",
+					"van-stepper": "/static/vant/stepper/index",
+					"van-checkbox": "/static/vant/checkbox/index",
+					"van-submit-bar": "/static/vant/submit-bar/index",
+					"j-empty": "/static/hea/J-empty/index"
+				}
+			}
+		}, {
+			"path": "pages/cart/checkout",
+			"style": {
+				"navigationBarTitleText": "提交订单",
+				"usingComponents": {
+					"van-cell-group": "/static/vant/cell-group/index",
+					"van-cell": "/static/vant/cell/index",
+					"van-submit-bar": "/static/vant/submit-bar/index"
+				}
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "25BOY国潮品牌",
+		"navigationBarBackgroundColor": "#ededed",
+		"backgroundColor": "#eeeeee",
+		"usingComponents": {
+			"van-icon": "/static/vant/icon/index"
+		}
+	},
+	"tabBar": {
+		"color": "#000000",
+		"selectedColor": "#07c062",
+		"borderStyle": "black",
+		"backgroundColor": "#f7f7f7",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/cart/index",
+			"text": "购物车"
+		}, {
+			"pagePath": "pages/users/index",
+			"text": "我的"
+		}]
+	},
+	"condition": {
+		//模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+			"name": "商品列表", //模式名称
+			"path": "pages/products/list", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}, {
+			"name": "商品详情",
+			"path": "pages/products/index",
+			"query": "id=351"
+		}, {
+			"name": "我的二五",
+			"path": "pages/users/index",
+			"query": ""
+		}, {
+			"name": "登录",
+			"path": "pages/public/login",
+			"query": ""
+		}, {
+			"name": "注册",
+			"path": "pages/public/register",
+			"query": ""
+		}, {
+			"name": "验证",
+			"path": "pages/public/verify",
+			"query": ""
+		}, {
+			"name": "购物车",
+			"path": "pages/cart/index",
+			"query": ""
+		}, {
+			"name": "提交订单",
+			"path": "pages/cart/checkout",
+			"query": ""
+		}]
+	}
+}

@@ -1,0 +1,9 @@
+<?php
+
+namespace app\goods\model;
+use think\Model;
+class GoodsProp extends Model
+{
+    protected $name = 'goods_prop';
+
+}

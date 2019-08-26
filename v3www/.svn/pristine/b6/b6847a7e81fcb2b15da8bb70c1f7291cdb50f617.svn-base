@@ -1,0 +1,32 @@
+<?php
+
+namespace app\order\validate;
+
+class OrderGoods extends Base
+{
+
+    public function indexBefore($data){
+        $rule = [
+            'id' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function getOrderGoodsList($data){
+        $rule = [
+            'order_id' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+}

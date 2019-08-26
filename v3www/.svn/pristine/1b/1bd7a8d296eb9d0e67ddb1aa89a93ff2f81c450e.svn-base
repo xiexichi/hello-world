@@ -1,0 +1,14 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">商品重量</label>
+    <div class="layui-input-inline">
+        <input type="text" name="weight" required  lay-verify="required" placeholder="请输入商品重量" v-model="set_ship.weight" onblur="validateFloatEmpty(this)" onkeyup="validateFloat(this)" autocomplete="off" class="layui-input" >
+    </div>
+    <div class="layui-form-mid layui-word-aux">kg</div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">是否免邮</label>
+    <div class="layui-input-block">
+        <input type="radio" name="ship_free" v-model="set_ship.ship_free" value="1" title="是" >
+        <input type="radio" name="ship_free" v-model="set_ship.ship_free" value="0" title="否" checked>
+    </div>
+</div>

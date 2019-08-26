@@ -1,0 +1,249 @@
+---------------------------------------------------------------
+[ 2019-01-02T17:39:00+08:00 ] 127.0.0.1 GET retail.25boy.com/
+[运行时间：0.220000s] [吞吐率：4.55req/s] [内存消耗：1,396.76kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\new-retail\app\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => '',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'retail.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ RUN ] app\index\controller\Index->index[ E:\new-project\new-retail\app\application\index\controller\Index.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-02T17:39:06+08:00 ] 127.0.0.1 GET retail.25boy.com/index/index/home.html
+[运行时间：0.059000s] [吞吐率：16.95req/s] [内存消耗：1,381.26kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\new-retail\app\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'index',
+    2 => 'home',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; PHPSESSID=fkdr5l1al1nd22fh586s5o08i1; pgv_si=s6635687936',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'retail.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ RUN ] app\common\controller\Common->_empty[ E:\new-project\new-retail\app\application\common\controller\Common.php ]
+[ info ] [ VIEW ] E:\new-project\new-retail\app\public/../application//index/view/index/home.html [ array (
+) ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-02T17:39:06+08:00 ] 127.0.0.1 GET retail.25boy.com/analysis/sell/summary.html
+[运行时间：0.046000s] [吞吐率：21.74req/s] [内存消耗：1,114.30kb] [文件加载：35]
+[ info ] [ LANG ] E:\new-project\new-retail\app\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'analysis',
+    1 => 'sell',
+    2 => 'summary',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; PHPSESSID=fkdr5l1al1nd22fh586s5o08i1; pgv_si=s6635687936',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'referer' => 'http://retail.25boy.com/index/index/home.html',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'retail.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-02T17:39:08+08:00 ] 127.0.0.1 GET retail.25boy.com/depot/purchase/list.html
+[运行时间：0.022000s] [吞吐率：45.45req/s] [内存消耗：1,392.31kb] [文件加载：42]
+[ info ] [ LANG ] E:\new-project\new-retail\app\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'depot',
+    1 => 'purchase',
+    2 => 'list',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; PHPSESSID=fkdr5l1al1nd22fh586s5o08i1; pgv_si=s6635687936',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'referer' => 'http://retail.25boy.com/index/index/home.html',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'retail.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ RUN ] app\common\controller\Common->_empty[ E:\new-project\new-retail\app\application\common\controller\Common.php ]
+[ info ] [ VIEW ] E:\new-project\new-retail\app\public/../application//depot/view/purchase/list.html [ array (
+) ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-02T17:39:09+08:00 ] 127.0.0.1 GET retail.25boy.com/depot/base/product.html
+[运行时间：0.029000s] [吞吐率：34.48req/s] [内存消耗：1,382.94kb] [文件加载：41]
+[ info ] [ LANG ] E:\new-project\new-retail\app\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'depot',
+    1 => 'base',
+    2 => 'product',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; PHPSESSID=fkdr5l1al1nd22fh586s5o08i1; pgv_si=s6635687936',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'referer' => 'http://retail.25boy.com/index/index/home.html',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'retail.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ RUN ] app\common\controller\Common->_empty[ E:\new-project\new-retail\app\application\common\controller\Common.php ]
+[ info ] [ VIEW ] E:\new-project\new-retail\app\public/../application//depot/view/base/product.html [ array (
+) ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-02T17:39:09+08:00 ] 127.0.0.1 GET retail.25boy.com/depot/base/getStock?page=1&limit=10
+[运行时间：0.023000s] [吞吐率：43.48req/s] [内存消耗：1,412.27kb] [文件加载：42]
+[ info ] [ LANG ] E:\new-project\new-retail\app\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'depot',
+    1 => 'base',
+    2 => 'getStock',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; PHPSESSID=fkdr5l1al1nd22fh586s5o08i1; pgv_si=s6635687936',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'referer' => 'http://retail.25boy.com/depot/base/product.html',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'x-requested-with' => 'XMLHttpRequest',
+  'accept' => 'application/json, text/javascript, */*; q=0.01',
+  'connection' => 'keep-alive',
+  'host' => 'retail.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ RUN ] app\depot\controller\Base->getStock[ E:\new-project\new-retail\app\application\depot\controller\Base.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-02T17:39:15+08:00 ] 127.0.0.1 GET retail.25boy.com/analysis/index/stock.html
+[运行时间：0.042000s] [吞吐率：23.81req/s] [内存消耗：1,114.30kb] [文件加载：35]
+[ info ] [ LANG ] E:\new-project\new-retail\app\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'analysis',
+    1 => 'index',
+    2 => 'stock',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=3252603904; PHPSESSID=fkdr5l1al1nd22fh586s5o08i1; pgv_si=s6635687936',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'referer' => 'http://retail.25boy.com/index/index/home.html',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3493.3 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'retail.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ LOG ] INIT File

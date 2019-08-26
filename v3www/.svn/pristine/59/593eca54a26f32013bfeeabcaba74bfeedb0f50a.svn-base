@@ -1,0 +1,89 @@
+var items = [
+	{
+		pic: 'https://d2i72ju5buk5xz.cloudfront.net/gsc/RRQXG3/cd/c7/92/cdc792595357423fa2b917cec7ee9e92/images/%E6%94%B6%E9%93%B6%E5%8F%B0/u29.png?token=720579a9135c8b046ec5ed94e2d0ed7a',
+		item_code: 'HEAF9405',
+		prop: '花色，L码',
+		brcode: '6972102850019',
+		quantity: '1',
+		stock: '5',
+		online_stock: '80',
+		price: '100',
+		pay_price: '80.8',
+		is_online: 0,
+		is_gift: 0,
+		is_checked: 0
+	}, {
+		pic: 'https://d2i72ju5buk5xz.cloudfront.net/gsc/RRQXG3/cd/c7/92/cdc792595357423fa2b917cec7ee9e92/images/%E6%94%B6%E9%93%B6%E5%8F%B0/u29.png?token=720579a9135c8b046ec5ed94e2d0ed7a',
+		item_code: 'HEAF9405',
+		prop: '花色，L码',
+		brcode: '6972102850019',
+		quantity: '1',
+		stock: '5',
+		online_stock: '88',
+		price: '100',
+		pay_price: '80.8',
+		is_online: 0,
+		is_gift: 0,
+		is_checked: 0
+	}
+]
+
+// layui
+layui.use('table', function (){
+  const table = layui.table
+})
+
+
+// vuejs
+var app = new Vue ({
+  el: '#app',
+  data: {
+  	items: items,
+  	no_user: false
+  },
+  mounted: function () {
+  	let _this = this
+  	_this.$nextTick(() => {
+	  	// loaded()
+	  })
+  },
+	computed: {
+	},
+  methods: {
+  	// 选择表格行事件
+  	selectRow: function (index) {
+  		this.items[index].is_checked = !this.items[index].is_checked
+  	},
+  	// 删除选择行
+  	deleteRow: function () {
+  		let items = []
+  		for (var i in this.items) {
+  			if (!this.items[i].is_checked) {
+  				items.push(this.items[i])
+  			}
+  		}
+  		this.items = items
+  	},
+  	// 设置选择项为赠品
+  	setGift: function () {
+  		let items = this.items
+  		for (var i in items) {
+  			if (items[i].is_checked) {
+  				items[i].is_gift = !items[i].is_gift
+  			}
+  		}
+  		console.log(items)
+  		this.items = items
+  	},
+  	// 结算层
+  	showCheckLayer: function () {
+  		layer.open({
+  			title: '订单结算',
+  			type: 2,
+  			content: '/checkout/index/before',
+  			area: ['600px', '730px'],
+  			btn: ['提交结算', '作废订单']
+  		})
+  	}
+  }
+})

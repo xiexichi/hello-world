@@ -1,0 +1,43 @@
+<?php
+namespace app\power\controller;
+
+class Admin extends Base
+{
+    public function addBefore(){
+        if (!$checkData = $this->validate->add(input())) {
+            $this->setExitErrorInfo($this->validate->getError(), 10001);
+            return false;
+        }
+        //插入前先判断当前的人的角色身份,账号类型，商户持有者只能创建商户员工
+        //...................
+        
+        switch ($checkData['account_type']){
+            case 2://商户持有人
+            case 3://商户员工
+                if(empty($checkData['merchant_id'])){
+                    $this->setExitErrorInfo('请选择商户主体', 10001);
+                    return false;
+                }
+                break;
+            case 1://后台管理员
+            default:
+                $checkData['merchant_id'] = 0;
+                break;
+        }
+        
+        $pwdData = $this->model::makePassword($checkData['password']);
+        $checkData['password'] = $pwdData['pwd'];
+        $checkData['salt']  =  $pwdData['salt'];
+        $this->model->data($checkData);
+    }
+    
+    public function indexBefore(){/*
+        if (!$checkData = $this->validate->index(input())) {
+            $this->setExitErrorInfo($this->validate->getError(), 10001);
+            return false;
+        }*/
+        
+        
+        
+    }
+}

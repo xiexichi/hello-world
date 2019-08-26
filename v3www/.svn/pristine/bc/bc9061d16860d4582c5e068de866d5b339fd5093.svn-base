@@ -1,0 +1,95 @@
+<?php
+namespace app\order\controller;
+use \app\common\controller\Service;
+use think\Exception;
+
+class Order extends Base{
+
+    public function getTotal(){
+        if( !$param = $this->validate->getTotal(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $channel = empty($param['channel']) ? '' : $param['channel'];
+        $shop_id = empty($param['shop_id']) ? 0 : $param['shop_id'];
+        //获取统计信息
+        $address_id = empty($param['address_id']) ? 0 : $param['address_id'];//收货地址
+        $delivery_id = empty($param['delivery_id']) ? 0 : $param['delivery_id'];//物流类型
+        //初始化合计信息
+        $order_total = [
+            'goods_num' => 0,
+            'goods_ship_num' => 0,
+            'goods_ship_weight' => 0.00,
+            'goods_gift_num' => 0,
+            'coupon_price' => 0.00,
+            'discount_price' => 0.00,
+            'goods_price' => 0.00,
+            'ship_status' => 1,
+            'order_ship_price' => 0.00,
+            'order_price' => 0.00
+        ];
+        //计算事务
+        try{
+            $cartModel = new \app\cart\model\Cart();
+            $cart_list = $cartModel->getCartList($user_id,$shop_id,$channel,true);
+            $cart_list = $cartModel->cartValid($cart_list);
+            if( empty($cart_list) ){
+                throw new Exception('未有选中购买商品');
+            }
+            foreach( $cart_list as $shop ){
+                foreach( $shop['goods_list'] as $goods ){
+                    $order_total['goods_num'] = bcadd($order_total['goods_num'],$goods['num'],0);
+                    if( $goods['item_info']['ship_free'] == 0 ){
+                        $order_total['goods_ship_num'] = bcadd($order_total['goods_ship_num'],$goods['num'],0);
+                        $order_total['goods_ship_weight'] = bcadd($order_total['goods_ship_weight'],$goods['item_info']['weight'],0);
+                    }
+                    //预留部分
+                    //是否存在活动礼物部分
+                    //获取礼物商品信息
+                    //$goodsItemModel = new \app\goods\model\GoodsItem();
+                    //$goodsItemModel->getItemInfo($item_id);
+
+                    //优惠券优惠
+                    $order_total['coupon_price'] = bcadd($order_total['coupon_price'],$goods['coupon_price'],2);
+                    //优惠金额
+                    $order_total['discount_price'] = bcadd($order_total['discount_price'],$goods['discount_price'],2);
+                    //商品金额计算
+                    $order_total['goods_price'] = bcadd($order_total['goods_price'],$goods['sum_price'],2);
+                }
+            }
+            //运费部分
+            $ship_price = 0;
+            if( !empty($address_id) ){
+                $server = new Service();
+                //检查用户信息
+                $user_info = $server->setHost('center_data')->post('user/user/one',['id'=>$user_id]);
+                if( !empty($user_info) ) {
+                    //获取会员收货地址信息
+                    $address_info = $server->setHost('center_data')->post('user/address/one', ['id' => $address_id, 'user_id' => $user_info['id']]);
+                    if (!empty($address_info)) {
+                        //获取默认运费模板
+                        $deliveryModel = new \app\system\model\Delivery();
+                        $ship_price = $deliveryModel->getGoodsShipPrice($delivery_id, $address_info['prov_id'],$order_total['goods_ship_num'],$order_total['goods_ship_weight']);
+                        if( $ship_price === false ){
+                            $ship_price = 0.00;
+                            $order_total['ship_status'] = 0;
+                        }
+                    }
+                }
+            }
+            $order_total['order_ship_price'] = $ship_price;
+            //订单总金额计算
+            $order_total['order_price'] = bcadd($order_total['order_ship_price'],
+                bcsub(
+                $order_total['goods_price'],
+                bcadd($order_total['coupon_price'],$order_total['discount_price'],2),
+                2
+            )
+            );
+        }catch( Exception $e ){
+            return errorJson(000010, $e->getMessage());
+        }
+        return successJson($order_total);
+    }
+}
+?>

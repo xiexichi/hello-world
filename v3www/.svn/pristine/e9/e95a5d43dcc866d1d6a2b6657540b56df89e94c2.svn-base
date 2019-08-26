@@ -1,0 +1,204 @@
+
+<div class="layui-collapse" lay-filter="search-filter">
+  <div class="layui-colla-item">
+    <h2 class="layui-colla-title">查找条件</h2>
+    <div class="layui-colla-content layui-show">
+    		
+    	<form class="layui-form" action="">
+		  <div class="layui-form-item">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" lay-submit lay-filter="formDemo">查找</button>
+		      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		    </div>
+		  </div>
+
+		  <div class="layui-form-item">
+			<div class="layui-inline">
+	            <label class="layui-form-label">日期</label>
+	            <div class="layui-input-inline" style="width: 150px;">
+	              <input id="start-date" type="text" name="start_date" autocomplete="off" placeholder="开始日期" class="layui-input">
+	            </div>
+	            <div class="layui-form-mid">-</div>
+	            <div class="layui-input-inline" style="width: 150px;">
+	              <input id="end-date" type="text" name="end_date" autocomplete="off" placeholder="结束日期" class="layui-input">
+	            </div>
+	          </div>
+
+		    <label class="layui-form-label">单号</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="order_sn" placeholder="请输单号" autocomplete="off" class="layui-input">
+		    </div>
+		  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">进货单类型</label>
+		    <div class="layui-input-inline" style="width:120px;">
+		      <select name="type">
+		        <option value=""></option>
+		        <option value="1">销售</option>
+		        <option value="2">物料</option>
+		      </select>
+		    </div>
+
+		    <label class="layui-form-label">进货单状态</label>
+		    <div class="layui-input-inline" style="width:120px;">
+		      <select name="status">
+		        <option value=""></option>
+		        <option value="-1">作废</option>
+		        <option value="0">待审核</option>
+		        <option value="1">已审核</option>
+		        <option value="2">审核不过</option>
+		        <option value="3">已发货</option>
+		        <option value="4">已收货</option>
+		      </select>
+		    </div>
+			
+			<label class="layui-form-label">商品货号</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="item_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+				
+			<label class="layui-form-label">商品规格</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="sku_code" placeholder="" autocomplete="off" class="layui-input">
+		    </div>
+
+		  </div>	
+
+		</form>
+
+    </div>
+  </div>
+</div>
+
+<!-- 工具栏 -->
+<script type="text/html" id="toolbar">
+  <div class="layui-btn-group">
+	  <button class="layui-btn layui-btn-primary layui-btn-sm" id="add-btn">
+	    <i class="layui-icon">&#xe654;</i>
+	  </button>
+	  <button class="layui-btn layui-btn-primary layui-btn-sm">
+	    <i class="layui-icon">&#xe642;</i>
+	  </button>
+	  <button class="layui-btn layui-btn-primary layui-btn-sm">
+	    <i class="layui-icon">&#xe640;</i>
+	  </button>
+	</div>
+</script> 
+
+<!-- 進貨單表格 -->
+<table id="list" lay-filter="list"></table>
+
+
+<!-- 操作栏 -->
+<script type="text/html" id="ctrlTpl">
+  <div class="">
+	<button class="layui-btn layui-btn-xs edit-order" order_id="{{ d.id }}">编辑</button>
+  </div>
+</script>
+
+<!-- 引入查找条件操作的js -->
+<include file="depot@base/collapse_ctrl" />
+
+<script type="text/javascript">
+	// 时间对象
+	var laydate = layui.laydate;
+
+	// 开始时间
+    laydate.render({
+      elem: '#start-date', //指定元素
+    });
+
+    // 结束时间
+    laydate.render({
+      elem: '#end-date', //指定元素
+    });
+
+
+    // 表单提交
+    var form = layui.form;
+    form.on('submit(formDemo)', function(data){
+	  // 重新获取表格数据
+	  initTable(data.field);
+	  return false;
+	});
+
+    
+	// 初始化表格
+	initTable();
+
+	// 初始化表格
+	function initTable(params){
+
+	  var table = layui.table;
+
+	  // 链接url
+	  let url = '/depot/shop_purchase_order/index?';
+
+	  // 拼接参数
+	  if (undefined !== params) {
+		for (let i in params) {
+		  if (params[i] !== '') {
+		  	url += i + '=' + params[i] + '&';
+		  }
+		}	  	
+	  }
+
+	  //第一个实例
+	  table.render({
+	    elem: '#list'
+	    ,height: tableNormalHeight + 'px'
+	    ,url: url //数据接口
+	    ,toolbar: '#toolbar'
+	    // ,defaultToolbar: ['filter', 'print', 'exports']
+	    ,page: true //开启分页
+	    ,headers: {
+	      ctrl: SHOP_DATA
+	    }
+	    ,done: function (res, curr, count) {
+	    	// 添加进货单
+			$('#add-btn').on('click', function(){
+				location.href = '/depot/purchase/add_purchase';
+			});
+
+			// 修改订单
+		    $('.edit-order').on('click', function(){
+		    	let id = $(this).attr('order_id');
+		    	// 打开进货单商品列表
+				openLayer('/depot/purchase/detail?id='+id, '进货单详情', {area: ['80%', '80%']});
+		    })
+	    }
+	    ,cols: [[ //表头
+	      // {type: 'radio', fixed: 'left'}
+	      {field: 'order_sn', title: '单号', width:180, sort: true}
+	      ,{field: 'type_name', title: '进货类型', width:100}
+	      ,{field: 'status_name', title: '状态', width:80}
+	      ,{field: 'create_time', title: '提交时间', width:180}
+	      ,{field: 'confirm_time', title: '收货时间', width:180}
+	      ,{field: 'apply_quantity', title: '进货数量', width:100}
+	      ,{field: 'real_quantity', title: '实发数量', width:100}
+	      ,{field: 'availavle_quantity', title: '剩余数量', width:100}
+	      ,{field: 'shop_name', title: '制单店铺', width:160}
+	      ,{field: 'staff_name', title: '制单店员', width:120}
+	      ,{field: 'shop_remark', title: '店铺备注', width:120} 
+	      ,{field: 'platform_remark', title: '平台备注', width: 120}
+	      ,{field: 'id', title: '操作', width: 120, templet: '#ctrlTpl'}
+	    ]]
+	  });
+
+
+	  //监听行双击事件
+	  table.on('rowDouble(list)', function(obj){
+		//obj 同上
+		// 打开进货单商品列表
+		openLayer('/depot/purchase/item_list?purchase_id='+obj.data.id, '进货列表', {area: ['100%', '100%']});
+	  });
+
+	  // 表格的radio监听
+	  table.on('radio(list)', function(obj){
+	    console.log(obj.checked); //当前是否选中状态
+	    console.log(obj.data); //选中行的相关数据
+	  });
+
+	}
+
+</script>

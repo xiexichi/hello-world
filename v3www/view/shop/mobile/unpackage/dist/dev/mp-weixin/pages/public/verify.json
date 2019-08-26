@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "van-button": "/static/vant/button/index"
+  },
+  "navigationBarTitleText": "25BOY会员",
+  "navigationBarBackgroundColor": "#eeeeee"
+}

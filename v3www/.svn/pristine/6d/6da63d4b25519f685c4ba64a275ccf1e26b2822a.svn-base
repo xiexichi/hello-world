@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * 
+ */
+
+namespace app\depot\validate;
+
+class ShopPurchaseOrder extends Base
+{
+
+
+	public function add($data){
+		$rule = [
+            'shop_depot_pre_select_id' => 'require|number',// 店铺预选id:shop_depot_select_id
+            'shop_remark' => 'min:0',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+	}
+
+
+
+}

@@ -1,0 +1,45 @@
+// layui
+layui.use(['form','element'], function (){
+  const form = layui.form
+  const element  = layui.element 
+  form.render()
+
+  //获取hash来切换选项卡，假设当前地址的hash为lay-id对应的值
+  var layid = location.hash.replace(/^#systemTab=/, '');
+  element.tabChange('systemTab', layid); //假设当前地址为：http://a.com#systemTab=222，那么选项卡会自动切换到“发送消息”这一项
+  //监听Tab切换，以改变地址hash值
+  element.on('tab(systemTab)', function(){
+    location.hash = 'systemTab='+ this.getAttribute('lay-id');
+  });
+
+  //监听页面提交
+  form.on('submit(submit-system)', function (data){
+    const params = data.field
+    layer.load()
+    request.setHost('shop_data').post('/system/system/edit', params, function (json){
+    	if (json.code === 0) {
+    		layer.msg(json.msg, {
+    			icon: 1,
+    			time: 2000
+    		}, function (){
+    			location.reload()
+    		})
+    	} else {
+    		layer.alert(json.msg)
+    	}
+    })
+    return false
+  })
+
+  // 添加参数层
+  $('#J-add').on('click', function(){
+  	layer.open({
+  		title: '添加参数',
+  		type: 2,
+  		content: '/system/index/add',
+  		area: ['500px', '620px'],
+  		btn: false
+  	})
+  });
+  
+})

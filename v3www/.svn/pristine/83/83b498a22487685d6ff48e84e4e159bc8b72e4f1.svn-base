@@ -1,0 +1,75 @@
+// layui
+
+    var form = layui.form;
+    layui.use('form',function () {
+        const id = getUrlParam('id');
+        const form = layui.form;
+        // 分销文件信息
+        request.setHost(CENTER_DATA).post('/document/seller_document/one/',{'id':id}, function(res) {
+            
+            if( res.code == 0 ){
+                info = res.data;
+                // console.log(info);
+                form.val("edit", {
+                    "id":info.id,
+                    "seller_id": info.seller_id,
+                    "desc": info.desc,
+                    "document_path":info.document_path,
+                });
+                loadUser();
+                imgEdit(info.document_path)
+                form.render();
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+
+        form.render();
+        // 监听提交
+        form.on('submit(formEdit)', function(data){
+            request.setHost(CENTER_DATA).post('/document/seller_document/edit',data.field,function(res){
+            if (res.code == 0) {
+                    layer.msg(res.msg);
+                    setTimeout(function(){
+                        parent.location.reload();
+                    },1500);
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+
+            return false; 
+        });
+    
+	
+        // 会员列表
+		function loadUser(){
+            // 店铺信息
+            request.setHost(CENTER_DATA).get('/document/seller/all/', function(res){
+                if( res.code == 0 ){
+                    var seller_list = res.data;
+                    var seller_html = '<option value="" >选择会员</option>';
+                    for( var i = 0; i < seller_list.length; i++ ){
+                        selected = '';
+                        if( info.seller_id == res.data[i].id ){
+                            selected = 'selected';
+                        }
+                        seller_html += '<option value="'+seller_list[i].id+'" '+selected+' >'+seller_list[i].user_name+'</option>';
+                    }
+                    $('#seller_box').html(seller_html);
+                    form.render();
+                }
+            });
+        }
+
+    });
+
+    //待编辑的图片
+    function imgEdit(data){
+        $("#upload_img").attr('src', data);
+    }
+
+    
+
+
+    

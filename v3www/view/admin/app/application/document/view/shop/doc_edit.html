@@ -1,0 +1,105 @@
+<style>
+    .layui-form-label{width:100px;}
+    .star{color:#FB5A5C;}
+    .layui-form-select dl { max-height:250px; }
+</style>
+<link rel="stylesheet" href="/static/jwt/style/cj.css" media="all">
+<div class="layui-fluid">
+    <form class="layui-form table-box" action="" id="shop_doc" lay-filter="edit" enctype="multipart/form-data"  method="post">
+        <div class="layui-card">
+            <div class="layui-card-body" id="upload_main" >
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formEdit">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                    </div>
+                </div>
+
+                <div class="layui-tab layui-tab-card">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">基础信息</li>
+                    </ul>
+                    <div class="layui-tab-content" >
+                        <div class="layui-tab-item layui-show">
+
+                            <input type="hidden" name="id" required lay-verify="required">
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">店铺名<span class="star">*</span></label>
+                                <div class="layui-input-inline">
+                                    <select name="shop_id" id="shop_box" lay-search>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">备注</label>
+                                <div class="layui-input-inline">
+                                    <textarea name="desc" style="resize:none; width:300px;"  placeholder="请输入描述" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"></label>
+                                <div class="layui-upload">
+                                    <input type="hidden" id="document_path" name="document_path" class="hid-val-box" readonly />
+                                    <img src="" name="document_path" alt="">
+                                    <button type="button" class="layui-btn" id="upload_doc">选择合同</button>
+                                    <div class="layui-upload-list">
+                                        <label class="layui-form-label"></label>
+                                        <img class="layui-upload-img" id="upload_img" width="400px" >
+                                    </div>
+                                </div> 
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+<hea:js src="/static/js/document/shop/doc_edit.js" />
+
+
+    
+<script>
+    // 上传图片
+    layui.use('upload', function(){
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upload_doc',
+            headers: {
+                ctrl: CENTER_DATA
+            },
+            acceptMime: 'image/*',
+            url:"{:url('Upload/upload')}",
+            before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#upload_img').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                $("#document_path").val(res.data);
+            },error:function(index,upload) {   
+                console.log('提交失败');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,9 @@
+<?php
+
+namespace app\goods\model;
+
+class GoodsItemPropVal extends Base
+{
+    protected $name = 'goods_item_prop_val';
+
+}

@@ -1,0 +1,27 @@
+<?php
+namespace app\system\controller;
+
+class System extends Base
+{
+  public function edit()
+  {
+  	$data = input('post.json_data');
+  	$data = json_decode($data, true);
+		$group = $data['group'];
+		unset($data['group']);
+
+		// 整理数据
+		$editData = [];
+		foreach ($data as $key => $val) {
+			$editData[] = [
+				'id' => $key,
+				'value' => $val,
+				'group' => $group
+			];
+		}
+		$result = $this->service->setHost('shop_data')->post('/system/system/edit', $editData);
+		var_dump($result);
+		return successJson($result);
+  }
+
+}

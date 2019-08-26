@@ -1,0 +1,111 @@
+    var param = '/?';
+    var table = layui.table;
+
+    //执行渲染
+    table.render({
+        id:'seller',
+        elem: '#seller' ,
+        height: 'auto', //容器高度
+        url: '/document/seller_document/index'+param,
+        page: true,
+        toolbar: '#toolbar',
+        headers: {
+            ctrl: CENTER_DATA
+        }
+        ,cols: [[
+            {field: 'id', title: 'ID', width:'5%',align:'center'},
+            {field: 'seller_name', title: '会员名', width:'20%',align:'center'},
+            {field: 'document_path', title: '缩略图', width:'20%',align:'center',templet:function (d) { return '<div><img src="'+d.document_path+'" width="100" height="100"></div>' }},
+            {field: 'desc', title: '备注', width:'25%'},
+            {field: 'update_time', title: '更新时间', width:'15%',align:'center' },
+            {field: 'id', title: '操作', width:'15%',templet: '#ctrlTpl',align:'center'}
+        ]],
+        done: function () {
+            layer.closeAll('loading');
+        }
+    });
+
+
+    //监听工具栏事件
+    table.on('toolbar(seller)', function (obj) {
+        const data = obj.data
+        const layEvent = obj.event
+        if (layEvent === 'add') {
+          layer.open({
+            title: '添加合同',
+            type: 2,
+            shadeClose:true,
+            scrollbar:false,
+            area:['90%','95%'],
+            content: '/document/seller/doc_add'
+          })
+        }
+    });
+
+    //监听行工具事件
+    table.on('tool(seller)', function (obj) {
+        const data = obj.data
+        const layEvent = obj.event
+        const tr = obj.tr
+        if (layEvent === 'edit') {
+            layer.open({
+                title: '编辑合同',
+                type: 2,
+                shadeClose:true,
+                scrollbar:false, 
+                area: ['90%', '95%'],
+                content: '/document/seller/doc_edit?id='+data.id
+            })
+        }
+        else if (layEvent == 'del') {
+            layer.confirm("是否确认删除！删除后 无法恢复！", {btn: ["确定","取消"] },
+             function(){
+                request.setHost(CENTER_DATA).get('/document/seller_document/delete',{ids: data.id}, function(res){
+                    if (res.code == 0) {
+                        // 成功提示
+                        layer.msg('删除成功');
+                        setTimeout(function(){
+                            location.reload();
+                        },1000);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            });
+            return false;
+        }
+    });
+    //会员列表
+    var form = layui.form;
+    layui.use('form', function(){
+    request.setHost(CENTER_DATA).get('/document/seller/All/', function(res){
+        if( res.code == 0 ){
+            var seller_list = res.data;
+            var seller_html = '<option value="">选择会员</option>';
+            for( var i = 0; i < seller_list.length; i++ ){
+                seller_html += '<option value="'+seller_list[i].id+'" >'+seller_list[i].user_name+'</option>';
+            }
+            $('#seller_box').html(seller_html);
+            form.render();
+        }
+    });
+
+        form.on('submit', function(data){
+            searchData = data.field;
+            table.reload('seller', {
+                where: searchData,
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+        form.render();
+    });
+
+
+    function callback(){
+        table.reload('seller');
+        layer.closeAll();
+    }

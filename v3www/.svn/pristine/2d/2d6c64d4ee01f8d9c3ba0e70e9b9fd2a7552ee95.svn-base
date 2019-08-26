@@ -1,0 +1,60 @@
+<?php
+
+namespace app\order\model;
+use \app\common\controller\Service;
+use think\Exception;
+
+class Order extends Base
+{
+    protected $name = 'order_info';
+
+    const CHANNEL_PC = 0;
+    const CHANNEL_MOBILE = 1;
+    const CHANNEL_O2O = 2;
+    const CHANNEL_APP = 3;
+
+    public static $map_channel = array(
+        self::CHANNEL_PC => array(
+          'desc' => 'PC端',
+        ),
+        self::CHANNEL_MOBILE => array(
+          'desc' => '移动端',
+        ),
+        self::CHANNEL_O2O => array(
+            'desc' => '门店',
+        ),
+        self::CHANNEL_APP => array(
+            'desc' => 'APP',
+        )
+    );
+
+    //获取订单运费
+    public function getOrderShip($user_id,$delivery_id){
+        //获取用户默认收货地址
+//        $address_id =
+        $prov_id = 0;
+        //获取运费模板
+        $deliveryModel = new \app\system\model\Delivery();
+        $delivery_info = $deliveryModel->getDeliveryTp($delivery_id,$prov_id);
+    }
+
+    //商品运费计算
+    public function getItemShip($item_id,$num,$delivery_id,$prov_id){
+        if( !empty($address_info) ){
+            $deliveryModel = new \app\system\model\Delivery();
+            //获取默认运费模板
+            $delivery_tp = $deliveryModel->getDeliveryTp($delivery_id,$address_info['prov_id']);
+        }
+    }
+
+    /**
+     * 创建主订单
+     * @param $orderData
+     * @param int $channel
+     */
+    public function createMasterOrder($orderData,$channel=self::CHANNEL_PC){
+
+    }
+
+
+}

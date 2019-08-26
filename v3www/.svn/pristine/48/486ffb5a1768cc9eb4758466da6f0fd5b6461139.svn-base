@@ -1,0 +1,64 @@
+<?php
+
+/**
+ *  商品标签
+ */
+
+namespace app\goods\validate;
+
+class Category extends Base
+{
+
+    public function getCateAll($data){
+        $data['showType'] = isset($data['showType']) ? $data['showType'] : 'list';
+        $rule = [
+            'showType' => 'alphaDash',
+            'pid' => 'integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function getCateInfo($data){
+        $rule = [
+            'id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+    public function add($data){
+        $rule = [
+            'cate_name' => 'require|chsDash',
+            'cate_icon' => 'url',
+            'sort' => 'require|integer',
+            'pid' => 'require|integer',
+        ];
+        return $this->validate($rule, $data);
+    }
+
+    public function edit($data){
+        $rule = [
+            'id' => 'require|integer',
+            'cate_name' => 'require|chsDash',
+            'cate_icon' => 'url',
+            'sort' => 'require|integer',
+            'pid' => 'require|integer',
+        ];
+        return $this->validate($rule, $data);
+    }
+
+    /**
+     * [getGoodsTagSingle 获取单个标签信息]
+     * @param  [type] $data [验证数据]
+     * @return [type]       [description]
+     */
+    public function getGoodsCateList($data){
+        $rule = [
+            'cate_id' => 'require|integer',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data);
+    }
+
+}

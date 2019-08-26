@@ -1,0 +1,144 @@
+<div class="layui-fluid">
+	<div class="layui-card">
+	  <div class="layui-card-header">会员详情</div>
+	  <div class="layui-card-body">
+			<div class="layui-row user-detail">
+		  	<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>昵称</b><span class="user_name"></span>
+				</div>
+		  	<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>状态</b><span class="status"></span>
+				</div>
+				<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>手机号码</b><span class="phone"></span>
+				</div>
+				<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>会员身份</b><span class="phone"></span>
+				</div>
+				<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>注册时间</b><span class="create_time"></span>
+				</div>
+				<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>最近登录时间</b><span class="login_time"></span>
+				</div>
+				<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>备注</b><span class="remark"></span>
+				</div>
+				<div class="layui-col-md6 layui-col-sm6 layui-col-xs6">
+		  		<b>绑定第三方</b><span></span>
+				</div>
+			</div>
+
+	  </div>
+	</div>
+
+	<div class="layui-card">
+	  <div class="layui-card-header">
+	  	最近几条流水记录
+	  	<a href="javascript:void(0)" class="header-right">更多</a>
+	  </div>
+	  <div class="layui-card-body">
+			<table id="flow-list" lay-filter="flow-list"></table>
+	  </div>
+	</div>
+
+	<div class="layui-card">
+	  <div class="layui-card-header">
+	  	最近几条积分记录
+	  	<a href="javascript:void(0)" class="header-right">更多</a>
+	  </div>
+	  <div class="layui-card-body">
+			<table id="integral-list" lay-filter="integral-list"></table>
+	  </div>
+	</div>
+
+</div>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-sm" lay-event="detail">查看</a>
+  <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="edit">充值</a>
+  <a class="layui-btn layui-btn-sm" lay-event="del">二五合作</a>
+</script>
+
+<script>
+	//所获得的 tableIns 即为当前容器的实例
+	// var tableIns = undefined
+	// var tableLoading = undefined
+
+	var id = getUrlParam('id')
+</script>
+
+<script>
+	function main() {
+		// 初始化
+		init();
+	}	
+
+	function init() {
+		request.setHost(DC).get('/user/user/one', {id: id},function (json) {
+
+			// 会员资料
+			for(let key in json.data) {
+				let value = json.data[key]
+				switch(key) {
+					case 'status':
+						$('.'+key).text(value ? '正常' : '封号');
+						break
+					default:
+						$('.'+key).text(value);
+						break
+				}
+			}
+
+			//方法渲染：
+			table.render({
+				id: 'flow-list',
+			  elem: '#flow-list',
+				data: json.data.with_flows,
+			  cols:  [[ //标题栏
+			    {field: 'id', title: '#'},
+			    {field: 'money', title: '交易金额'},
+			    {field: 'pay_method_cn', title: '付款方式', templet: d => {
+			    	return d.with_pay_method.method
+			    }},
+			    {field: 'type_cn', title: '类型', templet: d => {
+			    	return d.with_flow_type.type
+			    }},
+			    {field: 'status_cn', title: '状态', templet: d => {
+			    	return d.status ? '已支付' : '未支付'
+			    }},
+			    {field: 'pay_time', title: '支付时间', width: 180},
+			  ]]
+			});
+
+			//方法渲染：
+			table.render({
+				id: 'integral-list',
+			  elem: '#integral-list',
+				data: json.data.with_integrals,
+			  cols:  [[ //标题栏
+			    {field: 'id', title: '#'},
+			    {field: 'type', title: '类型', templet: d => {
+			    	return d.with_integral_type.name
+			    }},
+			    {field: 'integral', title: '积分'},
+			    {field: 'integral_total', title: '积分余额', templet: d => {
+			    	return '<b>'+ d.integral_total +'</b>'
+			    }},
+			    {field: 'pay_sn', title: '消费单号', width: 200},
+			    {field: 'create_time', title: '创建时间', width: 180},
+			  ]]
+			});
+		})
+	}
+</script>
+
+<style scoped>
+	.layui-fluid {background: #f5f5f5}
+	.user-detail div {height: 30px;line-height: 30px;}
+	.user-detail div b {width: 100px;text-align: right;display: inline-block;margin-right: 25px;}
+	.header-right {float:right;}
+</style>	
+
+<!-- 包含layui的基本初始化文件，请放在最下面 -->
+<include file="common@common/layui" />

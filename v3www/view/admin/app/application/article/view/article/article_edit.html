@@ -1,0 +1,40 @@
+<style>
+    .layui-form-label{width:100px;}
+    .star{color:#FB5A5C;}
+</style>
+<link rel="stylesheet" href="/static/jwt/style/cj.css" media="all">
+<script src="/static/ueditor/ueditor.config.js"></script>
+<script src="/static/ueditor/ueditor.all.js"></script>
+<script src="/static/ueditor/lang/zh-cn/zh-cn.js"></script>
+<div class="layui-fluid">
+    <form class="layui-form table-box" action="" id="form" lay-filter="edit">
+        <div class="layui-card">
+            <div class="layui-card-body" id="upload_main" >
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formEdit">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                    </div>
+                </div>
+                <div class="layui-tab layui-tab-card">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">基础信息</li>
+                    </ul>
+                    <div class="layui-tab-content" >
+                        <div class="layui-tab-item layui-show">
+                            <include file="../application/article/view/article/edit_info.html" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- <hea:js src="/static/js/vue.js" /> -->
+<hea:js src="/static/js/article/article/article_common.js" />
+<hea:js src="/static/js/article/article/article_edit.js" />
+
+
+
+

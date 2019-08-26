@@ -1,0 +1,23 @@
+<?php
+namespace app\order\controller;
+
+class Order extends Base{
+
+    public function getTotal(){
+        if( !$param = $this->validate->getTotal(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $channel = empty($param['channel']) ? '' : $param['channel'];
+        $shop_id = empty($param['shop_id']) ? 0 : $param['shop_id'];
+        //获取统计信息
+        $address_id = empty($param['address_id']) ? 0 : $param['address_id'];//收货地址
+        $delivery_id = empty($param['delivery_id']) ? 0 : $param['delivery_id'];//物流类型
+        $order_total = $this->model->getTotal($user_id,$address_id,$delivery_id,$shop_id,$channel);
+        if( $order_total === false ){
+            return errorJson(000010, $this->model->getError());
+        }
+        return successJson($order_total);
+    }
+}
+?>

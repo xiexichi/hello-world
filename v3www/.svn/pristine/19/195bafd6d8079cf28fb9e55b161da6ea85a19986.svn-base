@@ -1,0 +1,58 @@
+<?php
+namespace app\order\controller;
+
+class Order extends Base{
+
+    /**
+     * 获取下单商品列表
+     */
+    public function getBuyGoodsList(){
+        if( !$param = $this->validate->getTotal(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $shop_id = empty($param['shop_id']) ? 0 : $param['shop_id'];
+        $channel = empty($param['channel']) ? '' : $param['channel'];
+        $shop_list = $this->model->getBuyGoodsList($user_id,$shop_id,$channel);
+        if( $shop_list === false ){
+            return errorJson(000010, $this->model->getError());
+        }
+        return successJson($shop_list);
+    }
+
+    public function getTotal(){
+        if( !$param = $this->validate->getTotal(input('post.')) ) {
+            return errorJson(0000201, $this->validate->getError());
+        }
+        $user_id = $param['user_id'];
+        $channel = empty($param['channel']) ? '' : $param['channel'];
+        $shop_id = empty($param['shop_id']) ? 0 : $param['shop_id'];
+        //获取统计信息
+        $address_id = empty($param['address_id']) ? 0 : $param['address_id'];//收货地址
+        $delivery_id = empty($param['delivery_id']) ? 0 : $param['delivery_id'];//物流类型
+        $shop_list = $this->model->getBuyGoodsList($user_id,$shop_id,$channel);
+        $order_total = $this->model->getTotal($user_id,$shop_list,$address_id,$delivery_id,$channel);
+        if( $order_total === false ){
+            return errorJson(000010, $this->model->getError());
+        }
+        return successJson($order_total);
+    }
+
+    //使用优惠券
+    public function useCoupon(){
+
+    }
+
+    //使用积分
+    public function usePoint(){
+
+    }
+
+    /**
+     * 下单生成订单
+     */
+    public function createMasterOrder(){
+        $this->createMasterOrder();
+    }
+}
+?>

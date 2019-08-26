@@ -1,0 +1,111 @@
+<div class="layui-fluid">
+    <form class="layui-form table-box" action="" id="form" lay-filter="form">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="submitBtn">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button class="layui-btn layui-btn-primary" onclick="parent.window.callback()">返回</button>
+                    </div>
+                </div>
+                <div class="layui-tab layui-tab-card">
+                    <div class="layui-tab-content" >
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">角色身份</label>
+                                <div class="layui-input-block">
+                                    <select name="pid" lay-verify="required" lay-filter="selectPRole">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">角色名称</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verify="required" type="text" name="title" placeholder="请输入角色名称" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">是否启用</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="status" value="1" title="启动" checked="">
+                                    <input type="radio" name="status" value="2" title="禁用">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">备注</label>
+                                <div class="layui-input-block">
+                                    <textarea name="note" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">选择权限</label>
+                                <div class="layui-input-block">
+                                    <div id="LAY-auth-tree-index"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    layui.config({
+        base: '/static/layui/lib/extends/',
+    }).extend({
+        authtree: 'authtree',
+    });
+
+
+
+    $(document).ready(function(){
+        layui.use(['jquery', 'authtree', 'form', 'layer'], function(){
+            var $ = layui.jquery;
+            var authtree = layui.authtree;
+            var form = layui.form;
+            var layer = layui.layer;
+
+
+            request.setHost(CENTER_DATA).get('/power/power_role/getAddData',{}, function(res){
+                if( res.code == 0 ){
+                    //角色身份
+                    var selectDom = $('select[name=pid]');
+                    for(var i in res.data.roles){
+                        selectDom.append('<option value="'+res.data.roles[i].id+'">'+res.data.roles[i].title+'</option>');
+                    }
+                    //角色权限
+                    var trees = res.data.trees;
+                    //如果后台返回的不是树结构，请使用 authtree.listConvert 转换
+                    authtree.render('#LAY-auth-tree-index', trees, {
+                        inputname: 'authids[]', 
+                        layfilter: 'lay-check-auth', 
+                        autowidth: true,
+                    });
+                    form.render();
+                }
+            });
+
+            //监听提交
+            form.on('submit(submitBtn)', function(data){
+                request.setHost(CENTER_DATA).post('/power/power_role/add', data.field, function(res){
+                    if (res.code == 0) {
+                        layer.msg(res.msg);
+                        setTimeout(function(){
+                            parent.window.callback();
+                        },1000);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                });
+                return false;
+            });
+            
+        });
+    });
+
+</script>
+

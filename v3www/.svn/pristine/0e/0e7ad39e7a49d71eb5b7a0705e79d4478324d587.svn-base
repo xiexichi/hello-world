@@ -1,0 +1,122 @@
+<?php
+/**
+ * 网站参数设置模型
+ */
+namespace app\system\model;
+
+use think\Db;
+use app\common\model\CommonModel;
+use traits\model\SoftDelete;
+
+class Delivery extends CommonModel
+{
+	// 软删除
+	use SoftDelete;
+	// 自动时间
+	protected $deleteTime = 'delete_time';
+	protected $autoWriteTimestamp = 'datetime';
+
+	//计算类型
+	const FEE_MODE_WEIGHT = 0; //重量
+	const FEE_MODE_NUM = 1;    //件数
+
+    public static $map_fee_model = array(
+        self::FEE_MODE_WEIGHT => array(
+            'desc' => '重量计费'
+        ),
+        self::FEE_MODE_NUM => array(
+            'desc' => '数量计费'
+        )
+    );
+
+    /**
+     * 获取默认物流计算模板
+     * @param int $shop_id          店铺id
+     * @param int $delivery_id      物流公司id
+     * @param int $prov_id          省份id
+     * @return bool|array           计算模板信息
+     */
+	public function getDeliveryTp($shop_id,$delivery_id=0,$prov_id=0){
+        if( empty($shop_id) || empty($prov_id) ){
+            return false;
+        }
+        $where['d.status'] = 1;
+        $where['d.shop_id'] = $shop_id;
+        $where['dr.region_id'] = $prov_id;
+        if( $delivery_id == 0 ){
+            $where['d.is_default'] = 1;
+        }else{
+            $where['d.id'] = $delivery_id;
+        }
+        $info = $this->alias('d')
+            ->field('d.id as deli_id,d.delivery_name,
+            d.delivery_desc,
+            d.after_pay,
+            d.after_fee,
+            da.*
+            ')
+            ->join('delivery_area da','da.delivery_id = d.id')
+            ->join('delivery_region dr','dr.delivery_area_id = da.id')
+            ->where($where)
+            ->find();
+        return $info;
+    }
+
+    /**
+     * 运费计算
+     * @param int $delivery_id      物流公司id
+     * @param $prov_id              省份id
+     * @param int $goods_num        商品数量
+     * @param int $goods_weight     商品重量
+     * @return bool|float|string    运费金额
+     */
+    public function getGoodsShipPrice($template,$prov_id,$goods_num=0,$goods_weight=0,$order_price=0){
+        $ship_price = 0.00;
+        if(empty($prov_id) ){
+            return $ship_price;
+        }
+        if( empty($template) ){
+            $this->error = '不支持当前地区配送';
+            return false;
+        }
+        if( $order_price >= $template['free_money'] && $template['free_money'] > 0){
+            return $ship_price;
+        }
+        switch($template['fee_mode']){
+            case self::FEE_MODE_WEIGHT :
+                if( empty($goods_weight) ){
+                    return $ship_price;
+                }
+                if( $template['base_num'] >= $goods_weight ){
+                    $ship_price = $template['base_num_fee'];
+                }else{
+                    $weight = bcsub($goods_weight,$template['base_num'],2);
+                    $num = ceil(bcdiv ($weight*100,$template['step_num']*100,2));
+                    if( $num == 0 ){
+                        $num = 1;
+                    }
+                    $ship_price = bcadd($template['base_num_fee'],bcmul($num,$template['step_num_fee']),2);
+                }
+                break;
+            case self::FEE_MODE_NUM :
+                if( empty($goods_num) ){
+                    return $ship_price;
+                }
+                if( $template['base_num'] >= $goods_num ){
+                    $ship_price = $template['base_num_fee'];
+                }else{
+                    $goods_num = bcsub($goods_num,$template['base_num'],0);
+                    $num = ceil(bcdiv ($goods_num,$template['step_num'],2));
+                    if( $num == 0 ){
+                        $num = 1;
+                    }
+                    $ship_price = bcadd($template['base_num_fee'],bcmul($num,$template['step_num_fee']),2);
+                }
+                break;
+            default :
+                $ship_price = 0.00;
+                break;
+        }
+        return bcadd($ship_price,0,2);
+    }
+}

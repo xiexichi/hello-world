@@ -1,0 +1,3 @@
+<include file="../application/common/view/common/header.html" />
+{__CONTENT__}
+<include file="../application/common/view/common/footer.html" />

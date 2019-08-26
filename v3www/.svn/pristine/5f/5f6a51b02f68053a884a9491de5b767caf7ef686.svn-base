@@ -1,0 +1,41 @@
+<?php
+/**
+ * 商品分类
+ */
+namespace app\goods\controller;
+use think\Db;
+
+class Category extends Base
+{
+
+    //获取所有分类
+    public function getCateAll(){
+        if( !$checkDate = $this->validate->getCateAll(input()) ){
+            return errorJson(200201, $this->validate->getError());
+        }
+        $list = $this->model->getCateAll($checkDate);
+        return successJson($list);
+    }
+
+    public function checkRepeatCateName(){
+        $param = input('post.','');
+        if( empty($param['cate_name']) ){
+            return errorJson(200201, '参数错误');
+        }
+        if( isset($param['id']) ){
+            $where['id'] = ['<>',$param['id']];
+        }
+        $where['cate_name'] = ['=',$param['cate_name']];
+        return successJson(!$this->model->checkRepeatCateName($where));
+    }
+
+    //获取单个分类信息
+    public function getCateInfo(){
+        if( !$checkDate = $this->validate->getCateInfo(input('post.')) ){
+            return errorJson(10001, $this->validate->getError());
+        }
+        $info = $this->model->getCateInfo($checkDate['id']);
+        return successJson($info);
+    }
+
+}

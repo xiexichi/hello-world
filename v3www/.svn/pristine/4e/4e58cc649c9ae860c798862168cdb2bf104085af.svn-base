@@ -1,0 +1,47 @@
+/**
+ * 基于Jquery：所以使用前必须引入jquery
+ * 网络请求对象
+ */
+
+
+const request = {
+	host: '',	// 默认请求地址
+}
+
+/**
+ * [get GET方式请求]
+ * @param  {[type]}   url      [请求地址]
+ * @param  {[type]}   params   [请求参数]
+ * @param  {Function} callback [回调函数]
+ * @return {[type]}            [description]
+ */
+request.get = function () {
+
+	// get请求
+	if (arguments.length == 3) {
+		var url = arguments[0];
+		var params = arguments[1];
+		var callback = arguments[2];
+		$.get(this.host + url, params, callback);
+	} 
+
+	if (arguments.length == 2) {
+		var url = arguments[0];
+		var callback = arguments[1];
+		$.get(this.host + url, callback);
+	}
+
+}
+
+
+/**
+ * [post POST方式请求]
+ * @param  {[type]}   url      [请求地址]
+ * @param  {[type]}   data     [提交数据]
+ * @param  {Function} callback [回调函数]
+ * @return {[type]}            [description]
+ */
+request.post = function(url, data, callback) {
+	// post请求
+	$.post(this.host + url, data, callback)
+}

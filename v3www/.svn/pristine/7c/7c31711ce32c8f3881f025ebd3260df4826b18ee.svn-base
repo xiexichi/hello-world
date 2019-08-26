@@ -1,0 +1,126 @@
+<div id="vue_main">
+    <div class="layui-card">
+        <div class="layui-card-header">基础信息</div>
+        <div class="layui-card-body">
+            <table>
+                <tr>
+                    <td>订单号：</td>
+                    <td></td>
+                    <td>订单状态：</td>
+                    <td></td>
+                    <td>支付方式：</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>会员名：</td>
+                    <td></td>
+                    <td>会员手机：</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="layui-card">
+        <div class="layui-card-header">收货人信息</div>
+        <div class="layui-card-body">
+            <table>
+                <tr>
+                    <td>收货人：</td>
+                    <td></td>
+                    <td>联系电话：</td>
+                    <td></td>
+                    <td>联系电话：</td>
+                    <td></td>
+                    <td>邮编:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>收货地址：</td>
+                    <td colspan="5"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!--<div class="layui-card">-->
+        <!--<div class="layui-card-body">-->
+            <!--优惠信息-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="layui-card">
+        <div class="layui-card-header">综合信息</div>
+        <div class="layui-card-body">
+            <table>
+                <tr>
+                    <td style="color:#FB5A5C;">订单总额：</td>
+                    <td style="color:#FB5A5C;" ></td>
+                    <td style="color:#01AAED;">商品总额：</td>
+                    <td style="color:#01AAED;"></td>
+                    <td style="color:#01AAED;">积分抵扣：</td>
+                    <td style="color:#01AAED;"></td>
+                    <td style="color:#01AAED;">优惠券优惠：</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="layui-card">
+        <div class="layui-card-header">商品信息</div>
+        <div class="layui-card-body">
+            <table>
+                <tr>
+                    <th>会员名：</th>
+                    <td></td>
+                    <td>会员手机：</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="layui-card">
+        <div class="layui-card-header">订单日志</div>
+        <div class="layui-card-body">
+            <table>
+                <tr>
+                    <th>会员名：</th>
+                    <td></td>
+                    <td>会员手机：</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<hea:js src="/static/js/vue.js" />
+<script>
+    var id = getUrlParam('id');
+
+    var form = layui.form;
+    var Vue = new Vue({
+        el: '#vue_main',
+        data:{
+            'order_id' : id,
+            'order_info' : ''
+        },
+        mounted:function(){
+            var that = this;
+            that.getOrderInfo();
+        },
+        methods:{
+            getOrderInfo:function(){
+                var that = this;
+                var param = {};
+                param.order_id = that.order_id;
+                request.setHost(SHOP_DATA).post('/order/order/getOrderInfo',param, function(res){
+                    if (res.code == 0) {
+                        console.log(res.data);
+                    } else {
+                        // 错误提示
+                        layer.msg(res.msg);
+                    }
+                });
+            }
+        }
+    });
+
+
+</script>
+

@@ -1,0 +1,116 @@
+<div class="p-1" id="app">
+  <form class="layui-form layui-form-pane" id="openAddForm" lay-filter="layer">
+    <div class="layui-form-item">
+      <label class="layui-form-label">员工姓名</label>
+      <div class="layui-input-block">
+        <input type="text" name="name" placeholder="真实姓名" required lay-verify="required" class="layui-input" v-model="row.realname">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">角色</label>
+      <div class="layui-input-block">
+        <select name="role_id" required lay-verify="required">
+          <option value="">选择角色</option>
+          <option v-for="(item, key) in roles" :key="key" :value="item.code" v-bind:selected="item.code==row.id">{{item.title}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">登录账号</label>
+      <div class="layui-input-block">
+        <input type="text" name="name" placeholder="员工代码" required lay-verify="required" class="layui-input" v-model="row.loginname">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">登录密码</label>
+      <div class="layui-input-block">
+        <input type="text" name="name" placeholder="登录密码" required lay-verify="required" class="layui-input" v-model="row.name">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <input type="hidden" name="id" v-if="id" v-model="id">
+        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="edit-layer">立即提交</button>
+        <button class="layui-btn layui-btn-primary" type="button" onclick="closeSelfLayer()">关闭</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<hea:js src="/static/js/vue.js" />
+<script type="text/javascript">
+const id = "{$Request.param.id}"
+var app = new Vue({
+  el: '#app',
+  data: {
+    admin: {},
+    roles: []
+  },
+  mounted: function () {
+    if (id && id != 0) this.getOne()
+  },
+  computed: {
+    row: function () {
+      return this.admin.adminData || {}
+    }
+  },
+  methods: {
+    // 获取数据
+    getOne: function() {
+      let _this = this
+      _this.id = id
+      request.setHost('center_data').get('/power/admin/getAdminEdit?id='+id, function (json) {
+        if (json.code === 0){
+          _this.admin = json.data
+          _this.roles = json.data.roleList
+          _this.$nextTick().then (function () {
+            layui.form.render('select')
+          })
+        } else {
+          layer.alert(json.msg)
+        }
+      })
+    }
+  }
+})
+
+// layui
+// layui
+layui.config({
+    base: '/static/layui/module/authtree/'
+}).extend({
+    authtree: 'authtree'
+})
+layui.use(['form', 'authtree'], function () {
+  const form = layui.form
+  const authtree = layui.authtree
+  form.render()
+
+  //监听添加层提交
+  form.on('submit(edit-layer)', function (data) {
+    const loadLayer = layer.load()
+    let url = '/power/role/add'
+    if (id && id !=0){
+      url = '/power/role/edit'
+    }
+    request.setHost('center_data').post(url, data.field, function (json){
+      if (json.code === 0) {
+        layer.msg(json.msg, {
+          icon: 1,
+          time: 2000
+        }, function () {
+          // 刷新父页面
+          parent.location.reload()
+        })
+      }else{
+        layer.close(loadLayer)
+        layer.alert(json.msg, function (index) {
+          layer.close(index)
+        })
+      }
+    })
+    return false
+  })
+
+})
+</script>

@@ -1,0 +1,151 @@
+<?php
+
+namespace app\order\validate;
+
+class Order extends Base
+{
+    public function index($data){
+        $rule = [
+            'verify' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'order_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+    public function getOrderInfo($data){
+        $rule = [
+            'order_id' => 'require|integer|>:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'order_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function getBuyGoodsList($data){
+        $rule = [
+            'user_id' => 'require|integer',
+            'shop_id' => 'integer',
+            'address_id' => 'integer',
+            'shop_delivery' => 'array',
+            'channel' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'address_id' => '参数错误',
+            'shop_delivery'     => '参数错误',
+            'shop_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function getTotal($data){
+        $rule = [
+            'user_id' => 'require|integer',
+            'address_id' => 'integer',
+//            'delivery_id' => 'integer',
+            'shop_delivery' => 'array',
+            'shop_id' => 'integer',
+            'channel' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'address_id' => '参数错误',
+//            'delivery_id'     => '参数错误',
+            'shop_delivery'     => '参数错误',
+            'shop_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function createOrder($data){
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+            'address_id' => 'require|integer|>:0',
+//            'delivery_id' => 'require|integer|>:0',
+            'shop_delivery' => 'array',
+            'shop_id' => 'integer|>=:0',
+            'channel' => 'integer',
+            'self_take_shop' => 'array',
+            'coupon_ids' => 'array',
+            'remark' => 'max:255',
+            'point' => 'float',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'address_id' => '参数错误',
+            'shop_delivery'     => '参数错误',
+            'shop_id' => '参数错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function createPaymentOrder($data){
+        $rule = [
+            'order_id' => 'require|integer|>:0',
+            'price' => 'require|float|>=:0',
+        ];
+        // 错误提示信息
+        $message = [
+            'order_id' => '参数错误',
+            'price'     => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function setOrderPay($data){
+        $rule = [
+            'order_id' => 'require|integer|>:0',
+            'pay_status' => 'require|integer'
+        ];
+        // 错误提示信息
+        $message = [
+            'order_id' => '参数错误',
+            'pay_status'   => '参数错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function orderVerify($data){
+        $rule = [
+            'order_id' => 'require|integer|>:0',
+            'verify' => 'require|integer'
+        ];
+        // 错误提示信息
+        $message = [
+            'order_id' => '参数错误',
+            'verify'   => '参数错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function orderShip($data){
+        $rule = [
+            'order_id' => 'require|integer|>:0',
+            'ship' => 'require|integer',
+            '' => 'require|integer',
+            'ship' => 'require|integer'
+        ];
+        // 错误提示信息
+        $message = [
+            'order_id' => '参数错误',
+            'ship'   => '参数错误'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+}

@@ -1,0 +1,134 @@
+<?php
+/**
+* 生成html表单
+	@ by iszwj
+	@ iszwj.com
+*/
+class Html {
+	/**
+	* 取HTML 表单字段
+	**/
+	public static function input($type, $name, $value='', $label='', $note='', $id='',$extra='',$attribute='') {
+		$html = '';
+		if($type == 'textarea')
+		{
+			$html .= '<div class="layui-form-item">';
+			$html .= '<label class="layui-form-label">'.$label.'</label>';
+			$html .= '<div class="layui-input-block">';
+			$html .= '<textarea name="'.$name.'" id="'.$id.'" placeholder="'.$label.'" class="layui-textarea" '.$attribute.'>'.$value.'</textarea>';
+			if(!empty($note))
+				$html .= '<div class="layui-form-mid layui-word-aux">'.$note.'</div>';
+			$html .= '</div>';
+			$html .= '</div>';
+		}
+		elseif($type == 'editor')
+		{
+				//$html = "<editor type='ueditor' name='$name' id='$id' width='700' content='$value' $attribute></editor>";
+				$html = '<script type="text/plain" id="'.$id.'" class="'.$class.'" name="'.$name.'" >'.htmlspecialchars_decode($value).'</script><script type="text/javascript">var editor = new baidu.editor.ui.Editor({"initialFrameWidth":680,"initialFrameHeight":380}); editor.render("'.$id.'");</script>';			
+		}
+		elseif($type == 'select' || $type == 'radio' || $type == 'checkbox')
+		{
+			if(!is_array($extra))
+			{
+					$tempdata = explode(',',$extra);
+					foreach($tempdata as $val){
+						$data[$val] = $val;
+					}
+			}
+			$html .= '<div class="layui-form-item">';
+			$html .= '<label class="layui-form-label">'.$label.'</label>';
+			$html .= '<div class="'.($note?'layui-input-inline':'layui-input-block').'">';
+			$html .= self::$type($data, $name, $value, ' id="'.$id.'" ');
+			$html .= '</div>';
+			if(!empty($note))
+				$html .= '<div class="layui-form-mid layui-word-aux">'.$note.'</div>';
+			$html .= '</div>';
+
+		}
+		elseif($type == 'image')
+		{
+				$html = "<div class='input-append'><input id='JS_$id' name='$name' type='text' value='$value' $attribute><button class='btn J_opendialog' data-uri='".U('attachment/index',array('type'=>'image'))."' data-name='JS_$id' data-width='800' data-title='".L('selet_file')." (双击选择)' type='button'>".L('selet_file')."</button></div>";
+		}
+		elseif($type == 'images')
+		{
+				preg_match('/addfields\[(.\d)\]/i',$name,$str);
+				$id = 'images_'.$str[1];
+				
+				$html = '<div class="form-th"><h5>'.L('more_files').'</h5></div>'.
+								'<div id="'.$id.'_area"></div>'.
+             		'<div class="form-th"><button class="btn btn-link" type="button" onclick="add_images(\''.$id.'\')">'.L('add_files').'</button>'.
+								'<input id="'.$id.'_num" type="hidden" value="0" /></div>';
+        /*if(is_array($value)){
+					$html .= "<script>$(function(){\n";
+							foreach($value as $kkk=>$img){
+								$html .= "add_images('{$id}');\n";
+							}
+					$html .= "}\n</script>";
+				}*/
+		}
+		else
+		{
+			if($type == 'datetime') $attribute .= 'lay-verify="date"';
+			$html .= '<div class="layui-form-item">';
+			$html .= '<label class="layui-form-label">'.$label.'</label>';
+			$html .= '<div class="'.($note?'layui-input-inline':'layui-input-block').'">';
+			$html .= '<input type="text" name="'.$name.'" id="'.$id.'" value="'.$value.'" placeholder="'.$label.'" autocomplete="off" class="layui-input" '.$attribute.'>';
+			$html .= '</div>';
+			if(!empty($note))
+				$html .= '<div class="layui-form-mid layui-word-aux">'.$note.'</div>';
+			$html .= '</div>';
+		}
+		
+		return $html;
+
+	}
+	
+	//根据数组生成html select
+	private static function select($data=array(), $name='', $selected='', $attribute='')
+	{
+			$name = trim($name);
+			$selected = trim($selected);
+			if($data)
+			{
+				$html = "<select name='$name' $attribute>";
+				foreach($data as $key=>$val){
+					$html .= "<option value='{$key}' ".(($val==$selected)?'selected="selected"':'').">{$val}</option>";
+				}
+				$html .= '</select>';
+			}
+			return $html;
+	}	
+	
+	private static function radio($data=array(), $name='', $selected='', $attribute='')
+	{
+			$html = '';
+			$name = trim($name);
+			$selected = trim($selected);
+			if($data)
+			{
+				foreach($data as $key=>$val){
+					$html .= '<input name="'.$name.'" title="'.$val.'" type="radio" value="'.$key.'" '.(($val==$selected)?'checked="checked"':'').' '.$attribute.' />';
+				}
+			}
+			return $html;
+	}
+
+	private static function checkbox($data=array(), $name='', $selected='', $attribute='')
+	{
+			$html = '';
+			$name = trim($name);
+			$selected = trim($selected);
+			$arr = array_flip(explode(',',$selected));	//分割并交换数组中的键和值,避免键为0返回false
+
+			if($data)
+			{
+				$i=0;
+				foreach($data as $key=>$val){
+					$html .= '<input name="'.$name.'[]" type="checkbox" title="'.$val.'" value="'.$key.'" '.((array_key_exists($val,$arr))?'checked="checked"':'').' '.$attribute.'/>';
+					$i++;
+				}
+			}
+			return $html;
+	}
+
+}

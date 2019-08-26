@@ -1,0 +1,23 @@
+<?php
+
+namespace app\goods\model;
+
+class Goods extends Base
+{
+    protected $name = 'goods';
+
+    public function indexAfter(){
+        if(!empty($this->data)){
+            foreach( $this->data as $key => $val ){
+                unset($val['content']);
+                $this->data[$key] = $val;
+            }
+        }
+    }
+
+    public function editBefore(){
+        $this->data['update_time'] = date('Y-m-d H:i:s');
+        return true;
+    }
+
+}

@@ -1,0 +1,16 @@
+<?php
+/*
+ * 由后台生成的配置文件 system/system/updateConfigFile
+ * 请勿直接修改此文件
+ * 最后更新时间：2019-03-19 10:58:19
+*/
+
+return [
+	'WEB_SITE_TITLE' => '25BOY原创国潮品牌',
+	'WEB_SITE_ICP' => 'abccddds',
+	'QRCODE_CENTER_LOGO' => '/public/static/images/logo.png',
+	'WRITE_LOGS_FUNC' => 'add,edit,delete,del',
+	'ADMIN_GOODS_VERIFY' => 'on',
+	'INTEGRAL_TO_RMB_PRO' => '100',
+	'GOODS_EVALUATION_AUTO' => 'on',
+];

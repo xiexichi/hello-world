@@ -1,0 +1,18 @@
+<?php
+/**
+ * 网站参数设置模型
+ */
+namespace app\system\model;
+
+use think\Db;
+use app\common\model\CommonModel;
+use traits\model\SoftDelete;
+
+class Delivery extends CommonModel
+{
+	// 软删除
+	use SoftDelete;
+	// 自动时间
+	protected $deleteTime = 'delete_time';
+	protected $autoWriteTimestamp = 'datetime';
+}

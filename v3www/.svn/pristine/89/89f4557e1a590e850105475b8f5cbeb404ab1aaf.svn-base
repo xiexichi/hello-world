@@ -1,0 +1,88 @@
+<div class="receiving" id="app">
+	<div class="receiving-main">
+		<table class="layui-table" id="myDataTable" lay-filter="myDataTable">
+			<thead>
+				<tr>
+					<th width="20"></th>
+					<th width="60">商品条码</th>
+					<th>商品名称</th>
+					<th>商品编码</th>
+					<th>规格代码</th>
+					<th>售价</th>
+					<th>进货数量</th>
+					<th>实发数量</th>
+					<th>收货数量</th>
+					<th>复核数量</th>
+				</tr> 
+			</thead>
+			<tbody>
+				<tr v-for="(item, index) in items" :key="index" 
+				:class="{'layui-bg-red': item.send_num != item.real_num && item.send_num != item.retrial_num}" 
+				v-if="!just_different || (just_different && item.send_num != item.real_num && item.send_num != item.retrial_num)">
+					<td align="center" width="10">{{ index+1 }}</td>
+					<td>{{ item.brcode }}</td>
+					<td>{{ item.item_name }}</td>
+					<td>{{ item.item_code }}</td>
+					<td>{{ item.prop }}</td>
+					<td>{{ item.price }}</td>
+					<td>{{ item.quantity }}</td>
+					<td>{{ item.send_num }}</td>
+					<td>{{ item.real_num }}</td>
+					<td align="center" width="100">
+						<el-input v-model="item.retrial_num" placeholder="复核数量" size="small" class="retrial-input" v-if="item.send_num != item.real_num"></el-input>
+					</td>
+				</tr> 
+			</tbody>
+		</table>
+	</div>
+
+	<div class="receiving-footer">
+		<div role="alert" class="el-alert el-alert--warning alert-activitys">
+			<div class="el-alert__content">
+				<ul class="el-alert__title">
+					<li>如果收货数量与实发数量不一致，会要求复核，复核还是有差异会自动生成差异单调整库存</li>
+				</ul>
+			</div>
+		</div>
+		<div class="receiving-footer-bar">
+      <div class="receiving-footer-bartotal">共 2 件商品</div>
+      <div class="receiving-footer-baraction">
+        <el-switch v-model="just_different" active-color="#13ce66" active-text="只看差异" class="mr-1"></el-switch>
+      </div>
+    </div>
+    <div class="receiving-area">
+    	<div class="layui-row layui-col-space30">
+    		<div class="layui-col-xs4">
+    			<input type="text" name="title" placeholder="商品条码、商品编码" autocomplete="off" class="layui-input input-receiving">
+    			<button class="layui-btn layui-btn-lg layui-btn-primary btn-search">扫<br>码<br>模<br>式</button>
+    		</div>
+    		<div class="layui-col-xs4">
+  				<table class="layui-table table-total">
+  					<tr>
+  						<td align="center">100</td>
+  						<td align="center">100</td>
+  						<td align="center">98</td>
+  					</tr>
+  					<tr>
+  						<th align="center">进货数量</th>
+  						<th align="center">实发数量</th>
+  						<th align="center">收货数量</th>
+  					</tr>
+  				</table>
+    		</div>
+    		<div class="layui-col-xs4">
+    			<button class="layui-btn layui-btn layui-btn-lg layui-btn-normal btn-receiving">确认收货</button>
+    		</div>
+    	</div>
+
+    </div>
+	</div>
+</div>
+
+<!-- vue -->
+<hea:js src="/static/js/vue.js" />
+<hea:js src="/static/js/element-ui.js" />
+<hea:css src="/static/style/element-ui.css" />
+<!-- purchase -->
+<hea:js src="/static/js/depot/receiving.js" />
+<hea:css src="" rel="less" />

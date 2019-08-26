@@ -1,0 +1,8 @@
+<?php
+
+namespace app\cart\controller;
+
+class Cart extends Base
+{
+
+}

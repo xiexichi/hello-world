@@ -1,0 +1,52 @@
+<?php
+
+namespace app\index\controller;
+
+use think\Controller;
+
+class Auth extends Controller
+{
+
+	/**
+	 * [login 登录]
+	 * @return [type] [description]
+	 */
+	public function login(){
+		// 转发控制器
+		$forward = new \app\common\Controller\Forward();
+
+		// 登录
+		// pe(input());
+
+		// 店铺登录地址
+		$shopLoginUrl = '/merchant/shop/verifyAccount';
+
+		// 1. 店铺登录
+		$res = $forward->setCtrl('center_data')->setUrl($shopLoginUrl)->goResult($this->request);
+
+		// 解析json数据
+		// 判断是否验证成功
+		if ($res['code'] == 0) {
+			// 登录成功，保存session
+			session('shop', $res['data']);
+		}
+
+		// 删除店铺数据
+		unset($res['data']);
+
+		// 返回结果
+		return $res;
+	}
+
+	/**
+	 * [logout 登出]
+	 * @return [type] [description]
+	 */
+	public function logout(){
+		// 清除session
+		session('shop', null);
+
+		return successJson([], '登出成功');
+	}
+
+}

@@ -1,0 +1,113 @@
+<div class="p-1 mr-2">
+
+	<form class="layui-form" action="" id="order-form">
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">单号</label>
+	    <div class="layui-input-inline">
+	      <input type="text" name="order_sn" readonly="true" placeholder="请输入标题" autocomplete="off" class="layui-input">
+	    </div>
+
+	    <label class="layui-form-label">进货单类型</label>
+	    <div class="layui-input-inline" style="width:120px;">
+	      <select name="type" disabled="true">
+	        <option value=""></option>
+	        <option value="1">销售</option>
+	        <option value="2">物料</option>
+	      </select>
+	    </div>
+
+	    <label class="layui-form-label">状态</label>
+	    <div class="layui-input-inline" style="width:120px;">
+	      <select name="status" disabled="true">
+	        <option value=""></option>
+	        <option value="-1">作废</option>
+	        <option value="0">待审核</option>
+	        <option value="1">已审核</option>
+	        <option value="2">审核不过</option>
+	        <option value="3">已发货</option>
+	        <option value="4">已收货</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">制单店铺</label>
+	    <div class="layui-input-inline">
+	      <input type="text" name="shop_name" readonly="true" class="layui-input">
+	      <input type="hidden" name="shop_id" placeholder="请输入密码" autocomplete="off" class="layui-input">
+	    </div>
+
+	    <label class="layui-form-label">制单员工</label>
+	    <div class="layui-input-inline">
+	      <input type="text" name="staff_name" readonly="true" class="layui-input">
+	      <input type="hidden" name="staff_id" placeholder="请输入密码" autocomplete="off" class="layui-input">
+	    </div>
+	  </div>
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">提交时间</label>
+	    <div class="layui-input-inline">
+	      <input type="text" name="create_time" readonly="true" class="layui-input">
+	    </div>
+
+	    <label class="layui-form-label">收货时间</label>
+	    <div class="layui-input-inline">
+	      <input type="text" name="confirm_time" readonly="true" class="layui-input">
+	    </div>
+	  </div>
+
+	  <div class="layui-form-item layui-form-text">
+	    <label class="layui-form-label">店铺备注</label>
+	    <div class="layui-input-inline">
+	      <textarea name="shop_remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+	    </div>
+
+	    <label class="layui-form-label">平台备注</label>
+	    <div class="layui-input-inline">
+	      <textarea name="platform_remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+	    </div>
+	  </div>
+	  <div class="layui-form-item">
+	    <div class="layui-input-block">
+	      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    </div>
+	  </div>
+	</form>
+ 
+</div>
+
+
+<script>
+
+	// 获取进货单id
+	var id = getUrlParam('id');
+
+	//Demo
+	var form = layui.form;
+
+	// 获取订单信息
+	request.get('/depot/shop_purchase_order/one?id='+id, function(res){
+		console.info(res);
+		if (res.code == 0) {
+			// 订单数据
+			var order = res.data;
+			for (let i in order) {
+				$('#order-form').find('input[name="'+i+'"]').val(order[i]);
+				$('#order-form').find('select[name="'+i+'"]').val(order[i]);
+				$('#order-form').find('textarea[name="'+i+'"]').val(order[i]);
+			}
+
+			// 渲染表单
+			form.render();
+		}
+	})
+
+	// 渲染表单
+	form.render();
+
+	//监听提交
+	form.on('submit(formDemo)', function(data){
+		layer.msg(JSON.stringify(data.field));
+		return false;
+	});
+
+</script>

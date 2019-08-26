@@ -1,0 +1,96 @@
+<?php
+/**
+ * 25boy v3 运费模板模块
+ * 2019-01-10 张文杰
+ */
+namespace app\system\controller;
+use app\goods\model\Goods;
+
+class Delivery extends Base
+{
+  public function indexBefore()
+  {
+    $data = clean(input());
+    // 查询条件
+    if( !empty($data['shop_id']) ){
+      $this->model->setWhere('shop_id', (int)$data['shop_id']);
+    }
+    if( !empty($data['delivery_name']) ){
+      $this->model->setWhere('delivery_name', 'LIKE', "%{$data['delivery_name']}%");
+    }
+    if( !empty($data['delivery_code']) ){
+      $this->model->setWhere('delivery_code', $data['delivery_code']);
+    }
+    $this->model->data($data);
+  }
+
+
+  /**
+   * all前置方法
+   */
+  public function allBefore()
+  {
+    $data = clean(input());
+    // 排序
+    if(!empty($data['order']) && is_array($data['order'])) {
+      $this->model->order($data['order']);
+      unset($data['order']);
+    }
+    $this->model->data($data);
+  }
+
+	/**
+   * 修改后置方法
+   */
+  public function editAfter()
+  {
+    // 修改默认模板
+    $data = $this->model->getData();
+  	if( !empty($data['is_default']) ) {
+  		$this->model->where('id', 'NEQ', $data['id'])->setField('is_default', 0);
+  	}
+
+    // 添加操作日志
+    actionLogs('修改运费模板', $this->model);
+  }
+
+  /**
+   * 添加后置方法
+   */
+  public function addAfter()
+  {
+  	// 修改默认模板
+    $data = $this->model->getData();
+  	if( !empty($data['is_default']) ) {
+  		$this->model->where('id', 'NEQ', $data['id'])->setField('is_default', 0);
+  	}
+
+    // 添加操作日志
+    actionLogs('添加运费模板', $this->model);
+  }
+
+  /**
+   * 删除前置方法
+   */
+  public function deleteBefore()
+  {
+    $ids = input('param.ids');
+    // 输出错误提示
+    if (empty($ids)) {
+      $this->code = 10001;
+      $this->error = '缺失参数ids';
+      $this->isExit = true;
+    } else {
+      $goods = Goods::where('delivery_id', 'in', $ids)->count();
+      if(!empty($goods)) {
+        $this->code = 10001;
+        $this->error = '有商品使用了该模板，不能删除';
+        $this->isExit = true;
+        return false;
+      }
+      // 设置多个删除条件
+      $this->model->where('id','in', $ids);
+    }
+  }
+
+}

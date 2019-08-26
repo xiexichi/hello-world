@@ -1,0 +1,43 @@
+	//树状结构多维数组转一维数组
+	function setTreeList(cate_list,child,pNum,returnList){
+	    if( typeof(pNum) == 'undefined' ){
+	        pNum = 0;
+	    }
+	    if( typeof(returnList) == 'undefined' ){
+	        returnList = new Array();
+	    }
+	    for( var keys in cate_list ){
+	        cate_list[keys]['pNum'] = pNum;
+	        returnList.push(cate_list[keys]);
+	        if( typeof(cate_list[keys][child]) != 'undefined' && cate_list[keys][child].length > 0 ){
+	            returnList = setTreeList(cate_list[keys][child],child,pNum+1,returnList);
+	        }
+	    }
+	    return returnList;
+	}
+
+	function setTreeGrid(cate_list){
+	    var nbsp = '';
+	    var tree = '';
+	    for( var i = 0; i < cate_list.length; i++ ){
+	        tree = '';
+	        nbsp = '';
+	        if( cate_list[i].pNum > 0 ){
+	            tree += '├';
+	            for( var t = 0; t < cate_list[i].pNum; t++ ){
+	                tree += '──';
+	            }
+	            cate_list[i].name = nbsp+tree+cate_list[i].name;
+	        }
+	    }
+	    return cate_list;
+	}
+
+	function checkSort(obj){
+	    var num = $(obj).val();
+	    if(num > 255){
+	        $(obj).val(255);
+	    }else if(num < 0){
+	        $(obj).val(0);
+	    }
+	}

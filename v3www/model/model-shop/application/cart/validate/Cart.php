@@ -1,0 +1,81 @@
+<?php
+
+namespace app\cart\validate;
+
+class Cart extends Base
+{
+    public function getCartList($data){
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+            'channel_id' => 'integer',
+            'shop_id' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'shop_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function addCart($data){
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+            'item_id' => 'require|integer',
+            'num' => 'require|integer|>=:0',
+            'shop_id' => 'require|integer',
+            'channel' => 'integer',
+            'buy_now' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'item_id' => '商品信息异常',
+            'num'     => '数量出错',
+            'shop_id' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function addGift($data){
+        $rule = [
+            'user_id' => 'require|integer|>:0',
+            'item_id' => 'require|integer',
+            'num' => 'require|integer|>=:0',
+            'shop_id' => 'require|integer',
+            'gift_parent_id' => 'require|integer',
+            'gift_id' => 'integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '用户信息异常',
+            'item_id' => '商品信息异常',
+            'num'     => '数量出错',
+            'shop_id' => '参数错误',
+            'gift_parent_id' => '赠品相关购物商品错误',
+            'gift_id' => '缺少赠品活动参数'
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+
+    public function selectGoods($data){
+        $rule = [
+            'id' => 'require|integer',
+            'user_id' => 'require|integer',
+            'shop_id' => 'require|integer',
+            'selected' => 'require|integer',
+        ];
+        // 错误提示信息
+        $message = [
+            'user_id' => '参数错误',
+            'item_id' => '参数错误',
+            'shop_id' => '参数错误',
+            'selected' => '参数错误',
+        ];
+        // 返回验证结果
+        return $this->validate($rule, $data,$message);
+    }
+}

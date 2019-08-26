@@ -1,0 +1,72 @@
+<?php
+/**
+ * JSON Web Token 入门教程
+ * http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html
+ */
+
+/**
+ * 生成jwt token
+ * @param $data [string|array] 自定义数据
+ * @return $token
+
+ * 图片空间要求data格式
+  $data = array(
+      'username' => $username,
+      'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+      'host' => $_SERVER['HTTP_HOST'],
+  );
+ */
+function jwt_create($data = [])
+{
+  if( empty($data) ){
+    $data = array(
+      'username' => '订货系统',
+      'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+      'host' => $_SERVER['HTTP_HOST'],
+    );
+  }
+  vendor('jwt.JWT');
+  $JWT = new \JWT();
+  $token = $JWT->encode(array(
+    'consumerKey' => config('photo.photo_key'),
+    'data' => $data,
+    'issuedAt' => date(DATE_ISO8601, strtotime("now")),
+    'ttl' => config('photo.photo_ttl')
+  ), config('photo.photo_secret'));
+  return $token;
+}
+
+/**
+ * 验证jwt token
+ * @param $token string
+ * @return boolean
+ */
+function jwt_validate($token)
+{
+    vendor('jwt.JWT');
+    $JWT = new \JWT();
+    try {
+        $JWT->decode($token, config('photo.photo_secret'));
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+
+}
+
+/**
+ * 解码jwt token
+ * @param $token string
+ * @return array
+ */
+function jwt_decode($token)
+{
+    vendor('jwt.JWT');
+    $JWT = new \JWT();
+    try {
+        $decodeToken = $JWT->decode($token, config('photo.photo_secret'));
+        return $decodeToken;
+    } catch (Exception $e) {
+        return false;
+    }
+}

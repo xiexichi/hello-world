@@ -1,0 +1,559 @@
+---------------------------------------------------------------
+[ 2019-01-08T09:47:14+08:00 ] 127.0.0.1 GET data-center.25boy.com/index/area/getAreas/?type=3&pid=2
+[运行时间：0.075000s] [吞吐率：13.33req/s] [内存消耗：2,057.12kb] [文件加载：53]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'accept-encoding' => 'gzip,deflate',
+  'user-agent' => 'Apache-HttpClient/4.5.6 (Java/1.8.0_152-release)',
+  'connection' => 'Keep-Alive',
+  'host' => 'data-center.25boy.com',
+  'cache-control' => 'no-cache',
+  'accept' => '*/*',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '3',
+  'pid' => '2',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ D:\project\v3\model\model-center\application\index\controller\Area.php ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.013000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `area` [ RunTime:0.004000s ]
+[ sql ] [ SQL ] SELECT * FROM `area` WHERE  `pid` = 2  AND `area_type` = 3 [ RunTime:0.018000s ]
+---------------------------------------------------------------
+[ 2019-01-08T09:47:24+08:00 ] 127.0.0.1 GET data-center.25boy.com/index/area/getAreas/?type=1
+[运行时间：0.059000s] [吞吐率：16.95req/s] [内存消耗：2,061.30kb] [文件加载：53]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'area',
+    2 => 'getAreas',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'accept-encoding' => 'gzip,deflate',
+  'user-agent' => 'Apache-HttpClient/4.5.6 (Java/1.8.0_152-release)',
+  'connection' => 'Keep-Alive',
+  'host' => 'data-center.25boy.com',
+  'cache-control' => 'no-cache',
+  'accept' => '*/*',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'type' => '1',
+)
+[ info ] [ RUN ] app\index\controller\Area->getAreas[ D:\project\v3\model\model-center\application\index\controller\Area.php ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.012000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `area` [ RunTime:0.004000s ]
+[ sql ] [ SQL ] SELECT * FROM `area` WHERE  `area_type` = 1 [ RunTime:0.007000s ]
+---------------------------------------------------------------
+[ 2019-01-08T16:24:26+08:00 ] 127.0.0.1 POST data-center.25boy.com/index/goods_cate/getGoodsCates
+[运行时间：0.055000s] [吞吐率：18.18req/s] [内存消耗：1,133.66kb] [文件加载：36]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'goods_cate',
+    2 => 'getGoodsCates',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => '*/*',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'cache-control' => 'no-cache',
+  'origin' => 'chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff',
+  'content-length' => '0',
+  'connection' => 'keep-alive',
+  'host' => 'data-center.25boy.com',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T16:25:01+08:00 ] 127.0.0.1 POST data-center.25boy.com/merchant/merchant/indexBefore
+[运行时间：0.066000s] [吞吐率：15.15req/s] [内存消耗：2,258.59kb] [文件加载：55]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'indexBefore',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => '*/*',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'cache-control' => 'no-cache',
+  'origin' => 'chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff',
+  'content-length' => '0',
+  'connection' => 'keep-alive',
+  'host' => 'data-center.25boy.com',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\merchant\controller\Merchant->indexBefore[ D:\project\v3\model\model-center\application\merchant\controller\Merchant.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T16:25:23+08:00 ] 127.0.0.1 POST data-center.25boy.com/merchant/merchant/indexBefore
+[运行时间：0.070000s] [吞吐率：14.29req/s] [内存消耗：2,258.59kb] [文件加载：55]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'indexBefore',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => '*/*',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'cache-control' => 'no-cache',
+  'origin' => 'chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff',
+  'content-length' => '0',
+  'connection' => 'keep-alive',
+  'host' => 'data-center.25boy.com',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\merchant\controller\Merchant->indexBefore[ D:\project\v3\model\model-center\application\merchant\controller\Merchant.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T16:34:41+08:00 ] 127.0.0.1 POST data-center.25boy.com/merchant/merchant/getMerchantTypes
+[运行时间：0.069000s] [吞吐率：14.49req/s] [内存消耗：2,345.25kb] [文件加载：57]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'getMerchantTypes',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => '*/*',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'cache-control' => 'no-cache',
+  'origin' => 'chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff',
+  'content-length' => '0',
+  'connection' => 'keep-alive',
+  'host' => 'data-center.25boy.com',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\merchant\controller\Base->getMerchantTypes[ D:\project\v3\model\model-center\application\merchant\controller\Base.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.014000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant_type` [ RunTime:0.003000s ]
+[ sql ] [ SQL ] SELECT * FROM `merchant_type` [ RunTime:0.002000s ]
+---------------------------------------------------------------
+[ 2019-01-08T16:43:38+08:00 ] 127.0.0.1 GET shopv3.25boy.com/
+[运行时间：0.039000s] [吞吐率：25.64req/s] [内存消耗：1,361.91kb] [文件加载：41]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => '',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'shopv3.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\index\controller\Index->index[ D:\project\v3\model\model-center\application\index\controller\Index.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T17:06:57+08:00 ] 127.0.0.1 GET shopv4.25boy.com/index/index/home
+[运行时间：0.054000s] [吞吐率：18.52req/s] [内存消耗：1,400.78kb] [文件加载：44]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'index',
+    2 => 'home',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'cache-control' => 'max-age=0',
+  'connection' => 'keep-alive',
+  'host' => 'shopv4.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T17:07:01+08:00 ] 127.0.0.1 GET shopv4.25boy.com/index/index/index
+[运行时间：0.061000s] [吞吐率：16.39req/s] [内存消耗：1,366.47kb] [文件加载：41]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'index',
+    1 => 'index',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'shopv4.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\index\controller\Index->index[ D:\project\v3\model\model-center\application\index\controller\Index.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T17:07:04+08:00 ] 127.0.0.1 GET shopv4.25boy.com/
+[运行时间：0.045000s] [吞吐率：22.22req/s] [内存消耗：1,361.85kb] [文件加载：41]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => '',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'cookie' => 'pgv_pvi=9885619200; pgv_si=s1616832512',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'accept-encoding' => 'gzip, deflate',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36',
+  'upgrade-insecure-requests' => '1',
+  'connection' => 'keep-alive',
+  'host' => 'shopv4.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\index\controller\Index->index[ D:\project\v3\model\model-center\application\index\controller\Index.php ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T17:13:35+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.110000s] [吞吐率：9.09req/s] [内存消耗：2,437.35kb] [文件加载：61]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\common\controller\Common->index[ D:\project\v3\model\model-center\application\common\controller\Common.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.007000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] desc merchant [ RunTime:0.007000s ]
+[ sql ] [ SQL ] desc merchant [ RunTime:0.004000s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant` [ RunTime:0.005000s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` LIMIT 1 [ RunTime:0.009000s ]
+[ sql ] [ SQL ] SELECT `a`.*,mt.type merchant_type,a1.area_name province,a2.area_name city,a3.area_name region FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` ORDER BY `a`.`id` DESC LIMIT 0,10 [ RunTime:0.004000s ]
+---------------------------------------------------------------
+[ 2019-01-08T17:19:03+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.154000s] [吞吐率：6.49req/s] [内存消耗：2,437.35kb] [文件加载：61]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+  'content-length' => '',
+  'content-type' => '',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\common\controller\Common->index[ D:\project\v3\model\model-center\application\common\controller\Common.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.014000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] desc merchant [ RunTime:0.009000s ]
+[ sql ] [ SQL ] desc merchant [ RunTime:0.006000s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant` [ RunTime:0.007000s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` LIMIT 1 [ RunTime:0.015000s ]
+[ sql ] [ SQL ] SELECT `a`.*,mt.type merchant_type,a1.area_name province,a2.area_name city,a3.area_name region FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` ORDER BY `a`.`id` DESC LIMIT 0,10 [ RunTime:0.006000s ]
+---------------------------------------------------------------
+[ 2019-01-08T18:10:58+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/[object%20Object]/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.042000s] [吞吐率：23.81req/s] [内存消耗：2,289.45kb] [文件加载：58]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => '[object Object]',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'connection' => 'close',
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+  'merchant' => 'merchant',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2019-01-08T18:17:53+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.078000s] [吞吐率：12.82req/s] [内存消耗：2,434.59kb] [文件加载：61]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'connection' => 'close',
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\common\controller\Common->index[ D:\project\v3\model\model-center\application\common\controller\Common.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.008000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] desc merchant [ RunTime:0.003000s ]
+[ sql ] [ SQL ] desc merchant [ RunTime:0.004000s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant` [ RunTime:0.003000s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` LIMIT 1 [ RunTime:0.012000s ]
+[ sql ] [ SQL ] SELECT `a`.*,mt.type merchant_type,a1.area_name province,a2.area_name city,a3.area_name region FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` ORDER BY `a`.`id` DESC LIMIT 0,10 [ RunTime:0.004000s ]
+---------------------------------------------------------------
+[ 2019-01-08T18:19:51+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.073000s] [吞吐率：13.70req/s] [内存消耗：2,434.59kb] [文件加载：61]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'connection' => 'close',
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\common\controller\Common->index[ D:\project\v3\model\model-center\application\common\controller\Common.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.007000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] desc merchant [ RunTime:0.004000s ]
+[ sql ] [ SQL ] desc merchant [ RunTime:0.005000s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant` [ RunTime:0.005000s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` LIMIT 1 [ RunTime:0.004000s ]
+[ sql ] [ SQL ] SELECT `a`.*,mt.type merchant_type,a1.area_name province,a2.area_name city,a3.area_name region FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` ORDER BY `a`.`id` DESC LIMIT 0,10 [ RunTime:0.004000s ]
+---------------------------------------------------------------
+[ 2019-01-08T18:23:15+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.086000s] [吞吐率：11.63req/s] [内存消耗：2,434.59kb] [文件加载：61]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'connection' => 'close',
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\common\controller\Common->index[ D:\project\v3\model\model-center\application\common\controller\Common.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.014000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] desc merchant [ RunTime:0.004000s ]
+[ sql ] [ SQL ] desc merchant [ RunTime:0.005000s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant` [ RunTime:0.005000s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` LIMIT 1 [ RunTime:0.004000s ]
+[ sql ] [ SQL ] SELECT `a`.*,mt.type merchant_type,a1.area_name province,a2.area_name city,a3.area_name region FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` ORDER BY `a`.`id` DESC LIMIT 0,10 [ RunTime:0.006000s ]
+---------------------------------------------------------------
+[ 2019-01-08T18:29:48+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.069000s] [吞吐率：14.49req/s] [内存消耗：2,434.59kb] [文件加载：61]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'connection' => 'close',
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\common\controller\Common->index[ D:\project\v3\model\model-center\application\common\controller\Common.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.007000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] desc merchant [ RunTime:0.006000s ]
+[ sql ] [ SQL ] desc merchant [ RunTime:0.003000s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant` [ RunTime:0.003000s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` LIMIT 1 [ RunTime:0.005000s ]
+[ sql ] [ SQL ] SELECT `a`.*,mt.type merchant_type,a1.area_name province,a2.area_name city,a3.area_name region FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` ORDER BY `a`.`id` DESC LIMIT 0,10 [ RunTime:0.003000s ]
+---------------------------------------------------------------
+[ 2019-01-08T18:32:15+08:00 ] 127.0.0.1 GET data-center.25boy.com/merchant/merchant/index?is_detail=1&page=1&limit=10
+[运行时间：0.090000s] [吞吐率：11.11req/s] [内存消耗：2,434.59kb] [文件加载：61]
+[ info ] [ LANG ] D:\project\v3\model\model-center\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'merchant',
+    1 => 'merchant',
+    2 => 'index',
+  ),
+)
+[ info ] [ HEADER ] array (
+  'connection' => 'close',
+  'accept' => '*/*',
+  'host' => 'data-center.25boy.com',
+)
+[ info ] [ PARAM ] array (
+  'is_detail' => '1',
+  'page' => '1',
+  'limit' => '10',
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ RUN ] app\common\controller\Common->index[ D:\project\v3\model\model-center\application\common\controller\Common.php ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.006000s ] mysql:host=192.168.2.4;dbname=hea_center;charset=utf8
+[ sql ] [ SQL ] desc merchant [ RunTime:0.007000s ]
+[ sql ] [ SQL ] desc merchant [ RunTime:0.006000s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `merchant` [ RunTime:0.005000s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` LIMIT 1 [ RunTime:0.012000s ]
+[ sql ] [ SQL ] SELECT `a`.*,mt.type merchant_type,a1.area_name province,a2.area_name city,a3.area_name region FROM `merchant` `a` INNER JOIN `area` `a1` ON `a`.`province_id`=`a1`.`id` INNER JOIN `area` `a2` ON `a`.`city_id`=`a2`.`id` INNER JOIN `area` `a3` ON `a`.`region_id`=`a3`.`id` INNER JOIN `merchant_type` `mt` ON `a`.`merchant_type_id`=`mt`.`id` ORDER BY `a`.`id` DESC LIMIT 0,10 [ RunTime:0.006000s ]
