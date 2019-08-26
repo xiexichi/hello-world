@@ -1,0 +1,10 @@
+<template name="promoteTips">
+	<view class="mask {{displayPromoteTips}}" bindtap="hidePromoteTipsLayer"></view>
+	<view class="popLayer promoteTipsLayer {{displayPromoteTips}}" bindtap="hidePromoteTipsLayer">
+	    <view class="promoteTips">
+	    	<image src="https://img.25miao.com/115/1510638617.jpg!w390" class="promoteTips-image" mode="widthFix" data-tag="img"></image>
+	    	<navigator url="/pages/users/promote" open-type="navigate"><button type="primary">马上提现</button></navigator>
+	    	<view class="promoteTips-cancel" bindtap="hidePromoteTipsLayer" data-tag="cancel">不再提示</view>
+	    </view>
+	</view>
+</template>

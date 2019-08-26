@@ -1,0 +1,75 @@
+/* pages/combomeal/index.wxss */
+
+page{padding-bottom:60px;}
+/*轮播图*/
+.photosList swiper{height:750rpx;}
+.swiper-item{
+    display: block;
+    width:100%;
+}
+.slide-image{width:100%;height:750rpx;display:block;}
+
+.baseInfo{padding:20rpx;position:relative;}
+.product_name{font-size:40rpx;font-weight:700;}
+.baseInfo .discount_tag{display:inline-block;font-size:26rpx;color:#999;margin-right:10rpx;}
+.baseInfo .product_price{font-size:46rpx;font-weight:700;color:#b01f23;padding-bottom:10rpx;display:inline-block;}
+.baseInfo .market_price{font-size:30rpx;font-weight:0;color:#999;display:inline-block;text-decoration:line-through;margin-left:20rpx;}
+.delivery_desc{font-size:26rpx;color:#666;margin-bottom:10rpx}
+
+.baseInfo .discount {font-size:26rpx;float:left;}
+.baseInfo .discount-price {font-size:32rpx;color:red;font-weight: bold;}
+.baseInfo .end-date {font-size:26rpx;float:right;colro:#ccc;text-align:right;}
+
+
+.cartList-title {clear:both;border-top:1px solid #ddd;text-align: left;font-size:28rpx;padding: 20rpx 0 30rpx 20rpx;margin-top: 60rpx;}
+.cartItem{position:relative;padding-bottom:20rpx;padding-top:20rpx;background:#fff;}
+.cartItem icon{position:absolute;left:10px;top:50%;margin-top:-12px;}
+.cartItem .dl{padding-left:40px;clear:both;overflow:hidden;}
+.cartItem .dt{float:left;max-width:30%;}
+.cartItem .dt image{width:180rpx;height:180rpx;}
+.cartItem .dd{float:left;width:70%;line-height:50rpx;}
+.cartItem text{display:block;margin-top:5rpx;padding-left:20rpx;}
+.cartItem .title{font-size:30rpx;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
+.cartItem .prop{font-size:28rpx;color:#999;padding-left:20rpx;}
+.cartItem .price{font-size:36rpx;color:#b01f23;font-weight:700;}
+.cartItem .remove{width:16px;height:16px;position:absolute;right:20rpx;top:20rpx;}
+.cartItem .quantityBox{position:absolute;bottom:15rpx;right:20rpx;}
+.cartItem .presale_date{color:#b01f23;font-size:26rpx;margin-top:0;}
+.cartItem .quantityBox-cut,
+.cartItem .quantityBox-plus{height:60rpx;line-height:60rpx;padding:0 26rpx;}
+.cartItem .quantityBox-num{display:inline-block;border:1px solid #ddd;padding:0 5px;width:60rpx;text-align:center;min-height:56rpx;height:56rpx;line-height:56rpx;}
+.cartItem .combomeal-price {font-size:36rpx;color:#b01f23;font-weight:700;display: inline-block;}
+.cartItem .discount {font-size:30rpx;color:#999;display: inline-block;font-weight: normal;}
+.cartItem .discount-price {font-size:30rpx;color:#b01f23;display: inline-block;padding-left:0;}
+
+/*弹出层*/
+.propModal{background:#fff;padding:20rpx;}
+.propModal .propInfo{position:relative;padding-left:240rpx;padding-bottom:30rpx;border-bottom:1px solid #ddd;}
+.propModal .colorImg{width:200rpx;height:200rpx;border-radius:6px;border:1px solid #eee;padding:2px;position:absolute;top:-70rpx;left:0;background:#fff;display:none;}
+.show .colorImg{display:block;}
+.propModal .propInfo text{display:block;color:#000;font-size:28rpx;line-height:46rpx;}
+.propModal .propInfo .propPrice{color:#b01f23;font-weight:700;font-size:36rpx;}
+.propModal .dl{padding:20rpx 10rpx;font-size:28rpx;line-height:30rpx;margin:20rpx 0;}
+.propModal .dt{color:#000;}
+.propModal .dd text{margin-right:20rpx;display:inline-block;margin-top:20rpx;padding:0 18rpx;border:1px solid #ddd;border-radius:4px;padding:5px 8px;}
+.propModal .dd .text-hover{border-color:#b01f23 ;color:#fff;background-color:#b01f23;}
+.propModal .quantityBox{border-top:1px solid #ddd;padding-top:40rpx;margin-bottom:30rpx;}
+.propModal .quantityBox-dd{margin-top:20rpx;}
+.propModal .quantityBox-cut,
+.propModal .quantityBox-plus{height:60rpx;line-height:60rpx;padding:0 26rpx;}
+.propModal .quantityBox-num{display:inline-block;border:1px solid #ddd;padding:0 5px;width:70rpx;text-align:center;min-height:56rpx;height:56rpx;line-height:56rpx;}
+
+/*底部栏*/
+.productBottom{position:fixed;bottom:0;left:0;width:100%;background:#f2f2f2;padding:20rpx 0;height:80rpx;}
+.productBottom-nav{display:flex;width:45%;font-size:26rpx;text-align:center;justify-content:space-around;align-items:center;padding:0 1%;}
+.productBottom-nav image{width:22px;height:22px;display:block;margin:auto;margin-bottom:5px;}
+.productBottom-item{position:relative;}
+.productBottom-btn{width:50%;}
+.productBottom-btn button{margin-right:20rpx;font-size:17px;}
+
+
+.productBottom-total {position:relative;right:-15rpx;top:-32rpx;width:65%;}
+.combomeal-total {position:absolute;top:0;right:0;}
+.discount-total {position:absolute;top:43rpx;right:0;}
+.combomeal-total-price {font-size:32rpx;color:#b01f23;font-weight:700;}
+.discount-total-price {font-size:26rpx;color:#b01f23;font-weight:200;}

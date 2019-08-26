@@ -1,0 +1,43 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+  	<view class="o2oPanel">
+	    <view class="loginPanel" hidden="{{hidden_fastLogin}}">
+	        <form bindsubmit="registerSubmit">
+	          <view class="loginTitle">成为会员</view>
+	          <view class="section store_name">{{business.business_name}}</view>
+
+	          <view class="section">
+	            <text class="input-label">手机号码</text>
+	            <input class="input-text" name="phone" placeholder="手机号码" bindinput="setValue" data-name="phone" />
+	          </view>
+
+	          <view class="section">
+	            <text class="input-label">设置密码</text>
+	            <input class="input-text" name="password" placeholder="25BOY帐户密码" password bindinput="setValue" data-name="password" />
+	          </view>
+
+	          <view class="section">
+	            <button type="primary" open-type="getUserInfo" bindgetuserinfo="getUserInfo">确定</button>
+	          </view>
+	        </form>
+
+	        <view class="recharge-rule">
+	        	<text class="recharge-rule-dt">会员福利：</text>
+	        	<text wx:if="{{business.is_redpack==1}}">· 新用户赠送50元无门槛体验红包。</text>
+	        	<text>· 25BOY会员享受线上线下统同价和优惠。</text>
+	        	<text>· 线上购物全场免运费。</text>
+	        	<text>· 新款上新第一手资讯。</text>
+	        	<text>· 更多活动请关注公众号：25BOY</text>
+	        </view>
+
+	    </view>
+	</view>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

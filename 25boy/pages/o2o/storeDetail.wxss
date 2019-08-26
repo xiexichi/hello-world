@@ -1,0 +1,7 @@
+page{background-color:#f2f2f2;}
+#map{width:100%;height:250px;}
+.business_name{font-size:16px;padding:10px;background-color:#fff;display:flex;align-items:center;justify-content:space-between;}
+.bueinessInfo{padding:5px 10px;font-size:14px;margin-top:10px;background-color:#fff;}
+.bueinessInfo .rowBlock{border-top:1px solid #eee;padding:10px 0;}
+.bueinessInfo .dt{color:#999;margin-bottom:5px;}
+.bueinessInfo .rowBlock:nth-child(1){border-top:none;}

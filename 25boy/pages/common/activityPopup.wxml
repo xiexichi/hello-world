@@ -1,0 +1,17 @@
+<template name="activityPopup">
+	<view class="mask {{data ? 'show' : 'hide'}}" bindtap="hidePopupLayer" data-name="activityPopup"></view>
+	<view class="popLayer promoteTipsLayer {{data ? 'show' : 'hide'}}" bindtap="hidePopupLayer" data-name="activityPopup">
+	    <view class="popup-box">
+	    	<block wx:if="{{data.weapp}}">
+	    		<navigator target="miniProgram" open-type="navigate" app-id="{{data.weapp.appid}}" path="{{data.weapp.path}}" version="trial">
+	    			<image src="{{data.srcurl}}" class="popup-image" mode="widthFix" data-tag="img"></image>
+	    		</navigator>
+	    	</block>
+	    	<block wx:else>
+	    		<navigator url="{{data.newUrl}}">
+		    		<image src="{{data.srcurl}}" class="popup-image" mode="widthFix" data-tag="img"></image>
+		    	</navigator>
+	    	</block>
+	    </view>
+	</view>
+</template>

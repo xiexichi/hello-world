@@ -1,0 +1,6 @@
+<template name="wxcode">
+	<view class="mask {{displayWxCode}}" bindtap="hideWxCodeLayer"></view>
+	<view class="popLayer {{displayWxCode}}" bindtap="hideWxCodeLayer">
+	    <view class="wxQrcode"><image src="https://img.25miao.com/115/1482826662.jpg!w390" class="wxQrcode-image" data-tag="img"></image></view>
+	</view>
+</template>

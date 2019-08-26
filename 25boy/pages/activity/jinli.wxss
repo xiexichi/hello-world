@@ -1,0 +1,10 @@
+.container{height:3200rpx;width:100%;background:url(https://api.25boy.cn/Public/images/jinli2018.jpg) no-repeat top center;background-size:100%;}
+.jinli{padding:30rpx;position:relative;top:850rpx;width:60%;margin:auto;}
+.jinli-cell{background-color:#fff;border:2px solid #CE3C39;padding:10rpx;border-radius:60rpx;}
+.jinli-input{display:block;text-align:center;font-size:32rpx;color:#7b7b7b;font-weight:bold;}
+.weui-btn{margin-top:20rpx;border-radius:60rpx;}
+.share-tip{text-align:center;color:#999;font-size:26rpx;margin-top:10rpx;}
+
+.myPosterLayer{height:100%;width:100%;display:flex;align-items:center;justify-content:center;}
+.myPoster-imgobx{width:600rpx;overflow:hidden;box-shadow:0px 0px 10px rgba(255,255,255,0.7);}
+.myPoster-image{display:block;width:100%;}

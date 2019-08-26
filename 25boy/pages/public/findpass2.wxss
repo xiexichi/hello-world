@@ -1,0 +1,8 @@
+page{background-color:#f2f2f2;}
+
+.findPass{padding:0 40rpx 40rpx ;}
+.loginTitle{font-size:40rpx;text-align:center;margin-bottom:50rpx;margin-top:50rpx;}
+.section{margin-bottom:20rpx;}
+.input-text{padding:20rpx;font-size:30rpx;background-color:#fff;}
+.msgCode{padding-right:250rpx;position:relative;}
+.btn-min{display:inline-block;font-size:30rpx;padding:20rpx 0;line-height:1.4rem;height:1.4rem;box-sizing:content-box;width:230rpx;position:absolute;right:0;top:0;}

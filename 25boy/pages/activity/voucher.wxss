@@ -1,0 +1,22 @@
+.container{padding-bottom:80px;}
+.banner-image{display:block;width:100%;}
+
+.coupon-box{background-color:#f2f2f2;padding:30rpx;}
+.coupon-item{padding: 30rpx 30rpx;overflow:hidden;background:url(https://m.25boy.cn/statics/img/checkout_coupon.png) no-repeat right center;background-size:cover;display: block;border-radius:6px;padding-left:230rpx;}
+.coupon-title{font-size:42rpx;color:#da3335;font-weight:700;display:block;}
+.exp_date{font-size:28rpx;color:#666;padding:5px 0 0 0;display:block;}
+.coupon-item.invalid{background-image:url(https://m.25boy.cn/statics/img/coupon_dis.png);padding-left:30rpx;}
+.coupon-item.invalid .coupon-title{color:#6b6b6b;}
+
+.coupon-base{background-color: #fff;padding:30rpx;position:relative;}
+.coupon-desc{font-size:32rpx;color:#8b8b8b;}
+.coupon-limit{position:absolute;right:30rpx;top:36rpx;font-size:26rpx;color:#999;text-align:center;}
+.coupon-limit-count{font-size:36rpx;color:#b01f23;}
+
+.coupon-panel{background-color:#fff;padding:30rpx;}
+.coupon-panel-title{font-size:34rpx;font-weight:bold;margin-bottom:20rpx;}
+.coupon-panel-desc{font-size:30rpx;color:#333;display:block;}
+
+.coupon-action{bottom:0;left:0;width:100%;position:fixed;box-sizing:border-box;border-top:1px solid #eee;padding:15px;background-color:#fff;}
+
+.findstore{background:url(https://m.25boy.cn/statics/img/icon-local.png) no-repeat left center;background-size:contain;padding-left:26px;height:20px;line-height:20px;margin-top:20rpx;color:#337ab7;}

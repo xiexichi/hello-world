@@ -1,0 +1,53 @@
+<import src="../common/header.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+	
+	<template is="header" data="{{title:'',icon:'addshare',iconTap:'gotoAddShare',iconTxt:'添加晒图'}}" />
+
+  <view class="page-body">
+    	
+	<view class="shareList">
+		<view class="share-item" wx:for="{{datalist}}" wx:key="share_id">
+    		<view class="share-head jbw">
+				<view class="share-head-left">
+					<view class="share-avatar"><image src="{{item.userimg}}" class="share-avatar-img" mode="aspectFit"></image></view>
+					<view class="share-name">{{item.username}}</view>
+				</view>
+				<view class="share-head-right">
+					<navigator class="share-shai" url="" bindtap="delShareTap" data-id="{{item.share_id}}">
+						<image class="share-shai-img" src="/images/icon-remove.png" mode="aspectFit"></image>
+						<text class="share-shai-text">删除</text>
+					</navigator>
+				</view>
+			</view>
+    		<navigator class="share-photo" url="/pages/share/detail?id={{item.share_id}}">
+    			<image src="{{item.photos[0]}}!w640" class="share-photo-img" mode="aspectFill"></image>
+    		</navigator>
+    		<view class="share-foot">
+    			<view class="share-info jbw">
+    				<view class="share-time">{{item.date_format}}</view>
+    				<view class="share-func">
+    					<navigator url="/pages/share/detail?id={{item.share_id}}" class="share-comment">{{item.comment}}</navigator>
+    					<navigator url="/pages/share/detail?id={{item.share_id}}" class="share-like">{{item.vote}}</navigator>
+    				</view>
+    			</view>
+    		</view>
+    		<view class="share-content">{{item.content}}</view>
+		</view>
+	</view>
+
+	<view class="loadmore {{loadmore}}">
+		<view class="loadmore-icon"></view>
+		<text>正在加载</text>
+	</view>
+
+	<view class="loadmore_line {{loadmore_line}}">
+		<text>暂无数据</text>
+	</view>
+
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

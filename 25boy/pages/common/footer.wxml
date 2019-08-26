@@ -1,0 +1,11 @@
+<template name="footer">
+	<!-- <movable-area class="floatHomeBtn-Area" wx:if="{{showHomeBtn}}">
+		<movable-view class="floatHomeBtn" direction="all" inertia="true" friction="8" catchtap="homeBtnClick">
+			<image src="/images/homeBtn.png" class="floatHomeBtn-img"></image>
+		</movable-view>
+	</movable-area> -->
+
+	<view wx:if="{{showHomeBtn}}" class="floatHomeBtn" catchtouchmove="homeBtnTouchMove" catchtouchend="homeBtnTouchMoveEnd" catchtouchcancel="homeBtnTouchMoveEnd" style="top:{{data.homeBtnTop}};left:{{data.homeBtnLeft}};opacity:{{data.homeBtnOpacity}}" catchtap="homeBtnClick">
+		<image src="/images/homeBtn.png" class="floatHomeBtn-img"></image>
+	</view>
+</template>

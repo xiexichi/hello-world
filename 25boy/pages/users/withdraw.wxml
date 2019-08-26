@@ -1,0 +1,41 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="withdrawBox">
+			<view class="withdrawBox-head">
+				<image mode="aspectFit" class="withdrawBox-icon" src="https://api.25boy.cn/Public/images/icon-withdraw.png"></image>
+				提现申请
+			</view>
+			<view class="withdrawBox-main">
+				<form bindsubmit="formSubmit">
+					<view class="section">
+						<text class="input-label">提现金额</text>
+						<input class="input-text" disabled="true" value="¥{{promote.cash_total}}" />
+					</view>
+					<view class="section">
+						<text class="input-label">提现到</text>
+						<picker mode="selector" name="idx" bindchange="bindPickerChange" value="{{pickerIndex}}" range="{{withdrawList}}">
+						    <view class="input-picker">{{withdrawList[pickerIndex]}}</view>
+					  	</picker>
+					</view>
+					<view class="section">
+						<text class="input-label">帐户密码</text>
+						<input class="input-text" name="password" password="true" placeholder="请输入帐户密码" />
+					</view>
+					<view class="section">
+		            	<button formType="submit" type="primary">确定</button>
+					</view>
+		            <view class="section">
+		            	<navigator url="/pages/users/withdrawModify" open-type="navigate" class="promoteBox-btn">
+			            	<button type="default">管理提现方式</button>
+						</navigator>
+		          	</view>
+		         </form>
+			</view>
+		</view>
+	</view>
+
+	<template is="footer" />
+</view>

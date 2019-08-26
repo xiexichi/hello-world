@@ -1,0 +1,96 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+  	
+      <view class="settings">
+          <navigator open-type="redirect" url="/pages/users/avatar" class="setting-rowBlock jbw arrow">
+              <text class="row-dt">头像</text>
+              <view class="row-dd"><image src="{{user.image_url ? user.image_url : 'https://m.25boy.cn/statics/img/user_default_icon.png'}}" class="avatar" mode="aspectFit"></image></view>
+          </navigator>
+          <view wx:if="{{user.is_rename == 1}}" class="setting-rowBlock jbw arrow" bindtap="showLayer" data-type="nickname" data-val="{{user.nickname ? user.nickname : ''}}">
+              <text class="row-dt">昵称</text>
+              <text class="row-dd" selectable="true">{{user.nickname}}</text>
+          </view>
+          <view wx:else class="setting-rowBlock jbw">
+              <text class="row-dt">昵称</text>
+              <text class="row-dd" selectable="true">{{user.nickname}}</text>
+          </view>
+
+          <view class="setting-rowBlock jbw" wx:if="{{user.email}}">
+              <text class="row-dt">电子邮箱</text>
+              <text class="row-dd" selectable="true">{{user.email}}</text>
+          </view>
+
+          <view class="setting-rowBlock jbw arrow" wx:if="{{!user.email}}" bindtap="showLayer" data-type="email" data-val="{{user.email ? user.email : ''}}">
+              <text class="row-dt">电子邮箱</text>
+              <text class="row-dd">{{user.email ? user.email : ''}}</text>
+          </view>
+
+          <view class="setting-rowBlock jbw">
+              <text class="row-dt">手机号码</text>
+              <text class="row-dd" selectable="true">{{user.phone}}</text>
+          </view>
+          <navigator class="setting-rowBlock jbw arrow" bindtap="showLayer" data-type="realname" data-val="{{user.realname ? user.realname : ''}}">
+              <text class="row-dt">真实姓名</text>
+              <text class="row-dd">{{user.realname ? user.realname : '未填写'}}</text>
+          </navigator>
+          <picker bindchange="changeGender" value="{{user.gender=='female'?1:0}}" range="{{genderarr}}">
+            <view class="setting-rowBlock jbw arrow">
+                <text class="row-dt">性别</text>
+                <view class="row-dd">{{user.gender=='female'?'女':'男'}}</view>
+            </view>
+          </picker>
+          <picker mode="date" bindchange="changeBirthday" value="{{user.birthday}}">
+            <view class="setting-rowBlock jbw arrow">
+                <text class="row-dt">生日</text>
+                <view class="row-dd">{{user.birthday}}</view>
+            </view>
+          </picker>
+
+          <view class="blank10"></view>
+
+          <navigator open-type="redirect" url="/pages/public/address" class="setting-rowBlock jbw arrow">
+              <text class="row-dt">我的地址</text>
+              <view class="row-dd"></view>
+          </navigator>
+
+          <view class="blank10"></view>
+
+          <navigator url="/pages/users/password" class="setting-rowBlock jbw arrow">
+              <text class="row-dt">修改密码</text>
+              <view class="row-dd"></view>
+          </navigator>
+          <view class="setting-rowBlock jbw arrow" bindtap="openSetting">
+              <text class="row-dt">授权管理</text>
+              <view class="row-dd"></view>
+          </view>
+
+          <view class="blank20"></view>
+
+          <view bindtap="logout" class="setting-rowBlock jbw arrow">
+              <text class="row-dt">退出帐户</text>
+              <view class="row-dd"></view>
+          </view>
+      </view>
+    
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+  <view class="version">版本号：{{version}}</view>
+</view>
+
+
+<!-- 隐藏的modal -->
+<view class="mask {{popLayerClass}}" bindtouchstart="hideLayer"></view>
+<view class="popLayer popLayer-top {{popLayerClass}}">
+    <view class="propModal">
+        <form bindsubmit="changePopText">
+          <view class="prop-input"><input type="text" placeholder="{{txtPaceholder}}" name="txt" value="{{txtValue}}" /></view>
+          <view class="prop-btn"><button form-type="submit">确认</button></view>
+        </form>    
+    </view>
+    <icon type="cancel" size="26" color="#999" class="close" bindtap="hideLayer" />
+</view>

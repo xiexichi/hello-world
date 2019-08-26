@@ -1,0 +1,282 @@
+{
+	"description": "项目配置文件。",
+	"setting": {
+		"urlCheck": false,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"autoAudits": false
+	},
+	"compileType": "miniprogram",
+	"libVersion": "2.3.2",
+	"appid": "wx78708ce2d3dbf896",
+	"projectname": "25BOY",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 32,
+			"list": [
+				{
+					"id": 0,
+					"name": "商品頁",
+					"pathName": "pages/products/index",
+					"query": "id=73",
+					"scene": "1001"
+				},
+				{
+					"id": -1,
+					"name": "分类页",
+					"pathName": "pages/categorys/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "羞羞的铁拳&HEA",
+					"pathName": "pages/single/alanHea",
+					"query": ""
+				},
+				{
+					"id": 3,
+					"name": "领红包页面",
+					"pathName": "pages/single/redpack",
+					"query": "",
+					"scene": "1011"
+				},
+				{
+					"id": 4,
+					"name": "购物车",
+					"pathName": "pages/cart/index",
+					"query": "fr=business&ch=kob"
+				},
+				{
+					"id": 5,
+					"name": "套餐页",
+					"pathName": "pages/combomeal/index",
+					"query": "combomeal_id=11",
+					"scene": "1011"
+				},
+				{
+					"id": 6,
+					"name": "落地通用推广页",
+					"pathName": "pages/single/redpack",
+					"query": "type=hea&fr=business&ch=dlion\t",
+					"scene": "1011"
+				},
+				{
+					"id": 7,
+					"name": "会员页",
+					"pathName": "pages/users/index",
+					"query": "fr=inn&userToken=305b4ef78b07924305b4ef78b07925",
+					"scene": "1011"
+				},
+				{
+					"id": 8,
+					"name": "订单详情页",
+					"pathName": "pages/users/orderDetail",
+					"query": "id=27584",
+					"scene": "1011"
+				},
+				{
+					"id": 9,
+					"name": "店铺查询库存",
+					"pathName": "pages/o2o/search",
+					"query": "amp;ch=fs_nova&fr=business",
+					"scene": "1011"
+				},
+				{
+					"id": 10,
+					"name": "o2o登錄",
+					"pathName": "pages/o2o/login",
+					"query": "fr=business&ch=test1",
+					"scene": "1011"
+				},
+				{
+					"id": 11,
+					"name": "门店订单",
+					"pathName": "pages/users/o2oOrder",
+					"query": "",
+					"scene": "1011"
+				},
+				{
+					"id": -1,
+					"name": "wifi",
+					"pathName": "pages/o2o/wifi",
+					"query": "fr=business&ch=test1",
+					"scene": "1011"
+				},
+				{
+					"id": 13,
+					"name": "门店订单详情",
+					"pathName": "pages/users/o2oOrderDetail",
+					"query": "id=826",
+					"scene": "1011"
+				},
+				{
+					"id": 14,
+					"name": "充值页面",
+					"pathName": "pages/users/recharge",
+					"query": "fr=business&ch=ys_xijie",
+					"scene": "1037",
+					"referrerInfo": {
+						"appId": "wxd69363cb21b8bce8",
+						"extraData": "{\"thirdapp\":\"hotel\"}"
+					}
+				},
+				{
+					"id": -1,
+					"name": "线下门店",
+					"pathName": "pages/o2o/store",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "店铺款式查询",
+					"pathName": "pages/o2o/findItemGroup",
+					"query": "fr=business&ch=fs_nova",
+					"scene": "1011"
+				},
+				{
+					"id": 17,
+					"name": "登录/注册",
+					"pathName": "pages/public/login",
+					"query": "",
+					"scene": "1011"
+				},
+				{
+					"id": 18,
+					"name": "统一微信支付",
+					"pathName": "pages/unified/wxpay",
+					"query": "params={\"client\":\"weapp\",\"type\":\"inn\",\"id\":859,\"pay_sn\":\"H201809021101392197535589\",\"token\":\"305b8b529467b5e305b8b529467b5f\"}",
+					"scene": "1037",
+					"referrerInfo": {
+						"appId": "wxd69363cb21b8bce8",
+						"extraData": "{\"unifiedpay\": \"1\", \"thirdapp\": \"hotel\"}"
+					}
+				},
+				{
+					"id": 19,
+					"name": "修改头像",
+					"pathName": "pages/users/avatar",
+					"query": "",
+					"scene": "1037",
+					"referrerInfo": {
+						"appId": "wxd69363cb21b8bce8",
+						"extraData": "{\"thirdapp\":\"hotel\"}"
+					}
+				},
+				{
+					"id": 20,
+					"name": "25boy 联系我们",
+					"pathName": "pages/index/contact",
+					"query": ""
+				},
+				{
+					"id": 21,
+					"name": "店铺详情页",
+					"pathName": "pages/o2o/storeDetail",
+					"query": "code=fs_lingnan"
+				},
+				{
+					"id": 22,
+					"name": "我的钱包",
+					"pathName": "pages/users/wallet",
+					"query": "fr=inn&userToken=305b4ef78b07924305b4ef78b07925",
+					"scene": "1037",
+					"referrerInfo": {
+						"appId": "wxd69363cb21b8bce8",
+						"extraData": "{\"thirdapp\":\"hotel\"}"
+					}
+				},
+				{
+					"id": 23,
+					"name": "充值送券活动",
+					"pathName": "pages/activity/recharge",
+					"query": "fr=business&ch=test1",
+					"scene": "1011"
+				},
+				{
+					"id": 24,
+					"name": "成功提示页面",
+					"pathName": "pages/activity/rechargeComplete",
+					"query": "bag_id=104299",
+					"scene": "1001"
+				},
+				{
+					"id": -1,
+					"name": "交通银行合作活动",
+					"pathName": "pages/activity/bankcomm",
+					"query": "",
+					"scene": "1001"
+				},
+				{
+					"id": -1,
+					"name": "优惠券",
+					"pathName": "pages/users/coupon",
+					"query": "",
+					"scene": "1001"
+				},
+				{
+					"id": -1,
+					"name": "推广返佣教程",
+					"pathName": "pages/single/promoteCourse",
+					"query": ""
+				},
+				{
+					"id": 28,
+					"name": "领取优惠券",
+					"pathName": "pages/activity/voucher",
+					"query": "id=21&code=2lE6KoBY",
+					"scene": "1008"
+				},
+				{
+					"id": -1,
+					"name": "公众号支付",
+					"pathName": "pages/unified/mppay",
+					"query": "",
+					"scene": "1008"
+				},
+				{
+					"id": 30,
+					"name": "小程序进入",
+					"pathName": "pages/users/index",
+					"query": "fr=inn&userToken=3B541E0197DD316266B53784CDE774B7B6A8DF4E7A1D73A15BFE470080F6E926614D458457FE92918FCA9C1EFBD0F9766DF2A2F66E07B5A6300B012E2394FED9",
+					"scene": "1037",
+					"referrerInfo": {
+						"appId": "wxd69363cb21b8bce8",
+						"extraData": "{\"thirdapp\": \"hotel\"}"
+					}
+				},
+				{
+					"id": -1,
+					"name": "改版首页",
+					"pathName": "pages/home/index",
+					"query": "",
+					"scene": "1008"
+				},
+				{
+					"id": 32,
+					"name": "锦鲤抽奖",
+					"pathName": "pages/activity/jinli",
+					"query": "",
+					"scene": "1011"
+				}
+			]
+		}
+	}
+}

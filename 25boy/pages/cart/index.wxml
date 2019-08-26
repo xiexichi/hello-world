@@ -1,0 +1,77 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+      <view class="cartEmpty" wx:if="{{showEmpty}}">
+          <image src="/images/cart-empty.png"></image>
+
+          <text class="emptyText">购物车空了</text>
+          <button type="warn" bindtap="gotoUrl" data-url="/pages/products/list">去逛逛</button>
+      </view>
+
+      <view class="cartEmpty" wx:if="{{showLogin}}">
+          <image src="/images/icon-lock.png"></image>
+
+          <text class="emptyText">请登录后操作~\n如果您已经登录请重新打开页面!</text>
+          <button type="warn" bindtap="gotoUrl" data-url="/pages/public/login?gourl=close">登录</button>
+      </view>
+
+          <view class="cartList" wx:if="{{!showLogin && !showEmpty}}">
+
+              <block wx:for-items="{{cartList}}" wx:key="cart_id">
+                <view class="cartItem">
+                    <image class="remove" src="/images/icon-remove.png" bindtap="removeCart" id="{{item.cart_id}}"></image>
+                    <block wx:if="{{item.siglequantity>0 && item.stock==1}}">
+                    <icon type="{{item.iconType ? item.iconType : 'success'}}" size="22" color="{{item.iconColor ? item.iconColor : '#dc372f'}}" bindtap="selectItem" id="{{item.cart_id}}" />
+                    <view class="quantityBox">
+                      <button type="default" size="mini" class="quantityBox-cut" bindtap="cutNum" id="{{item.cart_id}}">-</button>
+                      <input value="{{item.quantity}}" type="number" class="quantityBox-num" bindchange="changeNum" id="{{item.cart_id}}" />
+                      <button type="default" size="mini" class="quantityBox-plus" bindtap="plusNum" id="{{item.cart_id}}">+</button>
+                    </view>
+                    </block>
+
+                    <view class="dl">
+                      <navigator url="/pages/products/index?id={{item.product_id}}" class="dt"><image src="{{item.photo_prop}}!w200" mode="aspectFit"></image></navigator>
+                      <view class="dd">
+                          <text class="title" selectable="true">{{item.product_name}}</text>
+                          <text class="prop" selectable="true">{{item.color_prop}}，{{item.size_prop}} (库存{{item.siglequantity}})</text>
+                          <block wx:if="{{item.presale == 1}}">
+                            <text class="presale_date">[预售，{{item.presale_date}}发货]</text>
+                          </block>
+                          <block wx:if="{{item.siglequantity>0 && item.stock==1}}">
+                            <text class="price">¥{{item.subtotal}}</text>
+                          </block>
+                          <block wx:else>
+                            <text class="prop">已经失效</text>
+                          </block>
+                      </view>
+                    </view>
+                </view>
+                <view class="blank5 pagegrey"></view>
+              </block>
+
+          </view>
+
+  </view>
+
+  <view class="cartBottom" wx:if="{{!showLogin && !showEmpty}}">
+    <form bindsubmit="formSubmit">
+        <input type="text" name="cart_ids" value="{{cart_ids}}" style="display:none" />
+        <view class="selectAll">
+            <icon type="{{allIconType}}" size="22" color="{{allIconColor}}" bindtap="selectAll" /> 全选
+        </view>
+        <view class="barResult">
+          <view class="total">
+              合计：¥<text class="subtotal">{{total}}</text>
+          </view>
+          <view class="btn">
+              <button type="warn" form-type="submit" disabled="{{disabledSubmit}}" loading="{{loadingSubmit}}">结算</button>
+          </view>
+        </view>
+    </form>
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

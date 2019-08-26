@@ -1,0 +1,20 @@
+page{background-color:#f2f2f2;}
+.share-item{background-color:#fff;margin-bottom:30rpx;padding-bottom:20rpx;box-shadow:1px 1px 5px rgba(0,0,0,0.3);}
+.share-head{padding:20rpx;display:flex;align-items:center;}
+.share-head-left,.share-head-right{display:flex;align-items:center;}
+.share-avatar-img{width:100rpx;height:100rpx;margin-right:20rpx;border:1px solid #ddd;border-radius:50%;display:block;}
+.share-name{font-size:30rpx;align-items:center;}
+.share-shai{align-items:center;}
+.share-shai-img{width:30px;height:30px;display:block;}
+.share-shai-text{font-size:26rpx;color:#999;text-align:center;display:block;margin-top:6rpx;}
+.share-photo{width:100%;height:500rpx;overflow:hidden;}
+.share-photo-img{width:100%;height:500rpx;}
+.share-foot{padding:10rpx 20rpx;font-size:28rpx;color:#666;}
+.share-func{display:flex;font-size:32rpx;line-height:32rpx;}
+.share-time, .share-like, .share-view, .share-comment{background:url(https://api.25boy.cn/Public/images/icon-zan.png) no-repeat 5px center;background-size:22px 22px;padding:10rpx 15rpx 10rpx 30px;}
+.share-view{background-image:url(https://api.25boy.cn/Public/images/icon-view.png);}
+.share-time{background-image:url(https://api.25boy.cn/Public/images/icon-time.png);margin-left:0;border:none;background-size:16px 16px;font-size:26rpx;padding-left:24px;}
+.share-comment{background-image:url(https://api.25boy.cn/Public/images/icon-comment.png);margin-left:0;border:none;}
+.share-content{padding:20rpx;font-size:32rpx;border-top:1px dotted #ddd;}
+
+.loadmore_line{margin-top:50px;}

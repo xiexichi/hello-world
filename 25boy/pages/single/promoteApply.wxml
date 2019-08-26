@@ -1,0 +1,106 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		
+		<view class="bannerBg">
+			<image src="https://img.25miao.com/115/1498881632.jpg" mode="aspectFit" class="bannerBg-img"></image>
+		</view>
+
+		<view class="fl-box">
+			<view class="fl-wordBox">
+				<view class="fl-word-tab">
+					<view class="fl-word-tab-li {{tabStyle.tabOn[0]}}" hover-class="hover-class" bindtap="tabSwitch" data-idx="0">活动规则</view>
+					<view class="fl-word-tab-li {{tabStyle.tabOn[1]}}" hover-class="hover-class" bindtap="tabSwitch" data-idx="1">我的邀请</view>
+					<view class="fl-word-tab-li {{tabStyle.tabOn[2]}}" hover-class="hover-class" bindtap="tabSwitch" data-idx="2">收益排行榜</view>
+				</view>
+				<view class="word-con-box">
+					<view class="fl-word-con" hidden="{{tabStyle.tabHidden[0]}}">
+						<view class="fl-word-con-inbox">
+							<text class="display-block bold">邀请奖励返佣规则</text>
+							<text class="display-block">1.只需要分享一次，您推荐注册的用户首次消费您将获得10%返佣，以后每笔消费您会获得5%返佣。</text>
+							<text class="display-block">2.每月的10-20号为可提现时间，佣金可提现到帐户余额或支付宝。</text>
+							<text class="display-block">3.充值返佣即时入账，消费返佣在订单完确认收货后入账。</text>
+							<text class="display-block">4.充值后使用余额消费不再记录返佣，因为在充值时已经返了。</text>
+						</view>
+						<view class="fl-word-con-example">
+                            <text class="display-block bold">举个例子：</text>
+                            <text class="display-block">A君通过你分享的链接进入25BOY并注册了帐号，第1次消费了600元，那么你将获得60元收益(600x10%,首次收益)；</text>
+                            <text class="display-block">过了一段时间A君又成功消费1000元，那么你将获得50元(1000x5%,后续收益)。</text>
+                            <text class="display-block">以后A君的所有消费你都能获得5%的后续收益。</text>
+                        </view>
+					</view>
+				</view>
+
+				<view class="word-con-box" hidden="{{tabStyle.tabHidden[1]}}">
+					<view class="fl-word-con">
+						<view class="fl-word-con-inbox">
+                            <view class="invite-mine">
+                                <view class="invite-unit">
+                                    <view class="invite-unit-main"><text>{{myProerNum}}</text>人</view>
+                                    <view class="invite-unit-sub">已邀请好友</view>
+                                </view>
+                                <view class="invite-unit">
+                                    <view class="invite-unit-main"><text>{{myProerTotal}}</text>元</view>
+                                    <view class="invite-unit-sub">已获得奖励</view>
+                                </view>
+                            </view>
+                            <block wx:if="{{!user.sessionId}}">
+                            <navigator class="loginTips" url="/pages/public/login?gourl=close" open-type="navigate">您还没登录，点击这里登录后查询</navigator>
+                            </block>
+                        </view>
+
+                        <view class="table" wx:if="{{myProer && myProer != ''}}">
+                        	<view class="table-row">
+	                            <view class="table-th">好友</view>
+	                            <view class="table-th">状态</view>
+	                            <view class="table-th">时间</view>
+	                            <view class="table-th">带来收益</view>
+                            </view>
+                        	<view class="table-row" wx:for="{{myProer}}" wx:for-item="val" wx:key="">
+	                            <view class="table-td">{{val.nickname}}</view>
+	                            <view class="table-td">注册成功</view>
+	                            <view class="table-td">{{val.date_format}}</view>
+	                            <view class="table-td">¥{{val.total}}</view>
+	                        </view>
+                        </view>
+					</view>
+				</view>
+
+				<view class="word-con-box" hidden="{{tabStyle.tabHidden[2]}}">
+					<view class="fl-word-con">
+						<view class="fl-word-con-inbox">
+                            <view class="invite-mine">
+                                <view class="invite-unit">
+                                    <view class="invite-unit-main"><text>{{rankingTotal}}</text>元</view>
+                                    <view class="invite-unit-sub">佣金累计发放</view>
+                                </view>
+                            </view>
+                        </view>
+                        <view class="table" wx:if="{{ranking && ranking != ''}}">
+                        	<view class="table-row">
+	                            <view class="table-th">排名</view>
+	                            <view class="table-th">用户昵称</view>
+	                            <view class="table-th">累计收益</view>
+                            </view>
+                        	<view class="table-row" wx:for="{{ranking}}" wx:for-item="val" wx:for-index="idx" wx:key="">
+	                            <view class="table-td">{{idx+1}}</view>
+	                            <view class="table-td">{{val.nickname}}</view>
+	                            <view class="table-td">¥{{val.earnings_total}}</view>
+	                        </view>
+                        </view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<view class="fl-BtnBox">
+			<navigator class="fl-btn-more" url="/pages/single/promoteCourse"><image src="https://api.25boy.cn/Public/images/fl-btn-more.png" mod="aspectFit" style="width:640rpx;height:103rpx;"></image></navigator>
+		</view>
+
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+</view>

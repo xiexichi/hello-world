@@ -1,0 +1,199 @@
+<import src="../common/order_operat.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+      <view class="orderinfo">
+          <block wx:if="{{order.order.relation_order}}">
+              <view class="jbw">
+                  <text selectable="true">换货订单：{{order.order.order_sn}}</text>
+                  <text style="color:#b01f23" selectable="true">{{order.order.status_name}}</text>
+              </view>
+              <block wx:if="{{order.relation_order.order_id}}">
+                <view class="blank10"></view>
+                <view class="jbw">
+                    <navigator url="/pages/users/orderDetail?id={{order.relation_order.order_id}}" open-type="redirect">原订单：{{order.relation_order.order_sn}}</navigator>
+                    <text style="color:#b01f23">{{order.relation_order.status_name}}</text>
+                </view>
+              </block>
+          </block>
+          <block wx:else>
+              <view class="jbw">
+                  <text selectable="true">单号：{{order.order.order_sn}}</text>
+                  <text style="color:#b01f23">{{order.order.status_name}}</text>
+              </view>
+              <block wx:if="{{order.relation_order.order_id}}">
+                <view class="blank10"></view>
+                <view class="jbw">
+                    <navigator url="/pages/users/orderDetail?id={{order.relation_order.order_id}}" open-type="redirect">换货订单：{{order.relation_order.order_sn}}</navigator>
+                    <text style="color:#b01f23">{{order.relation_order.status_name}}</text>
+                </view>
+              </block>
+          </block>
+      </view>
+      <view class="address">
+          <view class="item">
+              <view class="jbw">
+                <text class="name" selectable="true">{{order.order.receiver_name}}</text>
+                <text class="tel" selectable="true">{{order.order.receiver_phone}}</text>
+              </view>
+              <text class="local" selectable="true">{{order.order.location}}</text>
+          </view>
+      </view>
+
+      <view class="address expship" wx:if="{{order.order.ship_sn}}">
+          <view class="item" data-type="shipping">
+              <text class="exping">{{order.order.ship_com}}</text>
+              <text class="time" selectable="true">{{order.order.ship_sn}}</text>
+          </view>
+      </view>
+
+      <view class="blank10 pagegrey"></view>
+
+      <view class="cartList">
+          <view class="hd">{{order.order.relation_order?'换货商品':'商品信息'}}</view>
+          <block wx:for="{{order.order_items}}" wx:key="items_id">
+            <view class="cartItem">
+                <view class="dl">
+                  <navigator url="/pages/products/index?id={{item.product_id}}" open-type="redirect" class="dt"><image src="{{item.color_photo}}!w200" mode="aspectFit"></image></navigator>
+                  <view class="dd">
+                      <text class="title" selectable="true">{{item.product_name}}</text>
+                      <text class="prop" selectable="true">{{item.color_prop}}，{{item.size_prop}}</text>
+                      <text class="price" selectable="true">¥{{item.price}} x {{item.num}}</text>
+                  </view>
+                </view>
+            </view>
+          </block>
+      </view>
+
+      <view class="blank10 pagegrey"></view>
+
+      <block wx:if="{{order.order.relation_order=='' || order.order.relation_order==null}}">
+        <view class="orderSubtotal">
+            <view class="jbw">
+                <text>订单总价</text>
+                <text selectable="true">¥{{order.order.order_total}}</text>
+            </view>
+            <view class="jbw">
+                <text>包含运费</text>
+                <text selectable="true">¥{{order.order.ship_price}}</text>
+            </view>
+            <view class="jbw" wx:if="{{order.order.discount > 0}}">
+                <text>优惠减免</text>
+                <text selectable="true">-¥{{order.order.discount}}</text>
+            </view>
+        </view>
+        <view class="blank5 pagegrey"></view>
+      </block>
+
+      <view class="orderSubtotal" wx:if="{{order.order_discounts != ''}}">
+          <view class="jbw" wx:for="{{order.order_discounts}}" wx:key="discounts_id">
+              <text>{{item.title}}</text>
+              <text selectable="true">-¥{{item.discount}}</text>
+          </view>
+      </view>
+
+      <view class="blank5 pagegrey"></view>
+
+      <view class="orderSubtotal">
+          <view class="jbw">
+              <text>实付金额</text>
+              <text class="price" selectable="true">¥{{order.order.pay_total}}</text>
+          </view>
+      </view>
+
+      <view class="callService jbw">
+          <text class="callService-text" selectable="true" bindtap="makeCall">联系客服\n400-825-0830</text>
+          <view class="kfico">
+            <!-- <button class="callService-contact" plain="true" open-type="contact" session-from="orderDetail" send-message-title="订单详情" show-message-card="false" send-message-path="" send-message-img=""><image src="/images/icon-kefu_dark.png" mode="aspectFit"></image></button> -->
+            <navigator class="callService-contact" url="/pages/index/contact"><image src="/images/icon-kefu_dark.png" mode="aspectFit"></image></navigator>
+          </view>
+      </view>
+
+      <view class="blank10 pagegrey"></view>
+
+      <view class="orderSubtotal">
+          <view class="jbw">
+              <text>创建时间</text>
+              <text>{{order.order.order_date}}</text>
+          </view>
+          <view class="jbw" wx:if="{{order.order.pay_date}}">
+              <text>付款时间</text>
+              <text>{{order.order.pay_date}}</text>
+          </view>
+          <view class="jbw" wx:if="{{order.order.ship_time}}">
+              <text>发货时间</text>
+              <text>{{order.order.ship_time}}</text>
+          </view>
+      </view>
+  </view>
+
+  <template is="order_operat" data="{{isSA:isSA,relation:order.relation_order,order:order.order,history:order.order_history[0]}}" />
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>
+
+
+<!-- 物流跟踪modal -->
+<view class="popLayer popLayer-right {{popLayerClass}}">
+    <icon type="cancel" size="26" color="#999" class="close" bindtap="hideLayer" data-type="shipping" />
+    <view class="shipModal">
+        <view class="shipModal-info">
+            <text selectable="true">物流状态：{{order.kuaidiinfo.message}}</text>
+            <text selectable="true">物流公司：{{order.order.ship_com}}</text>
+            <text selectable="true">快递单号：{{order.order.ship_sn}}</text>
+        </view>
+        <scroll-view scroll-y="true" style="height:1000rpx;">
+            <view class="shipModal-dl">
+                <view class="shipModal-dt">物流跟踪</view>
+                <view class="shipModal-dd" wx:for="{{order.kuaidiinfo.data}}" wx:key="">
+                    <text class="shipModal-msg" selectable="true">{{item.context}}</text>
+                    <text class="shipModal-time" selectable="true">{{item.ftime}}</text>
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+</view>
+
+
+
+<!-- 填写快递单号modal -->
+<view class="mask {{fillinLayerClass}}" bindtouchstart="hideLayer" data-type="fillin"></view>
+<view class="popLayer fillinLayer {{fillinLayerClass}}">
+    <icon type="cancel" size="26" color="#999" class="close" bindtap="hideLayer" data-type="fillin" />
+    <view class="popLayer-title">填写快递单号</view>
+    <view class="fillinModal">
+        <form bindsubmit="inExpressNumber">
+          <view class="fillinModal-input"><input type="text" placeholder="物流公司 如:圆通快递" name="shipCom" value="" /></view>
+          <view class="fillinModal-input"><input type="text" placeholder="快递单号 如:123456" name="shipNo" value="" /></view>
+          <view class="fillinModal-btn"><button form-type="submit">确认</button></view>
+        </form>
+    </view>
+</view>
+
+
+<!-- 钱包付款modal -->
+<view class="mask {{popBagLayerClass}}"></view>
+<view class="popLayer {{popBagLayerClass}}">
+    <icon type="cancel" size="26" color="#999" class="close" bindtap="hideBagLayer" />
+    <view class="bagModal">
+        <form bindsubmit="checkBagSubmit">
+            <view class="bagModal-content">您正在使用25BOY帐户余额支付 ¥{{order.order.pay_total}}，请输入25BOY密码确认付款。</view>
+            <view class="bagModal-input">
+                <input type="text" password placeholder="请输入帐户密码" name="password" />
+            </view>
+            <view class="bagModal-btn">
+                <button type="primary" form-type="submit">确认支付</button>
+            </view>
+            <view class="bagModal-findPassword">
+                  <navigator url="/pages/public/findpass" open-type="navigate">忘记密码</navigator>
+              </view>
+        </form>
+    </view>
+</view>
+
+
+<modal bindconfirm="confirmModal" bindcancel="cancelModal" hidden="{{modalHide}}" confirm-text="确认无误" cancel-text="重新填写" title="确认收货地址">
+  <text selectable="true" class="modalTip">收货人：{{userAddress.name}}\n联系电话：{{userAddress.phone}}\n收货地址：{{userAddress.local}}</text>
+</modal>

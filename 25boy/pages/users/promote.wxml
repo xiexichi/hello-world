@@ -1,0 +1,69 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="promoteBox">
+			<view class="promoteBox-head">
+				<navigator url="/pages/single/promoteApply" open-type="navigate"><image mode="aspectFit" class="icon-help" src="/images/icon-help.png"></image></navigator>
+				<text selectable="true" class="promoteBox-money">¥{{info.promote.cash_total}}</text>
+				<text selectable="true" class="promoteBox-waiting" wx:if="{{info.unMoney}}">（未入账：¥{{info.unMoney}}）</text>
+				<navigator url="/pages/users/withdraw" open-type="navigate" class="promoteBox-btn">
+					<button type="default" size="default" disabled="{{is_withdrawal}}">佣金提现</button>
+				</navigator>
+				<view class="promoteBox-tips"><icon type="info" size="16" color="#eee" /> <text selectable="true">{{info.withdrawal.withdrawal_notice}}</text></view>
+			</view>
+			<view class="promoteBox-logs">
+				<block wx:for="{{history}}" wx:for-item="item" wx:key="pearnings_id">
+					<view class="weui-form-preview">
+	                    <view class="weui-form-preview__hd">
+	                        <view class="weui-form-preview__item">
+	                            <view class="weui-form-preview__label">佣金</view>
+	                            <view class="weui-form-preview__value_in-hd">¥{{item.earnings}}</view>
+	                        </view>
+	                    </view>
+	                    <view class="weui-form-preview__bd">
+	                        <view class="weui-form-preview__item">
+	                            <view class="weui-form-preview__label">状态</view>
+	                            <view class="weui-form-preview__value">{{item.is_get=="1" ? '已结算' : '未结算'}}</view>
+	                        </view>
+	                        <view class="weui-form-preview__item">
+	                            <view class="weui-form-preview__label">类型</view>
+	                            <view class="weui-form-preview__value" wx:if="{{item.earnings_type=='re_recharge'}}">充值预付</view>
+	                            <view class="weui-form-preview__value" wx:if="{{item.earnings_type=='re_shopping'}}">购物 - {{item.product_name}}</view>
+	                        </view>
+	                        <view class="weui-form-preview__item">
+	                            <view class="weui-form-preview__label">金额</view>
+	                            <view class="weui-form-preview__value">{{item.re_price}}元 x {{item.commission_rate}}%</view>
+	                        </view>
+	                        <view class="weui-form-preview__item">
+	                            <view class="weui-form-preview__label">结算时间</view>
+	                            <view class="weui-form-preview__value">{{item.received_time}}</view>
+	                        </view>
+	                    </view>
+	                    <view class="weui-form-preview__ft" wx:if="{{item.type=='prepaid' && item.pay_status == 'payment'}}">
+	                        <button class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bindtap="repayTap" data-sn="{{item.pay_sn}}">付款</button>
+	                    </view>
+	                    <view class="weui-form-preview__ft" wx:if="{{item.type=='goods' && item.pay_status == 'payment'}}">
+	                        <navigator url="/pages/users/orderDetail?sn={{item.pay_sn}}" class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active">查看订单</navigator>
+	                    </view>
+	                </view>
+	                <view class="blank10 pagegrey"></view>
+                </block>
+
+			</view>
+
+			<view class="loadmore {{loadmore}}">
+	          <view class="loadmore-icon"></view>
+	          <text>正在加载</text>
+	        </view>
+
+	        <view class="loadmore_line {{loadmore_line}}">
+	          <text>没有收益了</text>
+	        </view>
+
+		</view>
+	</view>
+
+	<template is="footer" />
+</view>

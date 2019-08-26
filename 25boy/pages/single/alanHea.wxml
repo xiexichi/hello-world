@@ -1,0 +1,29 @@
+<import src="../common/header.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="img-box">
+		    <image src="https://img.25miao.com/1380/1508121012.jpg!w640" mode="widthFix" class="map-image0"></image>
+		</view>
+		<view class="map_div img-box">
+		    <!-- <navigator url="/pages/products/index?id=761" class="map_img1"></navigator> -->
+		    <navigator url="/pages/products/index?id=671" class="map_img2"></navigator>
+		    <navigator url="/pages/products/index?id=1024" class="map_img3"></navigator>
+		    <navigator url="/pages/products/index?id=608" class="map_img4"></navigator>
+		    <navigator url="/pages/products/index?id=613" class="map_img5"></navigator>
+		    <navigator url="/pages/products/index?id=669" class="map_img6"></navigator>
+		    <navigator url="/pages/products/index?id=915" class="map_img7"></navigator>
+		    <navigator url="/pages/products/index?id=944" class="map_img8"></navigator>
+		    <image src="https://img.25miao.com/1380/1508121013.jpg!w640" mode="widthFix" class="map-image1"></image>
+		    <image src="https://img.25miao.com/1380/1508121014.jpg!w640" mode="widthFix" class="map-image2"></image>
+		    <image src="https://img.25miao.com/1380/1508121016.jpg!w640" mode="widthFix" class="map-image3"></image>
+		    <image src="https://img.25miao.com/1380/1508121017.jpg!w640" mode="widthFix" class="map-image4"></image>
+		    <image src="https://img.25miao.com/1380/1508121019.jpg!w640" mode="widthFix" class="map-image5"></image>
+		</view>
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+</view>

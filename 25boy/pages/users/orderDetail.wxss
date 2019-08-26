@@ -1,0 +1,64 @@
+page{background:#f2f2f2;padding-bottom:120rpx;}
+
+.orderinfo{background-color:#fff;padding:30rpx;font-size:30rpx;}
+.address{background-color:#fff;font-size:28rpx;background:url(https://api.25boy.cn/Public/images/line_border.png) #fff top repeat-x;background-size:auto 5rpx;}
+.address .item{padding:30rpx 30rpx 30rpx 50px;background:url(https://api.25boy.cn/Public/images/icon-local.png) no-repeat 14px center;background-size:20px 20px;font-size:30rpx;font-weight:normal;}
+.address .local{display:block;margin-top:10rpx;}
+.address .time{display:block;color:#999;margin-top:5rpx;}
+.expship{background:#fff;border-top:1px dotted #ddd;padding-right:30rpx;}
+.expship .item{background-image:url(https://api.25boy.cn/Public/images/icon-wait.png);}
+
+.rowBlock{padding:30rpx 70rpx 30rpx 30rpx;background:#fff;font-size:32rpx;}
+.rowBlock .rowLeft{color:#999;}
+.rowBlockItem{background:#ebebeb;font-size:32rpx;}
+.rowBlockItem .item{border-bottom:1px solid #ddd; padding:20rpx 30rpx;color:#333;}
+
+.cartList{background:#fff;}
+.cartList .hd{font-size:32rpx;padding:20rpx;}
+.cartItem{position:relative;padding:20rpx;border-top:1px solid #ddd;}
+.cartItem .dl{clear:both;overflow:hidden;}
+.cartItem .dt{float:left;max-width:20%;}
+.cartItem .dt image{width:120rpx;height:120rpx;}
+.cartItem .dd{float:left;width:80%;line-height:45rpx;padding-left:10rpx;}
+.cartItem text{display:block;}
+.cartItem .title{font-size:30rpx;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
+.cartItem .prop{font-size:28rpx;color:#999;}
+.cartItem .price{color:#b01f23;font-size:30rpx;}
+
+.orderSubtotal{background:#fff;padding:30rpx;font-size:28rpx;color:#999;line-height:50rpx;}
+.orderSubtotal .price{color:#b01f23;word-space:2px;letter-spacing:1px;font-size:32rpx;}
+
+.orderOpr{position:fixed;bottom:0;left:0;width:100%;background:#fff;padding:20rpx 0;}
+.orderOpr button{display:block;font-size:13px; padding-left:0;padding-right:0;margin:0 20rpx;width:80%;}
+.orderOpr-text{font-size:13px;padding:10px 0;margin:0 20rpx;display:block;width:80%;text-align:center;}
+
+/*查询物流*/
+.popLayer-right{background:#fff;height:100%;}
+.shipModal{height:100%;width:100%;}
+.shipModal-info{padding:30rpx 50rpx;background-color:#f2f2f2;}
+.shipModal-info text{display:block;font-size:30rpx;line-height:50rpx;}
+.shipModal-dl{padding:30rpx;}
+.shipModal-dt{border-bottom:1px solid #ddd;padding-bottom:20rpx;}
+.shipModal-dd{border-top:1px dotted #ddd;padding:20rpx 0;}
+.shipModal-dd:first-child{color:#ff6400;}
+.shipModal-msg{display:block;font-size:30rpx;margin-bottom:10rpx;}
+.shipModal-time{display:block;font-size:26rpx;color:#999;}
+
+/*填写快递单号*/
+.fillinLayer{background-color:#fff;}
+.fillinModal{padding:50rpx;}
+.fillinModal-input{padding:20rpx;border:1px solid #ddd;margin-bottom:30rpx;font-size:32rpx;}
+
+.callService{text-align:center;font-size:30rpx;padding:26rpx 30rpx;border-bottom:1px solid #ddd;border-top:1px solid #ddd;background-color:#ebebeb;display:flex;}
+.callService-text{text-align:left;line-height:20px;}
+.callService-contact{background-color:transparent;border-color:transparent !important;box-shadow:none;}
+.callService-contact image{width:38px;height:38px;}
+.kfico{height:70rpx;/*width:70rpx;background:#51c332;border-radius:50%;*/}
+
+
+/*钱包付款modal*/
+.bagModal{background-color:#fff;padding:50rpx;}
+.bagModal-content{margin-top:20rpx;font-size:36rpx;}
+.bagModal-input{border:1px solid #ddd;font-size:36rpx;padding:10rpx;margin-top:20rpx;margin-bottom:30rpx;}
+.bagModal-findPassword{text-align:right;font-size:26rpx;color:#4183c4;margin-top:20rpx;}
+.bagModal-findPassword navigator{display:inline-block;}

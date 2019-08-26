@@ -1,0 +1,131 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+	<!--轮播图片-->
+	<view class="photosList" id="photosList">
+	    <view class="section section_gap swiper">
+	        <swiper indicator-dots="true" autoplay="true" interval="3000" duration="1000" style="height:750rpx;">
+	        <block wx:for-items="{{combomeal.img}}" wx:key="">
+	            <swiper-item>
+	            <image src="{{item.url}}!w640" class="slide-image" bindtap="previewImage" data-type="swiper" data-img="{{item.url}}"></image>
+	            </swiper-item>
+	        </block>
+	        </swiper>
+	    </view>
+	</view>
+
+	<!--标题价格-->
+	<view class="baseInfo">
+	    <view class="product_name" selectable="true">{{combomeal.combomeal_title}}</view>
+	    <view class="delivery_desc" selectable="true">{{combomeal.combomeal_desc}}</view>
+        <view >
+        	<view class="discount">最多可以省 <text class="discount-price">¥{{combomeal.discount}}</text></view>
+		    <view class="end-date">活动至：{{combomeal.end_date_format}}</view>
+        </view>
+	</view>
+	
+
+	<!-- 商品列表 -->
+	<view class="cartList">
+		<view class="cartList-title">
+			搭配商品
+		</view>
+
+	    <block wx:for-items="{{combomeal.item}}" wx:key="cart_id">
+	      <view class="cartItem">
+	          <icon type="{{item.iconType ? item.iconType : 'success'}}" size="22" color="{{'#dc372f'}}" bindtap="selectItem" id="{{item.cart_id}}" />
+	          <view class="dl">
+	            <navigator url="/pages/products/index?id={{item.product_id}}" class="dt" open-type="redirect"><image src="{{item.product_img}}!w200" mode="aspectFit"></image></navigator>
+	            <view class="dd" bindtap="selectPropLayer" data-id="{{item.product_id}}">
+	                <text class="title" selectable="true">{{item.product_name}} x{{item.combomeal_num}}</text>
+	                <text class="combomeal-price">¥{{item.combomeal_price}}</text>
+	                <text class="discount">已省<text class="discount-price">¥{{item.price-item.combomeal_price}}</text></text>
+                  
+                    <block wx:if="{{selectProps[item.product_id] == undefined || selectProps[item.product_id].color_prop == undefined}}">
+                        <text class="prop">请选择颜色 尺码 ></text>
+                    </block>
+                    <block wx:elif="{{selectProps[item.product_id].color_prop != undefined}}">
+                        <text class="prop">已选择 {{selectProps[item.product_id].color_prop}},{{selectProps[item.product_id].size_prop}}</text>
+                    </block>
+                  <block wx:if="{{item.sync == 0}}">
+                    <text class="presale_date">[预售，{{item.presale_date_format}}发货]</text>
+                  </block>
+	            </view>
+	          </view>
+	      </view>
+	      <view class="blank5 pagegrey"></view>
+	    </block>
+
+	</view>
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>
+
+  <!-- 隐藏的选择尺码modal -->
+  <view class="mask {{popLayerClass}}" bindtouchstart="hidePropLayer"></view>
+  <view class="popLayer {{popLayerClass}}">
+      <view class="propModal">
+          <view class="propInfo">
+              <image class="colorImg" src="{{defaultimg}}"></image>
+              <text class="propPrice">¥{{combomeal_price}}</text>
+              <text class="propStock">库存：{{stockTotal}}件</text>
+              <!-- <text class="propSelected">dfdsf{{param.tiptext}}</text> -->
+          </view>
+          <view class="dl">
+              <view class="dt">颜色</view>
+              <view class="dd">
+                  <block wx:for="{{stockprops}}" wx:for-index="idx" wx:key="">
+                  <text class="{{item.class}}" data-val="{{item.color_prop}}" data-idx="{{idx}}" bindtap="selectColor">{{item.color_prop}}</text>
+                  </block>
+              </view>
+          </view>
+          <view class="dl">
+              <view class="dt">尺码</view>
+              <view class="dd">
+                  <block wx:for="{{sizes}}" wx:key="sku">
+                  <text class="{{item.class}}" data-val="{{item.size_prop}}" data-num="{{item.num}}" bindtap="selectSize">{{item.size_prop}}<block wx:if="{{item.sync==0}}">[预售]</block></text>
+                  </block>
+              </view>
+          </view>
+          <view class="quantityBox dl" wx:if="{{combomeal_num}}">
+            <view class="quantityBox-dd">数量 x {{combomeal_num}}</view>
+          </view>
+          <view class="btnBox">
+              <button type="warn" bindtap="checkProp">确定</button>
+          </view>
+      </view>
+      <icon type="cancel" size="26" color="#999" class="close" bindtap="hidePropLayer" />
+  </view>
+
+
+<view class="productBottom jbw">
+    <view class="productBottom-nav">
+        <view class="productBottom-item">
+            <contact-button size="22" type="default-dark" session-from="combomeal" />
+            <view class="blank1"></view>
+            客服
+        </view>
+        <view class="productBottom-total">
+            <view class="combomeal-total">
+                搭配价
+                <text class="combomeal-total-price">¥{{combomeal.pay_total}}</text>
+            </view>
+            <view class="discount-total">
+                已省
+                <text class="discount-total-price">¥{{combomeal.discount}}</text>
+            </view>
+        </view>
+    </view>
+    <view class="productBottom-btn">
+        <block wx:if="{{product.stock==0}}">
+        <button type="warn" disabled="true">已售罄</button>
+        </block>
+        <block wx:else>
+        <button type="warn" bindtap="buyCombomealNow">立即购买</button>
+        </block>
+    </view>
+</view>

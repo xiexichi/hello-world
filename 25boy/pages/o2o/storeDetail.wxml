@@ -1,0 +1,25 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+  	<map id="map" longitude="{{info.longitude}}" latitude="{{info.latitude}}" scale="18" markers="{{markers}}" show-location="true"></map>
+  	<view class="business_name">
+  		<view class="name">{{info.business_name}}</view>
+  		<view class="btn"><button type="primary" size="mini" bindtap="openMap">打开地图</button></view>
+  	</view>
+  	<view class="bueinessInfo">
+        <view class="rowBlock">
+            <view class="dt">地址</view>
+            <view class="dd">{{info.business_address}}</view>
+        </view>
+        <view  class="rowBlock">
+            <view class="dt">电话</view>
+            <view class="dd">{{info.business_tel}}</view>
+        </view>
+    </view>
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

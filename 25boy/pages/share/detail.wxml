@@ -1,0 +1,108 @@
+<import src="../common/header.wxml" />
+<import src="../common/footer.wxml" />
+
+<scroll-view scroll-y="true" lower-threshold="20" bindscrolltolower="getComment" bindscroll="cancelReply" scroll-into-view="{{scrollToView}}" style="height:{{windowHeight}}px;" scroll-top="{{scrollTop}}" scroll-with-animation="true">
+
+	<view class="container">
+
+		<template is="header" data="{{title:'',icon:'addshare',iconTap:'gotoAddShare',iconTxt:'添加晒图'}}" />
+
+	  <view class="page-body">
+	    	
+			<view class="share-item">
+				<view class="share-head jbw">
+					<view class="share-head-left">
+						<view class="share-avatar"><image src="{{share.userimg}}" class="share-avatar-img" mode="aspectFit"></image></view>
+						<view class="share-name">{{share.username}}</view>
+					</view>
+					<view class="share-head-right">
+						<navigator class="share-shai" url="" bindtap="delShareTap" wx:if="{{user.user_id == share.user_id}}">
+							<image class="share-shai-img" src="/images/icon-remove.png" mode="aspectFit"></image>
+							<text class="share-shai-text">删除</text>
+						</navigator>
+					</view>
+				</view>
+				<view class="share-photo" url="/pages/share/detail?id={{share.share_id}}">
+					<block wx:for="{{share.photos}}" wx:for-index="idx" wx:key="">
+						<image src="{{item}}!w800" class="share-photo-img" bindtap="previewImage" bindload="resetImage" data-idx="{{idx}}" style="width:{{imageSize[idx]['width']}};height:{{imageSize[idx]['height']}};"></image>
+					</block>
+				</view>
+				<view class="share-foot">
+					<view class="share-info jbw">
+						<view class="share-time">{{share.date_format}}</view>
+						<view class="share-func">
+							<navigator class="share-view">{{share.click}}</navigator>
+							<navigator class="share-like" bindtap="likeShareTap">{{share.vote}}</navigator>
+						</view>
+					</view>
+				</view>
+				<view class="share-content" selectable="true">{{share.content}}</view>
+			</view>
+
+			<view class="share-doLikeBtn">
+				<button type="primary" class="share-doLikeBtn-button" bindtap="likeShareTap">{{btntxt}}</button>
+				<!-- <view class="popover {{showFxTap}}">
+					<view class="arrow"></view>
+					<view class="popover-content">点击右上角 [•••] 转发</view>
+				</view> -->
+				<button type="default" open-type="share" class="share-doLikeBtn-button">转发给好友</button>
+			</view>
+
+
+			<view class="blank10 pagegrey"></view>
+
+			<view class="shareComment" id="replyView">
+				<view class="shareComment-hd">
+					<view class="shareComment-title">全部评论（{{share.commentCount?share.commentCount:0}}）</view>
+					<view class="shareComment-order" bindtap="commentOrder">{{commentOrderTxt}}</view>
+				</view>
+
+				<view class="shareComment-list" wx:if="{{shareCommentList[0]}}">
+					<view class="shareComment-item" wx:for="{{shareCommentList}}" wx:for-item="item" wx:key="id">
+						<view class="shareComment-author">
+							<view class="shareComment-author-info">
+								<image class="shareComment-avatar" src="{{item.userimg}}"></image>
+								<text selectable="true">{{item.nickname}}</text>
+							</view>
+							<view class="shareComment-icon-zan" bindtap="zanTap" data-id="{{item.id}}">{{item.zan}}</view>
+						</view>
+						<view class="shareComment-con" bindtap="replyTap" data-id="{{item.id}}" data-nickname="{{item.nickname}}">
+							<text selectable="true" class="shareComment-con-text">{{item.comment}}</text>
+							<view class="shareComment-time">{{item.date_format}}·回复</view>
+						</view>
+						<view class="replay" wx:if="{{item.replys && item.replys!=''}}">
+							<view class="replay-item" wx:for="{{item.replys}}" wx:for-item="reply" wx:key="id">
+								<text class="replay-nickname">{{reply.nickname}}：</text>
+								<text selectable="true" class="replay-item-text">{{reply.comment}}</text>
+							</view>
+						</view>
+					</view>
+				</view>
+
+				<view class="comment-empty" wx:else>
+					快快抢沙发吧~
+				</view>
+				
+			</view>
+
+	  </view>
+
+	  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+	</view>
+
+	<view class="loadmore {{loadmore}}">
+	    <view class="loadmore-icon"></view>
+	    <text>加载评论</text>
+	</view>
+
+</scroll-view>
+
+<view class="shareBottom">
+    <form bindsubmit="commentSubmit">
+    	<view class="shareBottom-comment">
+        	<textarea auto-height placeholder="{{replyPlaceholder}}" placeholder-style="color:#cacaca" focus="{{replyFocus}}" bindinput="markReplyText" maxlength="140" disabled="{{commentBtnDis}}" class="shareBottom-comment-textarea" name="comment" value="{{replyText}}" style="height:18px;" />
+        	<button type="default" size="20" form-type="submit" plain="true" disabled="{{commentBtnDis}}" loading="{{commentBtnLoading}}" class="shareBottom-comment-button">{{commentBtnTxt}}</button>
+    	</view>
+    </form>
+</view>

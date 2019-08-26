@@ -1,0 +1,18 @@
+page{background-color:#f2f2f2;}
+.loginPanel,.registerPanel, .accountPanel{padding:0 40rpx 40rpx ;}
+.loginTitle{font-size:40rpx;text-align:center;margin-bottom:50rpx;}
+.section{margin-bottom:20rpx;position:relative;font-size:30rpx;}
+.input-text{padding:20rpx;font-size:30rpx;background-color:#fff;padding-left:180rpx;}
+.input-label{position:absolute;left:20rpx;top:0;line-height:90rpx;}
+.msgCode{padding-right:250rpx;position:relative;}
+.btn-min{display:inline-block;font-size:30rpx;padding:20rpx 0;line-height:1.4rem;height:1.4rem;box-sizing:content-box;width:230rpx;position:absolute;right:0;top:0;}
+
+.userJoin{padding:50rpx 150rpx;}
+.user-avatar{height:130rpx;width:130rpx;text-align:center;}
+.user-avatar-img{height:130rpx;width:130rpx;}
+.join-icon{width:10%;text-align:center;}
+.join-icon-img{height:130rpx;width:130rpx;}
+.app-logo{width:30%;text-align:center;}
+.app-logo-img{height:130rpx;width:130rpx;}
+
+.findpass{text-align:right;color:#4183c4;font-size:26rpx;line-height:90rpx;text-align:center;}

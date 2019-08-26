@@ -1,0 +1,59 @@
+page{background:#f2f2f2;}
+.userTop{text-align:center;padding:30rpx 0;z-index:1;background:#fff;}
+.userTop .flex-wrp{align-items:center;}
+.userTop .uimg{margin:0 30rpx;width:100rpx;height:100rpx;}
+.userTop .avatar{width:100rpx;height:100rpx;border-radius:16rpx;border:5rpx solid #efefef;display:block;}
+.userTop .icon-vip{position:relative;top:4rpx;left:10rpx;width:16px;height:16px;}
+.userTop-name{display:block;font-size:36rpx;text-align:left;}
+.userTop-nickname{display:inline-block;font-size:38rpx;}
+.userTop-money{display:block;color:#999;font-size:28rpx;}
+
+/*功能区*/
+.userFunc{background:#fff;font-size:34rpx;border-top:1px solid #eee;}
+.userFunc-item{width:50%;position:relative;text-align:center;justify-content:center;align-items:center;padding:20rpx 0;}
+.userFunc-item:after {content: " ";position:absolute;left:0;top:0;width:1px;bottom:0;border-left:1px solid #d9d9d9; color:#d9d9d9;-webkit-transform-origin:0 0; transform-origin: 0 0; -webkit-transform: scaleX(0.5); transform: scaleX(0.5);}
+.userFunc-icon{width:20px;height:20px;margin-right:10rpx;}
+
+.userOrder{font-size:26rpx;background:#fff;}
+.userOrder .allOrder{padding:30rpx;font-size:30rpx;font-weight:normal;border-bottom:1px solid #eee;}
+.userOrder-items{width:100%;display:flex;flex-wrap:wrap;}
+.userOrder-item{padding-bottom:30rpx;width:25%;}
+.userOrder-item text{display:block;text-align:center;}
+.userOrder-item image{width:50rpx;height:50rpx;display:block;margin:30rpx auto 10rpx auto;}
+
+.userItems{text-align:center;background:#fff;font-size:26rpx;}
+.userItems image{width:50rpx;height:50rpx;display:block;margin:0 auto 20rpx auto;}
+.userItems navigator{padding:60rpx 0;}
+
+.cartEmpty{margin-top:180rpx;}
+.cartEmpty image{width:250rpx;height:250rpx;display:block;margin:auto;}
+.cartEmpty text{display:block;text-align:center;margin:50rpx auto;}
+.cartEmpty button{width:80%;}
+.emptyText{line-height:60rpx;}
+
+/* 二唯码 */
+/*.myQrcodeIcon{position:absolute;right:40rpx;top:40rpx;z-index:2;}*/
+.myQrcodeIcon{display:flex;text-align:center;justify-content:center;align-items:center;padding-right:30rpx;}
+.icon-qrcode{width:26px;height:26px;}
+.qrcodePopLayer{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.myQrcodeLayer{width:450rpx;padding:20px;background:#fff;border-radius:6px;}
+.myQrcode{position:relative;}
+.myBrcode-image{width:450rpx;height:130rpx;margin-bottom:20rpx;}
+.myQrcode-image{width:450rpx;height:450rpx;}
+.avatar-image{position:absolute;top:50%;left:50%;height:45px;width:45px;margin-top:-24px;margin-left:-24px;border-radius:10px;border:3px #fff solid;}
+.myQrcode-text{font-size:26rpx;color:#000;text-align:center;}
+
+/*钱包付款modal*/
+.bagModal{background-color:#fff;padding:50rpx;}
+.bagModal-content{margin-top:20rpx;font-size:36rpx;}
+.bagModal-input{border:1px solid #ddd;font-size:36rpx;padding:10rpx;margin-top:20rpx;margin-bottom:30rpx;}
+
+.rowBlock{background-color:#fff;padding:20rpx 30rpx 20rpx 90rpx;font-size:34rpx;}
+.rowBlock image{width:40rpx;height:40rpx;position:absolute;left:30rpx;top:24rpx;}
+.rowBlock .weui-badge{margin-left:10rpx;margin-top:-3px;}
+
+
+/* 联系客服 */
+.contact-btn{font-size:30rpx;width:60%;margin:40rpx auto;}
+/* 关注公众号组件 */
+.official-account{margin:20rpx 0;}

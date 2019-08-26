@@ -1,0 +1,108 @@
+<import src="../common/searchbar.wxml" />
+<import src="../common/activityPopup.wxml" />
+<template is="activityPopup" data="{{data:activityPopup}}" />
+
+<view class="container">
+  <view class="backTopIcon iconfont icon-fanhuidingbu" wx:if="{{backTopIcon}}" bindtap="backTop"></view>
+	<view class="index-search">
+		<image mode="aspectFit" src="/images/logo.png" class="index-search-logo"></image>
+		<template is="searchbar" data="{{inputShowed:inputShowed,inputVal:inputVal}}" />
+	</view>
+
+	<swiper class="_swiper home-swipe" wx:if="{{bannerList && bannerList.length}}" autoplay indicator-dots indicator-color="rgba(255,255,255,0.7)" indicator-active-color="rgba(255,255,255,0.3)">
+		<swiper-item wx:key="index" key="{{index}}" wx:for="{{bannerList}}" wx:for-index="index" wx:for-item="slide" class="_swiper-item">
+			<navigator class="home-swipe-item" url="{{slide.newUrl}}">
+				<image src="{{slide.srcurl + '!w800'}}" lazy-load class="home-swipe-image"></image>
+			</navigator>
+		</swiper-item>
+	</swiper>
+
+  <view class="background-white mt--2" wx:if="{{activity_banner && activity_banner.length}}">
+    <view class="home-panel" wx:key="index" key="{{index}}" wx:for="{{activity_banner}}" wx:for-index="index" wx:for-item="item">
+      <view class="home-panel-title mt--1"><label class="title-line van-ellipsis">{{item.adname}}</label></view>
+      <navigator target="miniProgram" open-type="navigate" app-id="{{item.weapp.appid}}" path="{{item.weapp.path}}" version="trial" class="home-panel-body"  wx:if="{{item.weapp}}">
+          <image src="{{item.srcurl}}!w800" class="image activity-image" mode="widthFix" lazy-load></image>
+      </navigator>
+      <video class="image" src="{{item.contxt}}" poster="{{item.srcurl+'!w800'}}" wx:elif="{{item.type == 'flash'}}"></video>
+      <navigator class="home-panel-body" url="{{item.newUrl}}" wx:else>
+        <image class="image activity-image" src="{{item.srcurl+'!w800'}}" mode="widthFix" lazy-load></image>
+      </navigator>
+    </view>
+  </view>
+
+  <view class="background-white mt--2">
+    <view class="home-panel">
+      <view class="home-panel-title"><label class="title-line">热门品类</label> <navigator class="title-more iconfont icon-more" url="/pages/categorys/index" open-type="switchTab"></navigator></view>
+      <view class="home-panel-body" wx:if="{{index_categorys_items && index_categorys_items.length}}">
+        <view class="category">
+          <navigator class="category-item" wx:key="index" key="{{index}}" wx:for="{{index_categorys_items}}" wx:for-index="index" wx:for-item="item" url="{{item.newUrl}}">
+            <image src="{{item.srcurl+'!w200'}}" class="category-image" mode="widthFix"></image>
+          </navigator>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="background-white mt--2" wx:if="{{boyChosen}}">
+    <view class="home-panel">
+      <view class="home-panel-title"><label class="title-line">25精选</label></view>
+      <block wx:for="{{boyChosen}}" wx:for-index="index" wx:for-item="group" wx:key="index">
+	      <navigator class="image" wx:if="{{group.banner}}" url="{{group.banner.newUrl}}">
+	        <image class="image" src="{{group.banner.srcurl}}!w800" mode="widthFix"></image>
+	      </navigator>
+	      <scroll-view scroll-x class="_scroll-view list-wrapper mt--2" tag="div" wx:if="{{group.list}}">
+	        <view class="_ul item-content" style=" {{(  'width:' +  ((group.list.length + 1) * goodsItemWidth * 100) +  'rpx;')}}">
+	          <navigator wx:key="item.product_id" key="{{item.product_id}}" class="goods-item" wx:for="{{group.list}}" wx:for-index="index" wx:for-item="item" url="/pages/products/index?id={{item.product_id}}">
+	            <image src="{{item.product_img}}!w390" lazy-load class="goods-image"></image>
+	            <view class="goods-text">
+	              <view class="goods-brand van-ellipsis">{{item.brand_name}}</view>
+	              <view class="goods-name van-ellipsis">{{item.product_name}}</view>
+	              <view class="goods-price van-ellipsis">¥{{item.price}}</view>
+                <view class="goods-rechargePrice van-ellipsis" wx:if="{{item.recharge_price}}">充值相当于 ¥{{item.recharge_price}}</view>
+	            </view>
+	          </navigator>
+	          <navigator class="goods-item goods-item-more" wx:if="{{group.banner}}" url="{{group.banner.newUrl}}"></navigator>
+	        </view>
+	      </scroll-view>
+    	</block>
+    </view>
+  </view>
+
+  <view class="background-white mt--2">
+    <view class="home-panel">
+      <view class="home-panel-title"><label class="title-line">达人晒图</label> <navigator class="title-more iconfont icon-more" url="/pages/share/index"></navigator></view>
+      <swiper class="_swiper share-swipe" wx:if="{{shareList && shareList.length>0}}">
+        <swiper-item autoPlay="3000" wx:key="item.share_id" key="{{item.share_id}}" wx:for="{{shareList}}" wx:for-index="index" wx:for-item="item" class="_swiper-item">
+          <navigator class="share-swipe-item" url="/pages/share/detail?id={{item.share_id}}">
+            <image src="{{item.image+'!w800'}}" lazy-load class="share-swipe-image" mode="aspectFill"></image>
+            <view class="share-swipe-text"><label class="share-swipe-avatar">
+                <image src="{{item.userimg}}" class="share-swipe-avatar-image"></image>
+                <view class="_i share-swipe-text-label">{{item.username}}：</view>
+              </label>
+              {{item.content}}
+            </view>
+          </navigator>
+        </swiper-item>
+      </swiper>
+    </view>
+  </view>
+
+  <view class="background-white mt--2">
+    <van-tabs class="_van-tabs" active="{{tabActive}}" bind:change="changeTab">
+      <van-tab title="{{tab.name}}" wx:key="index" key="{{index}}" wx:for="{{tabs}}" wx:for-index="index" wx:for-item="tab" class="_van-tab">
+        <view class="_ul goodsCol pl--2 pr--2 pt--1">
+          <navigator class="goodsCol-item" wx:key="idx" key="{{idx}}" wx:for="{{tab.list}}" wx:for-index="idx" wx:for-item="item" url="/pages/products/index?id={{item.product_id}}">
+            <image src="{{item.url+'!w200'}}" lazy-load class="goodsCol-image" mode="widthFix"></image>
+            <view class="goodsCol-text">
+              <view class="goodsCol-brand van-ellipsis">{{item.brand_name}}</view>
+              <view class="goodsCol-name van-ellipsis">{{item.product_name}}</view>
+              <view class="goodsCol-price van-ellipsis">¥{{item.price}}</view>
+              <view class="goodsCol-rechargePrice van-ellipsis" wx:if="{{item.recharge_price}}">充值相当于 ¥{{item.recharge_price}}</view>
+            </view>
+          </navigator>
+        </view>
+      </van-tab>
+    </van-tabs>
+  </view>
+
+</view>

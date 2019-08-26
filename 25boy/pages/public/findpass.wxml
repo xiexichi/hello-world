@@ -1,0 +1,39 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+	<!-- <view class="weui-navbar">
+		<view bindtap="switchNavbar" data-type="phone" class="weui-navbar__item {{navbarClassPhone}}">手机找回</view>
+		<view bindtap="switchNavbar" data-type="email" class="weui-navbar__item {{navbarClassEmail}}">邮箱找回</view>
+	</view> -->
+
+	<view class="findPass">
+		<form bindsubmit="nextSubmit">
+			<view class="loginTitle">{{findTitle}}</view>
+
+			<view class="section">
+				<input class="input-text" name="account" placeholder="{{type=='email'?'邮箱地址':'手机号码'}}" bindinput="setAccount" />
+			</view>
+
+			<view class="section msgCode">
+				<input class="input-text" name="msgcode" placeholder="输入{{type=='email'?'邮箱址':'手机'}}验证码" />
+				<button class="btn-min" type="default" bindtap="getCode" data-type="reg" disabled="{{codeDisabled}}">{{codeTxt}}</button>
+			</view>
+
+			<view class="section">
+				<button formType="submit" type="primary" loading="{{btndoing}}" disabled="{{btndoing}}">下一步</button>
+			</view>
+
+			<view class="section">
+			  <button type="default" bindtap="goback">返回</button>
+			</view>
+		</form>
+	</view>
+
+  </view>
+
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

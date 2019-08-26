@@ -1,0 +1,57 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+  	<!-- 条件筛选 -->
+  	<view class="filterBar flex-wrp jbw">
+	  	<view class="filter {{isSearch}}">
+	  		<view bindtap="filterTap" class="filter-item {{type=='new'?'filter-on':''}}" data-sort="new">新品</view>
+	  		<view bindtap="filterTap" class="filter-item {{type=='sale'?'filter-on':''}}" data-sort="sale">销量</view>
+	  		<view bindtap="filterTap" class="filter-item {{type=='hot'?'filter-on':''}}" data-sort="hot">人气</view>
+	  		<view bindtap="filterTap" class="filter-item filter-sort {{priceClass}}" data-sort="{{priceSort}}">价格</view>
+	  		<view bindtap="filterTap" class="filter-item {{type=='brand'?'filter-on':''}}" data-sort="brand">品牌</view>
+	  	</view>
+	  	<view class="search {{isSearch}}">
+	  		<icon type="search" size="18" bindtap="showSearchLayer" class="search-icon" />
+	  		<input type="text" placeholder="搜索" class="search-text" bindconfirm="submitSearch" value="" focus="{{searchFocus}}" confirm-type="search" />
+	  		<icon type="clear" size="18" bindtap="hideSearchLayer" class="search-close" />
+	  	</view>
+  	</view>
+
+  	<!-- 品牌筛选 -->
+  	<view class="filterBrand flex-wrp {{brandDisplay}}">
+  		<block wx:for="{{brandList}}" wx:for-item="item" wx:key="brand_id">
+	  		<navigator url="list?brand_id={{item.brand_id}}&id={{category_id}}" open-type="redirect" class="brand-item">
+	  			<image src="{{item.img_url}}" class="brand-image"></image>
+	  		</navigator>
+  		</block>
+  	</view>
+
+  	<!-- 商品列表 -->
+  	<view class="productList">
+  		<view wx:for="{{productList}}" wx:for-item="item" class="productItem" wx:key="product_id">
+  			<view class="innerbox">
+	  			<navigator url="/pages/products/index?id={{item.product_id}}"><image mode="aspectFit" src="{{item.url}}!w390" class="productItem-image"></image></navigator>
+				<navigator open-type="redirect" url="/pages/products/list?brand_id={{item.brand_id}}" class="productItem-brand">{{item.brand_name}}</navigator>
+				<navigator url="/pages/products/index?id={{item.product_id}}" class="productItem-product_name">{{item.product_name}}</navigator>
+				<view class="productItem-price">¥{{item.price}}</view>
+                <view class="productItem-recharge_price" wx:if="{{item.recharge_price}}">充值相当于 ¥{{item.recharge_price}}</view>
+			</view>
+  		</view>
+  	</view>
+
+	<view class="loadmore {{loadmore}}">
+		<view class="loadmore-icon"></view>
+		<text>正在加载</text>
+	</view>
+
+	<view class="loadmore_line {{loadmore_line}}">
+		<text>暂无数据</text>
+	</view>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

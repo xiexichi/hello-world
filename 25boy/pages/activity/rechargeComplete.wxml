@@ -1,0 +1,60 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+	<view class="page-body">
+
+		<view class="processing" wx:if="{{processing}}">
+			<image class="processing-image" src="https://api.25boy.cn/Public/images/processing.png" mode="widthFix"></image>
+			<view class="processing-text">支付处理中 {{questNum}}</view>
+		</view>
+
+		<view class="processed" wx:else>
+			<block wx:if="{{info.pay_status == 'paid'}}">
+				<view class="weui-msg">
+				    <view class="weui-msg__icon-area">
+				    	<icon type="success" size="100" />
+				    </view>
+				    <view class="weui-msg__text-area">
+				        <view class="weui-msg__title">充值成功</view>
+				        <view class="weui-msg__desc">您已经成功充值 ¥{{info.money}}</view>
+				        <view class="weui-msg__desc">充值后帐户余额 ¥{{info.balance}}</view>
+				    </view>
+				</view>
+				<view class="my_coupons" wx:if="{{info.user_coupon}}">
+		          <view class="coupon_item coupon_item_victory" wx:for="{{info.user_coupon}}" wx:for-item="coupon" wx:key="id">
+		              <text class="coupon_title" selectable="true">{{coupon.title}}</text>
+		              <text class="exp_date" selectable="true">{{coupon.start_date}} 至 {{coupon.end_date}}</text>
+		          </view>
+		      	</view>
+		     </block>
+		     <block wx:else>
+		     	<view class="weui-msg">
+				    <view class="weui-msg__icon-area">
+				    	<icon type="warn" size="100" />
+				    </view>
+				    <view class="weui-msg__text-area">
+				        <view class="weui-msg__title">充值失败</view>
+				        <view class="weui-msg__desc">订单号：{{info.pay_sn}}</view>
+				        <view class="weui-msg__desc">如果您已经支付成功，请联系客服处理</view>
+				    </view>
+
+				    <view class="weui-msg__opr-area">
+				    	<view class="weui-btn-area">
+				    		<navigator url="/pages/index/contact">
+				    			<button class="weui-btn" type="primary">联系客服</button>
+				    		</navigator>
+				    	</view>
+				    </view>
+				</view>
+		     </block>
+	    </view>
+
+	    <view class="footer-link">
+        	<navigator class="color-link" url="/pages/index/index" open-type="switchTab">← 进入商城</navigator>
+        	<navigator class="color-link" target="miniProgram" app-id="wxd69363cb21b8bce8" url="pages/index?token={{user.sessionId}}">进入客栈 →</navigator>
+        </view>
+
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

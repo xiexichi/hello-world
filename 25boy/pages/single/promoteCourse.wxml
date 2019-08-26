@@ -1,0 +1,53 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		
+		<view class="promoteCourseBox">
+			<view class="promoteCourse-item">
+				<view class="promoteCourse-tit">保存图片分享</view>
+				<view class="promoteCourse-con">
+					<view>1.进入商品详情，点击<image src="https://api.25boy.cn/Public/images/icon-tui.png" mod="aspectFit" style="width:20px;height:20px;"></image>获取推广素材。</view>
+	                <image bindtap="previewImage" src="{{helpImage[0]}}" data-idx="0" mod="aspectFit" style="width:626rpx;height:422rpx;"></image>
+	                <view>2.保存图片后，可以分享到任何地方。</view>
+	                <image bindtap="previewImage" src="{{helpImage[1]}}" data-idx="1" mod="aspectFit" style="width:626rpx;height:442rpx;"></image>
+	                <!-- <view>3.打开微信选择刚才保存的图片发送朋友圈，并长按输入框粘贴刚才复制的文字。</view>
+	                <image bindtap="previewImage" src="{{helpImage[3]}}" data-idx="3" mod="aspectFit" style="width:626rpx;height:366rpx;"></image>
+	                <view>下面是一张发送到朋友圈后的示例图</view>
+	                <image bindtap="previewImage" src="{{helpImage[4]}}" data-idx="4" mod="aspectFit" style="width:626rpx;height:442rpx;"></image>
+	                <view>小贴示：想要得到更好的推广效果，建议根据自身情况自行编辑文字描述。</view> -->
+				</view>
+			</view>
+
+			<view class="promoteCourse-item">
+				<view class="promoteCourse-tit">分享页面</view>
+				<view class="promoteCourse-con">
+					<view>小程序里，任何一个页面确保自己登录后，点击微信右上角菜单有“转发”选项的页面都可以分享给朋友获取返佣。</view>
+	                <image bindtap="previewImage" src="{{helpImage[5]}}" data-idx="5" mod="aspectFit" style="width:626rpx;height:422rpx;"></image>
+	                <view>小贴示：必须确认已经登录分享出去才有效哦。</view>
+				</view>
+			</view>
+
+			<!-- <view class="promoteCourse-item">
+				<view class="promoteCourse-tit">其它分享方式</view>
+				<view class="promoteCourse-con">
+					<view>你可以保存以下链接和图片，发送到任何一个地方；</view>
+					<view>任何人通过你分享的链接和二唯码进入25BOY，注册成功即成为你的下线。</view>
+	                <block wx:if="{{user.sessionId}}">
+	                <view class="myCode" wx:if="{{myCodeImg}}"><image bindtap="previewImage" src="{{myCodeImg}}" data-idx="6" mod="aspectFit" style="width:626rpx;height:550rpx;"></image></view>
+	                </block>
+	                <block wx:else>
+	                <navigator url="/pages/public/login?gourl=close" open-type="navigate" class="loginTips">你还没登录，未能获取到推广链接，请点击这里。</navigator>
+	                </block>
+				</view>
+			</view>
+
+			<navigator url="/pages/single/redpack" open-type="redirect"><button size="default" type="primary">看懂了，去分享吧！</button></navigator> -->
+		</view>
+
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+</view>

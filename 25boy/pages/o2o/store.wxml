@@ -1,0 +1,16 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+  	<view class="o2oStore">
+  		<navigator wx:for="{{datalist}}" wx:item="item" wx:key="ad_id" data-id="{{item.ad_id}}" url="{{item.newUrl}}">
+	    	<image class="store-image" src="{{item.srcurl}}!w800" mode="widthFix"></image>
+	    </navigator>
+	</view>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

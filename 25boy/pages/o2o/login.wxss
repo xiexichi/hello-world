@@ -1,0 +1,7 @@
+@import '../public/login.wxss';
+.o2oPanel{margin-top:60rpx;}
+.o2oPanel .loginTitle{margin-bottom:10rpx;}
+.store_name{color:#999;font-size:26rpx;text-align:center;margin-bottom:50rpx;}
+.recharge-rule{padding:30rpx 50rpx;font-size:30rpx;line-height:1.5em;padding-left:100rpx;color:#999;}
+.recharge-rule text{display:block;text-indent:-50rpx;margin-bottom:5px;}
+.recharge-rule-dt{font-size:36rpx;color:#5b5b5b;font-weight:700;}

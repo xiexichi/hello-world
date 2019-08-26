@@ -1,0 +1,20 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+      <form bindsubmit="formSubmit">
+        <view class="get_coupons">
+            <view class="get_input">
+                <input placeholder="请输入代金券码" name="code" />
+            </view>
+            <view class="get_btn">
+                <button size="default" type="primary" form-type="submit">确定领取</button>
+            </view>
+        </view>
+      </form>
+  </view>
+
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

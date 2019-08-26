@@ -1,0 +1,23 @@
+page{background:#f2f2f2;padding-bottom:160rpx;}
+.cartEmpty{margin-top:180rpx;}
+.cartEmpty image{width:250rpx;height:250rpx;display:block;margin:auto;}
+.cartEmpty text{display:block;text-align:center;margin:50rpx auto;}
+.cartEmpty button{width:80%;}
+.emptyText{line-height:60rpx;}
+
+.cartItem{position:relative;padding-bottom:20rpx;padding-top:20rpx;background:#fff;}
+.cartItem icon{position:absolute;left:10px;top:50%;margin-top:-12px;}
+.cartItem .dl{padding-left:40px;clear:both;overflow:hidden;}
+.cartItem .dt{float:left;max-width:30%;}
+.cartItem .dt image{width:180rpx;height:180rpx;}
+.cartItem .dd{float:left;width:70%;line-height:50rpx;}
+.cartItem text{display:block;margin-top:5rpx;padding-left:20rpx;}
+.cartItem .title{font-size:30rpx;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
+.cartItem .prop{font-size:28rpx;color:#999;}
+.cartItem .price{font-size:36rpx;color:#b01f23;font-weight:700;}
+.cartItem .remove{width:16px;height:16px;position:absolute;right:20rpx;top:20rpx;}
+.cartItem .quantityBox{position:absolute;bottom:15rpx;right:20rpx;}
+.cartItem .presale_date{color:#b01f23;font-size:26rpx;margin-top:0;}
+.cartItem .quantityBox-cut,
+.cartItem .quantityBox-plus{height:60rpx;line-height:60rpx;padding:0 26rpx;}
+.cartItem .quantityBox-num{display:inline-block;border:1px solid #ddd;padding:0 5px;width:60rpx;text-align:center;min-height:56rpx;height:56rpx;line-height:56rpx;}

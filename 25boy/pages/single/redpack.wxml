@@ -1,0 +1,37 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="banner">
+			<block wx:for="{{redpic}}" wx:for-index="idx" wx:key="ad_id">
+			<navigator url="{{item.weappurl}}" open-type="navigate" class="img-box">
+				<image src="{{item.srcurl}}" bindload="resetImage" mode="widthFix" data-src="{{item.srcurl}}" data-idx="{{idx}}" class="banner-image" style="width:{{item.width}};height:{{item.height}};"></image>
+			</navigator>
+			</block>
+		</view>
+
+		<!-- 商品列表 -->
+	  	<view class="productList">
+	  		<view wx:for="{{productList}}" wx:for-item="item" class="productItem" wx:key="product_id">
+	  			<view class="innerbox">
+		  			<navigator url="/pages/products/index?id={{item.product_id}}"><image mode="widthFix" src="{{item.product_img}}!w390" class="productItem-image"></image></navigator>
+					<navigator open-type="redirect" url="/pages/products/list?brand_id={{item.brand_id}}" class="productItem-brand">{{item.brand_name}}</navigator>
+					<navigator url="/pages/products/index?id={{item.product_id}}" class="productItem-product_name">{{item.product_name}}</navigator>
+					<text class="productItem-price">¥{{item.price}}</text>
+                	<view class="productItem-recharge_price" wx:if="{{item.recharge_price}}">充值相当于 ¥{{item.recharge_price}}</view>
+				</view>
+	  		</view>
+	  	</view>
+
+	  	<navigator url="/pages/products/list" open-type="navigate" class="moreBtn">浏览更多商品</navigator>
+
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+	<modal bindconfirm="confirmTip" bindcancel="hideTip" hidden="{{tipHide}}" confirm-text="查询余额" cancel-text="浏览商品" title="领取成功">
+		<text selectable="true" class="modalTip">您已成功领取50元，红包已入帐，\r\n关注公众号"25BOY"获取更多优惠信息。</text>
+	</modal>
+
+</view>

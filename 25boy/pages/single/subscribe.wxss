@@ -1,0 +1,6 @@
+.message{padding:40rpx;margin-top:20rpx;}
+.message-title{color:#b01f23;font-size:40rpx;text-align:center;}
+.p_txt{color:#8C807E;font-size:30rpx;line-height:40rpx;margin-top:10rpx;text-align:center;}
+.QR_code{width:500rpx;height:500rpx;margin:auto;display:block;}
+.QR_code h2{width:15em;height:15em;margin:1em auto;} 
+text{display:block;}

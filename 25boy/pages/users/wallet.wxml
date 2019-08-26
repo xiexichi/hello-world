@@ -1,0 +1,95 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+      
+          <view class="wallet-hd">
+              <text class="wallet-symbol">¥</text><text class="wallet-money" selectable="true">{{user.bag_total}}</text>
+              <!-- <text class="preapid-tips">小程序不允许在线充值，您可以进入微信网站\n或者网页版进行充值，或者到附近门店充值。</text> -->
+              <view class="preapid-tips">如有问题，请联系客服</view>
+              <view class="blank10"></view>
+              <navigator open-type="redirect" url="/pages/users/recharge"><button type="default">在线充值</button></navigator>
+          </view>
+
+          <view class="weui-tab">
+              <view class="weui-navbar">
+                  <view id="0" class="weui-navbar__item {{activeIndex == 0 ? 'weui-bar__item_on' : ''}}" data-type="goods" bindtap="switchNavbar">
+                      <view class="weui-navbar__title">消费记录</view>
+                  </view>
+                  <view id="1" class="weui-navbar__item {{activeIndex == 1 ? 'weui-bar__item_on' : ''}}" data-type="prepaid" bindtap="switchNavbar">
+                      <view class="weui-navbar__title">充值记录</view>
+                  </view>
+                  <view id="2" class="weui-navbar__item {{activeIndex == 2 ? 'weui-bar__item_on' : ''}}" data-type="refund" bindtap="switchNavbar">
+                      <view class="weui-navbar__title">退款记录</view>
+                  </view>
+                  <view id="3" class="weui-navbar__item {{activeIndex == 3 ? 'weui-bar__item_on' : ''}}" data-type="shipfee" bindtap="switchNavbar">
+                      <view class="weui-navbar__title">售后运费</view>
+                  </view>
+                  <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+              </view>
+          </view>
+
+          <!-- <view class="weui-navbar">
+              <view bindtap="switchNavbar" data-type="goods" class="weui-navbar__item {{navbarClassGoods}}">消费记录</view>
+              <view bindtap="switchNavbar" data-type="prepaid" class="weui-navbar__item {{navbarClassPrepaid}}">充值记录</view>
+              <view bindtap="switchNavbar" data-type="refund" class="weui-navbar__item {{navbarClassRefund}}">退款记录</view>
+              <view bindtap="switchNavbar" data-type="shipfee" class="weui-navbar__item {{navbarClassShipfee}}">售后运费</view>
+          </view> -->
+
+          <view class="wallet-bags">
+
+              <block wx:for="{{bagList}}" wx:for-item="item" wx:key="bag_id">
+
+                <view class="weui-form-preview">
+                    <view class="weui-form-preview__hd">
+                        <view class="weui-form-preview__item">
+                            <view class="weui-form-preview__label">发生金额</view>
+                            <view class="weui-form-preview__value_in-hd">{{item.money}} <view class="weui-form-preview__span" wx:if="{{item.plus_price > 0}}">送{{item.plus_price}}</view></view>
+                        </view>
+                    </view>
+                    <view class="weui-form-preview__bd">
+                        <view class="weui-form-preview__item">
+                            <view class="weui-form-preview__label">支付方式</view>
+                            <view class="weui-form-preview__value">{{method[item.method]}}</view>
+                        </view>
+                        <view class="weui-form-preview__item">
+                            <view class="weui-form-preview__label">订单号</view>
+                            <view class="weui-form-preview__value">{{item.pay_sn}}</view>
+                        </view>
+                        <view class="weui-form-preview__item">
+                            <view class="weui-form-preview__label">发生时间</view>
+                            <view class="weui-form-preview__value">{{item.create_date}}</view>
+                        </view>
+                        <view class="weui-form-preview__item" wx:if="{{item.note}}">
+                            <view class="weui-form-preview__label">备注</view>
+                            <view class="weui-form-preview__value">{{item.note}}</view>
+                        </view>
+                    </view>
+                    <view class="weui-form-preview__ft" wx:if="{{item.type=='prepaid' && item.pay_status == 'payment'}}">
+                        <button class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bindtap="repayTap" data-sn="{{item.pay_sn}}">付款</button>
+                    </view>
+                    <view class="weui-form-preview__ft" wx:if="{{item.type=='goods' && item.pay_status == 'payment'}}">
+                        <navigator url="/pages/users/orderDetail?sn={{item.pay_sn}}" class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active">查看订单</navigator>
+                    </view>
+                </view>
+                <view class="blank10 pagegrey"></view>
+
+              </block>
+
+        </view>
+
+        <view class="loadmore {{loadmore}}">
+          <view class="loadmore-icon"></view>
+          <text>正在加载</text>
+        </view>
+
+        <view class="loadmore_line {{loadmore_line}}">
+          <text>The End</text>
+        </view>
+
+  </view>
+
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

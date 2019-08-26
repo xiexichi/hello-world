@@ -1,0 +1,77 @@
+<import src="../common/header.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <template is="header" data="{{title:titleName,icon:'filter',iconTap:'filterOrderTap'}}" />
+
+  <view class="page-body">
+  
+        <view class="orderList">
+
+          <block wx:for="{{orderList}}" wx:for-item="item" wx:key="order_id">
+            <view class="orderItem">
+              <view class="orderItem-hd jbw">
+                  <view class="orderItem-info">
+                      <text class="orderItem-sn" selectable="true">单号：{{item.order_sn}}</text>
+                      <text class="orderItem-time">{{item.date_format}}</text>
+                  </view>
+                  <view class="orderItem-status">{{item.status_name}}</view>
+              </view>
+              <navigator class="orderItem-bd" url="/pages/users/o2oOrderDetail?id={{item.order_id}}">
+                  <block wx:if="{{item.order_totalnum > 2}}">
+                    <view class="orderItem-dl">
+                        <view class="orderItem-dt orderItem-dt-more" wx:for="{{item.order_items}}" wx:for-item="val" wx:key="items_id"><image src="{{val.color_photo}}!w200"></image></view>
+                    </view>
+                  </block>
+                  <block wx:else>
+                    <view class="orderItem-dl" wx:for="{{item.order_items}}" wx:for-item="val" wx:key="items_id">
+                        <view class="orderItem-dt">
+                            <image src="{{val.color_photo}}!w200"></image>
+                        </view>
+                        <view class="orderItem-dd">
+                            <text class="orderItem-name">{{val.product_name}}</text>
+                            <text class="orderItem-prop">规格：{{val.color_prop}} {{val.size_prop}}</text>
+                            <text class="orderItem-price">单价：¥{{val.price}} x {{val.quantity}}</text>
+                        </view>
+                    </view>
+                  </block>
+              </navigator>
+              <view class="orderItem-ft">
+                  <view class="orderItem-payinfo">
+                    合计：¥{{item.pay_total}} <view class="orderItem-shipfee" wx:if="{{item.ship_price > 0}}">(含运费{{item.ship_price}}元)</view>
+                  </view>
+                  <view class="orderItem-btn">
+                    <navigator url="/pages/users/o2oOrderDetail?id={{item.order_id}}"><button size="mini" type="default">订单详情</button></navigator>
+                  </view>
+              </view>
+          </view>
+          <view class="blank10 pagegrey"></view>
+        </block>
+      </view>
+
+      <view class="loadmore {{loadmore}}">
+        <view class="loadmore-icon"></view>
+        <text>正在加载</text>
+      </view>
+
+      <view class="notorder_tips {{loadmore_line}}" hidden="{{waiting}}">
+        <view class="notorder_text">没有查询到您在25BOY线下实体店的相关订单，</view>
+        <view class="notorder_text">您可以尝试下拉页面刷新，</view>
+        <view class="notorder_text">或者</view>
+        <view class="notorder_btn"><navigator url="/pages/o2o/store"><button type="primary">查询线下实体店</button></navigator></view>
+        <navigator class="notorder_btn" url="/pages/index/contact"><button type="default">如有疑问，联系客服</button></navigator>
+      </view>
+
+  </view>
+
+  <view class="ordering" wx:if="{{waiting}}" catchtouchstart="handletouchtart" catchtouchmove="handletouchmove" catchtouchend="handletouchend" catchtouchcancel="handletouchend" style="top:{{layerTop}}px">
+      <image src="https://api.25boy.cn/Public/images/loading2.gif" mode="widthFix" class="ordering-image"></image>
+      <view class="ordering-text">店员正在做单，请不要关闭页面</view>
+      <image class="silde-up" src="https://api.25boy.cn/Public/images/slide-up.png" mode="widthFix"></image>
+      <view class="silde-uptxt">向上滑动</view>
+      <official-account class="official-account" wx:if="{{canIUse}}"></official-account>
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

@@ -1,0 +1,83 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+
+		<view class="weui-tab">
+			<view class="weui-navbar">
+				<navigator id="0" class="weui-navbar__item {{activeIndex == 0 ? 'weui-bar__item_on' : ''}}" url="/pages/o2o/search" open-type="redirect">
+					<view class="weui-navbar__title">库存查询</view>
+				</navigator>
+				<navigator id="1" class="weui-navbar__item {{activeIndex == 1 ? 'weui-bar__item_on' : ''}}" >
+					<view class="weui-navbar__title">款式查询</view>
+				</navigator>
+				<view class="weui-navbar__slider" style="left: {{sliderLeft}};"></view>
+			</view>
+		</view>
+
+		<view class="findPass">
+			<form bindsubmit="submitForm">
+				<view class="title">店铺款式查询</view>
+				<view class="title2">{{business_name}}</view>
+
+				<view class="section">
+					<picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiCategory}}">
+						<view class="input-picker">
+							选择分类：{{multiCategory[0][multiIndex[0]]}} - {{multiCategory[1][multiIndex[1]]}}
+						</view>
+					</picker>
+				</view>
+
+				<view class="section">
+					<text class="input-label">商品编码</text>
+					<input class="input-text" name="sku" placeholder="模糊匹配" confirm-type="search" bindconfirm="submitForm" />
+				</view>
+
+				<view class="section">
+					<text class="input-label">颜色</text>
+					<input class="input-text" name="color" placeholder="可选，模糊匹配" />
+				</view>
+			
+				<view class="section">
+					<input name="search_quantity" value="{{search_quantity}}" hidden="true" />
+					<button formType="submit" type="primary">查询</button>
+				</view>
+
+				<view class="section">
+					<button type="default" formType="reset" bindtap="resetForm">重置</button>
+				</view>
+			</form>
+		</view>
+
+		<view class="weui-panel weui-panel_access" hidden="{{hideResult}}">
+			<view class="weui-panel__hd">库存查询结果（共{{stockList.total}}条记录）</view>
+			<view class="weui-panel__bd">
+				<view class="table">
+					<view class="table-row">
+						<view class="table-th">图片</view>
+						<view class="table-th">商品编码</view>
+						<view class="table-th">颜色</view>
+						<view class="table-th">店铺库存</view>
+					</view>
+					<view class="table-row" wx:for="{{stockList.rows}}" wx:key="*this" hover-class="hover-class">
+						<view class="table-td"><image src="{{item.photo_prop}}!w200" class="stock-image" mode="widthFix" data-url="{{item.photo_prop}}!w390" bindtap="previewImage"></image></view>
+						<view class="table-td">{{item.sku_sn}}</view>
+						<view class="table-td">{{item.color_prop}}</view>
+						<view class="table-td">{{item.my_quantity}}</view>
+					</view>
+				</view>
+            </view>
+			<view class="weui-panel__ft">
+				<view class="weui-cell weui-cell_access weui-cell_link" hover-class="weui-cell_active" bindtap="gotop">
+					<view class="weui-cell__bd">重新查询</view>
+					<view class="weui-cell__ft weui-cell__ft_in-access"></view>
+				</view>
+			</view>
+		</view>
+
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+</view>

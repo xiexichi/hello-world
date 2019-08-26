@@ -1,0 +1,13 @@
+<template name="mycode">
+	<view class="mask {{displayMyCode}}" bindtap="hideMyCodeLayer"></view>
+	<view class="popLayer qrcodePopLayer {{displayMyCode}}" bindtap="hideMyCodeLayer">
+	    <view class="myQrcodeLayer">
+	    	<view class="myQrcode"><image src="https://api.25boy.cn{{mycode.br}}" class="myBrcode-image" data-tag="img"></image></view>
+	    	<view class="myQrcode">
+	    		<image src="https://api.25boy.cn{{mycode.qr}}" class="myQrcode-image" data-tag="img"></image>
+	    		<image src="{{mycode.image_url}}" class="avatar-image" data-tag="img"></image>
+	    	</view>
+	    	<view class="myQrcode-text">使用钱包支付 / 充值余额</view>
+	    </view>
+	</view>
+</template>

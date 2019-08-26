@@ -1,0 +1,60 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="weui-panel weui-panel_access">
+			<view class="weui-panel__hd">我的提现方式</view>
+			<view class="weui-panel__bd">
+                <block wx:for="{{withdrawList}}" wx:for-item="item" wx:key="pwithdrawal_id">
+    				<view class="weui-media-box weui-media-box_text arrow" hover-class="hover-class" bindtap="showLayer" data-type="edit" data-id="{{item.pwithdrawal_id}}">
+    					<view class="weui-media-box__title">{{item.withdrawal_type_cn}}</view>
+    					<view class="weui-media-box__desc">帐号：{{item.withdrawal_account}}， 真实姓名：{{item.withdrawal_name}}</view>
+                    </view>
+    			</block>
+			</view>
+		</view>
+
+		<view class="withdrawBox">
+			<view class="section">
+            	<button type="primary" bindtap="showLayer" data-type="add" data-id="">添加提现方式</button>
+			</view>
+            <view class="section">
+            	<navigator url="/pages/users/withdrawModify" open-type="navigateBack" class="promoteBox-btn">
+	            	<button type="default">返回</button>
+				</navigator>
+          	</view>
+		</view>
+	</view>
+
+	<template is="footer" />
+</view>
+
+
+<!-- 添加提现方式modal -->
+<view class="popLayer popLayer-right {{popLayerClass}}">
+    <icon type="cancel" size="26" color="#999" class="close" bindtap="hideLayer" />
+    <view class="modifyModal">
+        <form bindsubmit="formSubmit" class="modifyModal-form">
+            <view class="modifyModal-title">添加提现方式</view>
+            <view class="section">
+                <text class="input-label">提现方式</text>
+                <picker mode="selector" name="withdrawal_type" bindchange="bindPickerChange" value="{{pickerIndex}}" range="{{withdrawType}}">
+                    <view class="input-picker">{{withdrawType[0]}}</view>
+                </picker>
+            </view>
+            <view class="section">
+                <text class="input-label">提现帐户</text>
+                <input class="input-text" name="withdrawal_account" placeholder="第三方帐户名" value="{{editData.withdrawal_account}}" />
+            </view>
+            <view class="section">
+                <text class="input-label">真实姓名</text>
+                <input class="input-text" name="withdrawal_name" placeholder="用于核对校验" value="{{editData.withdrawal_name}}" />
+            </view>
+            <view class="section">
+                <input type="text" name="pwithdrawal_id" value="{{editData.pwithdrawal_id}}" hidden="true" />
+                <button formType="submit" type="primary" disabled="{{formLoading}}" loading="{{formLoading}}">确定</button>
+            </view>
+        </form>
+    </view>
+</view>

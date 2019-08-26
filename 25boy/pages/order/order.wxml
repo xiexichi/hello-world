@@ -1,0 +1,175 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <form bindsubmit="submitOrder" report-submit>
+
+    <view class="page-body">
+
+        <navigator class="address arrow" url="/pages/public/address?type=select">
+            <block wx:if="{{userDefaultAddress.name && userDefaultAddress.id > 0}}">
+            <view class="item">
+                <view class="jbw">
+                  <text class="name">{{userDefaultAddress.name}}</text>
+                  <text class="tel">{{userDefaultAddress.phone}}</text>
+                </view>
+                <text class="local">{{userDefaultAddress.local}}</text>
+            </view>
+            </block>
+            <block wx:else>
+            <view class="item" style="padding-top:36rpx;">请选择收货地址</view>
+            </block>
+        </navigator>
+
+        <view class="blank10 pagegrey"></view>
+
+        <view class="rowBlock jbw {{arrow.payment}}" bindtap="rowBlockTap" data-type="payment">
+            <view class="rowLeft">付款方式</view>
+            <view class="rowRight">{{text.payment}}</view>
+        </view>
+        <view class="rowBlockItem {{display.payment}}">
+          <radio-group class="radio-group" bindchange="setParams" data-key="payment">
+              <label class="item jbw" for="payment-weixin">
+                  <text>微信支付</text>
+                  <radio id="payment-weixin" value="weixin" checked="{{radioChecked.weixin}}" />
+              </label>
+              <label class="item jbw" for="payment-bag">
+                  <text>钱包付款(余额¥{{user_balance}})</text>
+                  <radio id="payment-bag" value="bag" checked="{{radioChecked.bag}}" />
+              </label>
+              <label class="item jbw" for="payment-merge" wx:if="{{user_balance > 0 && merge_price > 0}}">
+                  <text>合并付款(余额¥{{user_balance}}+微信¥{{merge_price}})</text>
+                  <radio id="payment-merge" value="merge" checked="{{radioChecked.merge}}" />
+              </label>
+            </radio-group>
+        </view>
+
+        <view class="blank10 pagegrey"></view>
+
+        <view class="rowBlock jbw {{arrow.shipping}}" bindtap="rowBlockTap" data-type="shipping">
+            <view class="rowLeft">配送方式</view>
+            <view class="rowRight">{{text.shipping}}</view>
+        </view>
+        <view class="rowBlockItem {{display.shipping}}">
+          <radio-group class="radio-group" bindchange="setParams" data-key="shipping">
+            <block wx:for="{{deliverys}}" wx:key="delivery_id">
+              <label class="item jbw" for="shipping-{{item.delivery_id}}">
+                  <text>{{item.delivery_name}}</text>
+                  <radio id="shipping-{{item.delivery_id}}" value="{{item.delivery_id}}" checked="{{item.is_default==1 ? 'true' : ''}}" />
+              </label>
+            </block>
+          </radio-group>
+        </view>
+        <view class="shipTip">提示: 使用微信登录并绑定二五帐号，全场免运费！</view>
+
+        <view class="blank10 pagegrey"></view>
+
+        <view class="cartList">
+            <view class="hd">商品信息</view>
+            <block wx:for="{{cartList}}" wx:key="cart_id">
+              <view class="cartItem">
+                  <view class="dl">
+                    <view class="dt"><image src="{{item.thumb}}!w200" mode="aspectFit" binderror="loadDefaultImage"></image></view>
+                    <view class="dd">
+                        <text class="title" selectable="true">{{item.product_name}}</text>
+                        <text class="prop" selectable="true">{{item.color_prop}}，{{item.size_prop}}</text>
+                        <text class="price">¥{{item.miao_price?item.miao_price:item.product_price}} x {{item.quantity}}</text>
+                        <block wx:if="{{item.presale == 1}}">
+                            <text class="presale_date">[预售，{{item.presale_date}}发货]</text>
+                        </block>
+                        <view class="item_event" wx:if="{{item.event_title}}">
+                            <text>{{item.event_title}}</text>
+                        </view>
+                    </view>
+                  </view>
+              </view>
+            </block>
+        </view>
+
+        <view class="blank10 pagegrey"></view>
+
+        <block wx:if="{{voucher && voucher!=''}}">
+          <view class="rowBlock jbw {{arrow.coupon}}" bindtap="rowBlockTap" data-type="coupon">
+              <view class="rowLeft">优惠券</view>
+              <view class="rowRight">{{text.coupon}}</view>
+          </view>
+          <view class="rowBlockItem {{display.coupon}}">
+            <radio-group class="radio-group" bindchange="setParams" data-key="voucher">
+              <block wx:for="{{voucher}}" wx:key="voucher_id">
+                <label class="item jbw" for="voucher-{{item.voucher_id}}">
+                    <text>{{item.title}} ( -¥{{item.discount_total}} )</text>
+                    <radio id="voucher-{{item.voucher_id}}" value="{{item.voucher_id}}" />
+                </label>
+              </block>
+            </radio-group>
+          </view>
+        </block>
+
+        <view class="blank10 pagegrey"></view>
+
+        <view class="buyerNote"><textarea placeholder="留言" auto-height="true" class="buyerTextarea" name="buyer_note"></textarea></view>
+
+        <view class="blank10 pagegrey"></view>
+
+        <view class="orderSubtotal">
+            <view class="jbw">
+                <text>商品金额</text>
+                <text class="price">¥{{subtotal.goodstotal}}</text>
+            </view>
+            <view class="jbw">
+                <text>运费</text>
+                <text class="price">¥{{subtotal.ship_fee}}</text>
+            </view>
+            <view class="jbw" wx:if="{{subtotal.cuttotal > 0}}">
+                <text>活动优惠</text>
+                <text class="price">-¥{{subtotal.cuttotal}}</text>
+            </view>
+            <view class="jbw" wx:if="{{subtotal.coupon_price > 0}}">
+                <text>优惠券</text>
+                <text class="price">-¥{{subtotal.coupon_price}}</text>
+            </view>
+            <view class="jbw">
+                <text>实付金额</text>
+                <text class="price">¥{{subtotal.paytotal}}</text>
+            </view>
+        </view>
+
+    </view>
+
+    <view class="cartBottom">
+        <input type="text" name="cart_ids" value="{{cart_ids}}" style="display:none" />
+        <view class="barResult">
+          <view class="total">
+              订单总价：¥<text class="subtotal">{{subtotal.paytotal}}</text>
+          </view>
+          <view class="btn">
+              <button type="warn" form-type="submit">提交订单</button>
+          </view>
+        </view>
+    </view>
+
+  </form>
+     
+    
+  <!-- 钱包付款modal -->
+  <view class="mask {{popLayerClass}}"></view>
+  <view class="popLayer {{popLayerClass}}">
+      <icon type="cancel" size="26" color="#999" class="close" bindtap="hideLayer" />
+      <view class="bagModal">
+          <form bindsubmit="checkBagSubmit">
+              <view class="bagModal-content">您正在使用25BOY帐户余额支付 ¥{{subtotal.paytotal}}，请输入25BOY密码确认付款。</view>
+              <view class="bagModal-input">
+                  <input type="text" password placeholder="请输入帐户密码" name="password" />
+              </view>
+              <view class="bagModal-btn">
+                  <button type="primary" form-type="submit">确认支付</button>
+              </view>
+              <view class="bagModal-findPassword">
+                  <navigator url="/pages/public/findpass" open-type="navigate">忘记密码</navigator>
+              </view>
+          </form>
+      </view>
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

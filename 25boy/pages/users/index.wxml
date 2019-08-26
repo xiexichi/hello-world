@@ -1,0 +1,117 @@
+<import src="../common/footer.wxml" />
+<import src="../common/mycode.wxml" />
+<import src="../common/promoteTips.wxml" />
+
+<view class="container">
+
+  <!-- <view class="cartEmpty" wx:if="{{showLogin}}">
+      <image src="/images/icon-lock.png"></image>
+
+      <text class="emptyText">请登录后操作~\n如果您已经登录请重新打开页面!</text>
+      <button type="warn" bindtap="gotoUrl" data-url="/pages/public/login?gourl=close">登录</button>
+  </view> -->
+
+  <view class="page-body">
+
+  	<view class="userTop flex-wrp">
+      <!-- 未登录 -->
+  		<view class="flex-wrp" hidden="{{!showLogin}}">
+          <navigator url="/pages/users/setting" class="uimg">
+            <open-data type="userAvatarUrl" class="avatar"></open-data>
+          </navigator>
+          <view class="userTop-name">
+            <button class="btn-text" hover-class="hover-class" wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="authLogin">
+              <open-data type="userNickName" class="userTop-nickname"></open-data>
+              <view style="color:red;">绑定手机号享受会员福利！</view>
+            </button>
+          </view>
+      </view>
+
+      <!-- 已经登录 -->
+      <view class="flex-wrp" hidden="{{showLogin}}">
+          <navigator url="/pages/users/setting" class="uimg"><image class="avatar" src="{{user.image_url}}" mode="scaleToFill"></image></navigator>
+          <view class="userTop-name">
+            <text selectable="true" class="userTop-nickname">{{user.nickname}}</text>
+            <image wx:if="{{user.level > 0}}" class="icon-vip vip{{user.level}}" src="https://www.25boy.cn/images/icon/v1.png" mode="aspectFit"></image>
+            <navigator url="/pages/users/wallet" class="userTop-money">余额：¥{{user.bag_total}}</navigator>
+          </view>
+      </view>
+      <view class="myQrcodeIcon" hidden="{{showLogin}}">
+        <!-- <image class="icon-qrcode" src="https://api.25boy.cn/Public/images/icon-qrcode.png" bindtap="scanCode"></image> -->
+        <image class="icon-qrcode" src="https://api.25boy.cn/Public/images/icon-qrcode.png" bindtap="getMyQRcode"></image>
+      </view>
+
+  	</view>
+    <view class="userFunc flex-wrp">
+        <navigator url="/pages/users/order" class="userFunc-item flex-wrp">
+          <image class="userFunc-icon" src="https://api.25boy.cn/Public/images/icon-color-cloud.png"></image>
+          <text>线上订单</text>
+        </navigator>
+        <navigator url="/pages/users/o2oOrder" class="userFunc-item flex-wrp">
+          <image class="userFunc-icon" src="https://api.25boy.cn/Public/images/icon-color-store.png"></image>
+          <text>门店订单</text>
+        </navigator>
+    </view>
+
+    <view class="blank10 pagegrey"></view>
+    <navigator class="rowBlock arrow" url="/pages/users/wallet">
+      <image mode="aspectFit" src="https://api.25boy.cn/Public/images/icon-color-bag.png"></image> 钱包余额
+    </navigator>
+    <view class="blank1 pagegrey"></view>
+    <navigator class="rowBlock arrow" url="/pages/users/promote">
+      <image mode="aspectFit" src="https://api.25boy.cn/Public/images/icon-color-promote.png"></image> 我的佣金
+      <view class="weui-badge" wx:if="{{promoteRedDot > 0}}">提现</view>
+    </navigator>
+    <view class="blank10 pagegrey"></view>
+    <navigator class="rowBlock arrow" url="/pages/users/coupon">
+      <image mode="aspectFit" src="https://api.25boy.cn/Public/images/icon-color-coupon.png"></image> 优惠券
+      <view class="weui-badge" wx:if="{{couponRedDot > 0}}">可用</view>
+    </navigator>
+    <view class="blank1 pagegrey"></view>
+    <navigator class="rowBlock arrow" url="/pages/users/share">
+      <image mode="aspectFit" src="https://api.25boy.cn/Public/images/icon-color-photo.png"></image> 我的晒图
+    </navigator>
+    <view class="blank1 pagegrey"></view>
+    <navigator class="rowBlock arrow" url="/pages/users/favorite">
+      <image mode="aspectFit" src="https://api.25boy.cn/Public/images/icon-color-like.png"></image> 我的关注
+    </navigator>
+    <view class="blank1 pagegrey"></view>
+    <navigator class="rowBlock arrow" url="/pages/users/favorite?type=history">
+      <image mode="aspectFit" src="https://api.25boy.cn/Public/images/icon-color-history.png"></image> 浏览历史
+    </navigator>
+    <view class="blank10 pagegrey"></view>
+    <navigator class="rowBlock arrow" url="/pages/users/setting">
+      <image mode="aspectFit" src="https://api.25boy.cn/Public/images/icon-color-setting.png"></image> 设置
+    </navigator>
+
+    <official-account class="official-account" wx:if="{{canIUse}}"></official-account>
+    
+    <navigator url="/pages/index/contact">
+      <button class="contact-btn">在线客服</button>
+    </navigator>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>
+
+
+<!-- 钱包付款modal -->
+<view class="mask {{popBagLayerClass}}"></view>
+<view class="popLayer {{popBagLayerClass}}">
+    <icon type="cancel" size="26" color="#999" class="close" bindtap="hideBagLayer" />
+    <view class="bagModal">
+        <form bindsubmit="checkBagSubmit">
+            <view class="bagModal-content">您正在使用25BOY帐户余额支付 ¥{{newOrder.pay_total}}，请输入25BOY密码确认付款。</view>
+            <view class="bagModal-input">
+                <input type="text" password placeholder="请输入帐户密码" name="password" />
+            </view>
+            <view class="bagModal-btn">
+                <button type="primary" form-type="submit">确认支付</button>
+            </view>
+        </form>
+    </view>
+</view>
+
+<template is="mycode" data="{{displayMyCode:displayMyCode,mycode:mycode}}" />
+<template is="promoteTips" data="{{displayPromoteTips:displayPromoteTips}}" />

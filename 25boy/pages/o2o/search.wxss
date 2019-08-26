@@ -1,0 +1,19 @@
+page{background-color:#f2f2f2;}
+
+.findPass{padding:0 40rpx 40rpx;}
+.title{font-size:40rpx;text-align:center;margin-top:50rpx;}
+.title2{font-size:26rpx;text-align:center;margin-bottom:50rpx;margin-top:10rpx;color:#999;}
+.section{margin-bottom:20rpx;position:relative;font-size:30rpx;}
+.input-text{padding:20rpx;font-size:30rpx;background-color:#fff;padding-left:180rpx;}
+.input-switch{padding:20rpx;font-size:30rpx;background-color:#fff;padding-left:250rpx;display:block;}
+.input-label{position:absolute;left:20rpx;top:0;line-height:90rpx;}
+.input-picker{padding:20rpx;font-size:30rpx;background-color:#fff;}
+.btn-min{display:inline-block;font-size:30rpx;padding:20rpx 0;line-height:1.4rem;height:1.4rem;box-sizing:content-box;width:230rpx;position:absolute;right:0;top:0;}
+
+.table-th{border-left:1px #ddd solid;font-size:28rpx;}
+.table-td{border-bottom:1px #eee solid;border-left:1px #eee solid;vertical-align:middle;}
+.stock-image{width:50px;height:50px;}
+
+.weui-navbar__title{display:inline-block;}
+.weui-navbar__item{padding:8px 0;}
+.weui-navbar__slider{width:34%;margin:0 8%;}

@@ -1,0 +1,7 @@
+<import src="../common/o2o_msg_page.wxml" />
+
+<modal bindconfirm="confirmModal" bindcancel="cancelModal" hidden="{{modalHide}}" confirm-text="确认无误" cancel-text="重新填写" title="确认收货地址">
+  <text selectable="true" class="modalTip">收货人：{{userAddress.name}}\n联系电话：{{userAddress.phone}}\n收货地址：{{userAddress.local}}</text>
+</modal>
+
+<template is="msg_page" data="{{type:msgInfo.type,title:msgInfo.title,content:msgInfo.content,confirmUrl:msgInfo.confirmUrl,cancelUrl:msgInfo.cancelUrl,confirmText:msgInfo.confirmText,cancelText:msgInfo.cancelText,confirmOpenType:msgInfo.confirmOpenType,cancelOpenType: msgInfo.cancelOpenType}}" />

@@ -1,0 +1,29 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+	<view class="findPass">
+		<form bindsubmit="formSubmit">
+			<view class="loginTitle">设置新密码</view>
+
+			<view class="section">
+				<input class="input-text" password name="password" placeholder="请输入新密码" />
+			</view>
+			<view class="section">
+				<input class="input-text" password name="password2" placeholder="再次输入新密码" />
+			</view>
+
+			<view class="section">
+				<button formType="submit" type="primary" loading="{{btndoing}}" disabled="{{btndoing}}">修改密码</button>
+			</view>
+
+		</form>
+	</view>
+
+  </view>
+
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

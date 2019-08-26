@@ -1,0 +1,37 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+  		<form bindsubmit="submitForm" bindreset="formReset">
+	  		<view class="addshare">
+	  			<view class="addshare-textarea">
+		  			<textarea placeholder="跟大家分享点什么吧！" name="content"></textarea>
+		  		</view>
+
+		  		<view class="addshare-photos">
+		  			<view class="addshare-item" wx:for="{{photos}}" wx:for-index="idx" wx:key="">
+		  				<icon type="cancel" size="24" color="gray" class="addshare-item-icon" data-idx="{{idx}}" bindtap="delImg" />
+	  					<image class="addshare-img" src="{{item.url}}!w200" mode="scaleToFill"></image>
+	  				</view>
+	  				<view class="addshare-upbtn" bindtap="addImg" wx:if="{{showUpbtn}}">
+	  					<image class="addshare-addImgBtn" src="/images/addImg.png"></image>
+	  					<text class="addshare-addImgTxt">添加图片</text>
+	  				</view>
+	  			</view>
+
+		  		<view class="addshare-tip">最多上传5张图片。</view>
+
+		  		<view class="addshare-btn">
+		  			<button type="primary" form-type="submit">发布晒图</button>
+		  			<view class="blank20"></view>
+		  			<button type="dufault" bindtap="back">返回</button>
+		  		</view>
+	  		</view>
+  		</form>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

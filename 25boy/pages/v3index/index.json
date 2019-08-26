@@ -1,0 +1,8 @@
+{
+	"navigationBarTitleText": "25BOY国潮男装",
+	"enablePullDownRefresh": true,
+	"usingComponents": {
+    "van-tab": "/static/vant/tab/index",
+    "van-tabs": "/static/vant/tabs/index"
+  }
+}

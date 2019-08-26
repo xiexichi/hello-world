@@ -1,0 +1,19 @@
+<template name="header">
+    <view class="page-header">
+        <navigator class="page-topbar-left" open-type="switchTab" url="/pages/index/index">
+            <image mode="aspectFit" src="/images/icon-home.png" class="page-header-icon header-icon-home"></image>
+        </navigator>
+
+        <view class="page-header-text">{{title}}</view>
+
+        <view class="page-topbar-right" hover-class="hover-class" bindtap="{{iconTap}}" wx:if="{{icon}}">
+            <block wx:if="{{icon == 'search'}}">
+                <navigator url="/pages/products/list" open-type="redirect"><image mode="aspectFit" src="/images/icon-{{icon}}.png" class="page-header-icon header-icon-{{icon}}"></image></navigator>
+            </block>
+            <block wx:else>
+                <image mode="aspectFit" src="/images/icon-{{icon}}.png" class="page-header-icon header-icon-{{icon}}"></image>
+            </block>
+            <text class="header-icon-txt" wx:if="{{iconTxt}}">{{iconTxt}}</text>
+        </view> 
+    </view>
+</template>

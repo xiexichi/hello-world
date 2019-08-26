@@ -1,0 +1,21 @@
+page{background-color:#f2f2f2; font-size:32rpx;}
+
+.withdrawBox{padding:1em;}
+.section{margin-bottom:20rpx;position:relative;font-size:30rpx;}
+.input-text{padding:0 20rpx;font-size:30rpx;background-color:#fff;padding-left:180rpx;height:100rpx;}
+.input-picker{padding:0 20rpx;font-size:30rpx;background-color:#fff;height:100rpx;padding-left:180rpx;line-height:100rpx;}
+.input-label{position:absolute;left:20rpx;top:0;line-height:100rpx;}
+
+/*添加提现方式modal*/
+.popLayer-right{background:#fff;height:100%;}
+.modifyModal{height:100%;width:100%;background-color:#f2f2f2;}
+.modifyModal-form{padding:1em;display:block;padding-top:3em;}
+.modifyModal-title{font-size:26rpx;color:#999999;position:absolute;left:1em;top:1em;line-height:2em;}
+.modifyModal-info{padding:30rpx 50rpx;background-color:#f2f2f2;}
+.modifyModal-info text{display:block;font-size:30rpx;line-height:50rpx;}
+.modifyModal-dl{padding:30rpx;}
+.modifyModal-dt{border-bottom:1px solid #ddd;padding-bottom:20rpx;}
+.modifyModal-dd{border-top:1px dotted #ddd;padding:20rpx 0;}
+.modifyModal-dd:first-child{color:#ff6400;}
+.modifyModal-msg{display:block;font-size:30rpx;margin-bottom:10rpx;}
+.modifyModal-time{display:block;font-size:26rpx;color:#999;}

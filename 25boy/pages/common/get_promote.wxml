@@ -1,0 +1,24 @@
+<template name="get_promote">
+	<view class="mask {{displayPromote}}" bindtap="hidePromoteLayer"></view>
+	<view class="popLayer promotePopLayer {{displayPromote}}">
+		<icon type="cancel" size="26" color="#999" class="close" bindtap="hidePromoteLayer" />
+    	<view class="popLayer-title">获取推广素材</view>
+	    <view class="promoteLayer">
+	    	<view class="share-inbox">
+	    		<text class="share-text" selectable="true">我在25BOY发现了【{{data.product_name}}】很不错，推荐给你看看。领50元红包后更便宜哦！</text>
+	    		<view class="share-photos">
+	    			<image class="share-productImg" src="{{data.productImg}}" bindtap="previewImage" data-type="promoteProductImg"></image>
+	    			<image class="share-redpackImg" src="{{data.redpackImg}}" bindtap="previewImage" data-type="promoteRedpackImg"></image>
+	    		</view>
+                <button size="mini" type="default" class="share-button" bindtap="saveImagesToLocal" data-img="{{data.productImg}}">保存商品图片</button>
+                <button size="mini" type="default" class="share-button" bindtap="saveImagesToLocal" data-img="{{data.redpackImg}}">保存领红包图片</button>
+	    	</view>
+	    	<view class="share-instro">
+		    	<navigator class="share-logintip" url="/pages/public/login?url=close" wx:if="{{!sessionId}}">注意：你还没有登录或者未成为推广者，不能获取推广链接，请点击这里。</navigator>
+		    	<text class="share-instro-text" selectable="true">• 你也可以点击微信右上角菜单分享此页面给好友。</text>
+		    	<text class="share-instro-text" selectable="true">• 也可以保存以上图片分享到任何地方。</text>
+		    	<navigator class="share-moreLink" url="/pages/single/promoteApply">了解更多了关于分享返佣信息，请点击这里。</navigator>
+	    	</view>
+	    </view>
+	</view>
+</template>

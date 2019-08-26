@@ -1,0 +1,15 @@
+page{background-color:#f2f2f2;}
+
+.wallet-hd{background:#27256a;background-size:contain;text-align:center;color:#fff;padding:40rpx;}
+.wallet-symbol{font-size:60rpx;position:relative;left:-10rpx;top:-5rpx;}
+.wallet-money{font-size:80rpx;font-family:Verdana;}
+.wallet-hd button{font-size:15px;display:inline-block;padding-right:40rpx;padding-left:40rpx;}
+
+.wallet-bags{padding:10px;}
+contact-button{position:relative;top:6px;}
+
+.preapid-tips{font-size:28rpx;}
+
+.loadmore_line{margin-top: 20px;}
+
+.weui-navbar__slider{width:20%;}

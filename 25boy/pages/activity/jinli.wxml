@@ -1,0 +1,29 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="jinli">
+			<view class="jinli-cell">
+				<input class="jinli-input" type="text" name="jinli_code" placeholder="**********" placeholder-style="color:#000" disabled value="{{code}}" />
+			</view>
+			<block wx:if="{{code}}">
+				<button class="weui-btn weui-btn_primary" type="primary" bindtap="markPosterImage">生成专属海报</button>
+				<view class="share-tip">生成海报转发到朋友圈</view>
+			</block>
+			<button class="weui-btn weui-btn_warn" type="warn" bindtap="getCode" wx:else>获取抽奖码</button>
+		</view>
+	</view>
+
+	<view class="mask {{displayLayer}}" bindtap="hideLayer"></view>
+	<view class="popLayer myPosterLayer {{displayLayer}}" bindtap="hideLayer">
+		<view class="myPoster">
+			<view class="myPoster-imgobx">
+				<image src="https://api.25boy.cn/Public/images/jinli-share.jpg" class="myPoster-image" mode="widthFix"></image>
+			</view>
+			<button class="weui-btn weui-btn_primary" type="primary" catchtap="savePosterImage">保存图片到手机</button>
+		</view>
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

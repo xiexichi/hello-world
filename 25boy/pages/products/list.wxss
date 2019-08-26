@@ -1,0 +1,34 @@
+.page-body{height:100%;}
+scroll-view{position:relative;z-index:1;}
+.productList{padding:10rpx;padding-bottom:30px;display:flex;flex-wrap:wrap;margin-top:40px;}
+.productItem{width:50%;margin-bottom:10rpx;}
+.innerbox{padding:10rpx;line-height:1.2em}
+.productItem-image{height:345rpx;width:345rpx;}
+.productItem-brand{font-size:30rpx;}
+.productItem-product_name{font-size:30rpx;text-overflow:ellipsis;white-space:nowrap;width:100%;overflow:hidden;display:block;line-height:45rpx;height:45rpx;}
+.productItem-price{font-size:36rpx;color:#b01f23;}
+.productItem-recharge_price{font-size:32rpx;color:#b01f23;}
+
+.filterBar{width:100%;position:fixed;top:0;background:#f2f2f2;z-index:2;height:40px;line-height:40px;overflow:hidden;}
+.filter{display:flex;width:70%;justify-content:space-around;align-items:center;transition:width .5s ease;}
+.filter-item{font-size:28rpx;color:#999;}
+.filter-on{color:#000;}
+.filter-sort{background:url(https://api.25boy.cn/Public/images/sort.png) no-repeat right center;background-size:14px auto;padding-right:15px;}
+.sort-asc{background:url(https://api.25boy.cn/Public/images/sort-asc.png) no-repeat right center;background-size:14px auto;padding-right:15px;}
+.sort-desc{background:url(https://api.25boy.cn/Public/images/sort-desc.png) no-repeat right 10px;background-size:14px auto;padding-right:15px;}
+
+.filterBrand{position:fixed;top:40px;left:0;width:100%;display:flex;flex-wrap:wrap;z-index:3;background-color:#f2f2f2;}
+.brand-item{width:20%;}
+.brand-image{width:130rpx;height:60rpx;display:block;padding:10rpx;}
+
+.search{display:flex;align-items:center;justify-content:flex-start;width:20px;overflow:hidden;position:relative;right:10px;transition:width .5s ease;}
+.search-icon{display:block;position:relative;top:9px;width:20px;margin-right:10px;}
+.search-text{font-size:30rpx;display:none;}
+.search-close{position:relative;top:9px;margin-right:10px;display:none;}
+
+.filter.isSearch{width:50%;transition:width .5s ease;}
+.search.isSearch{width:45%;right:0px;}
+.search.isSearch .search-text,
+.search.isSearch .search-close{display:block;}
+
+.loadmore_line text{background-color:#fff;}

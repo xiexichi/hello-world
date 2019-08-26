@@ -1,0 +1,27 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+	<view class="categorys">
+		<block wx:for="{{categorys}}" wx:for-item="item"wx:for-index="index" wx:key="category_id" wx:if="{{index < 4}}">
+			<view class="categorys-dl">
+				<view class="categorys-dt">
+					<navigator url="/pages/products/list?id={{item.category_id}}">
+						<image src="https://api.25boy.cn/Public/img/categorys-tit-{{item.category_id}}.png" mode="aspectFit" class="categorys-title"></image>
+					</navigator>
+				</view>
+				<view class="categorys-dd">
+					<block wx:for="{{item.subCategory}}" wx:for-item="v" wx:key="category_id">
+						<navigator url="/pages/products/list?id={{v.category_id}}" class="categorys-item" wx:if="{{v.img_url && v.status==1}}">
+							<image src="{{v.img_url}}!w200" class="categorys-image"></image>
+						</navigator>
+					</block>
+				</view>
+			</view>
+		</block>
+	</view>
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

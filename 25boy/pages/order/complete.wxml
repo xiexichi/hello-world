@@ -1,0 +1,3 @@
+<import src="../common/msg_page.wxml" />
+
+<template is="msg_page" data="{{type:msgInfo.type,title:msgInfo.title,content:msgInfo.content,confirmUrl:msgInfo.confirmUrl,confirmText:'查看订单',cancelText:'返回首页'}}" />

@@ -1,0 +1,33 @@
+<view class="address">
+
+	<block wx:for="{{addressList}}" wx:for-item="item" wx:key="address_id">
+		<view class="item" catchtap="selectItem" data-id="{{item.address_id}}" data-name="{{item.receiver_name}}" data-phone="{{item.receiver_phone}}" data-local="{{item.state_name}}{{item.city_name}}{{item.district_name}}{{item.address}}">
+			<view class="jbw">
+				<text class="name" selectable="true">{{item.receiver_name}}</text>
+				<text class="tel" selectable="true">{{item.receiver_phone}}</text>
+			</view>
+			<text class="local" selectable="true">{{item.state_name}}{{item.city_name}}{{item.district_name}}{{item.address}}</text>
+			<!-- <block wx:if="{{type == ''}}"> -->
+				<view class="opr jbw">
+					<block wx:if="{{user.address_id==item.address_id}}">
+						<view class="default on"><icon type="success" size="18" color="orange"/>默认地址</view>
+					</block>
+					<block wx:else>
+						<view class="default" catchtap="setDefault" data-id="{{item.address_id}}"><icon type="circle" size="18" color="" />设为默认</view>
+					</block>
+					<view class="action">
+						<view class="action-item" catchtap="editAddress" data-id="{{item.address_id}}" >编辑</view>
+						<view class="action-item" catchtap="delAddress" data-id="{{item.address_id}}">删除</view>
+					</view>
+				</view>
+			<!-- </block> -->
+		</view>
+	</block>
+
+	<view class="loadmore_line {{loadmore_line}}">
+		<text>暂无数据</text>
+	</view>
+
+</view>
+
+<navigator url="addressModify" class="fixed-bottom-button">+ 添加地址 +</navigator>

@@ -1,0 +1,7 @@
+page{background-color:#f2f2f2;}
+
+.categorys{margin-top:60rpx;}
+.categorys-dd{margin-bottom:100rpx;width:100%;overflow:hidden;}
+.categorys-title{width:680rpx;height:65rpx;display:block;margin:20rpx auto;}
+.categorys-item{width:33.33%;float:left;text-align:center;}
+.categorys-image{width:250rpx;height:250rpx;display:block;margin:10rpx 0;}

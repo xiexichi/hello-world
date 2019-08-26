@@ -1,0 +1,42 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+  	
+      <view class="address">
+          <form bindsubmit="formSubmit">
+            <view class="address-input"><input type="text" placeholder="收货人姓名" name="receiver_name" value="{{address.receiver_name}}" /></view>
+            <view class="address-input"><input type="text" placeholder="手机号码" name="receiver_phone" value="{{address.receiver_phone}}" /></view>
+            <view class="address-area">
+                <view class="address-area-picker arrow">
+                  <picker value="{{addressValue.state}}" bindchange="bindPickerChange" range="{{addressData.state}}" data-type="state" name="state">
+                  {{addressDefault.state}}
+                  </picker>
+                </view>
+                <view class="address-area-picker arrow">
+                  <picker bindchange="bindPickerChange" value="{{addressValue.city}}" range="{{addressData.city}}" data-type="city" name="city">
+                  {{addressDefault.city}}
+                  </picker>
+                </view>
+                <view class="address-area-picker">
+                  <picker bindchange="bindPickerChange" value="{{addressValue.district}}" range="{{addressData.district}}" data-type="district" name="district">
+                  {{addressDefault.district}}
+                  </picker>
+                </view>
+            </view>
+            <view class="address-input">
+                <input type="text" placeholder="详细地址" name="address" value="{{address.address}}" />
+                <i class="icon-local" bindtap="getMyPosition">定位</i>
+            </view>
+            <view class="address-tips"><icon type="warn" size="12" color="#999"/>  注：使用定位会获取您的地理位置信息。</view>
+
+            <view class="address-btn"><button type="primary" form-type="submit">保存</button></view>
+            <view class="address-btn"><button type="default" bindtap="getWxAddress">选择微信收货地址</button></view>
+          </form>   
+      </view>
+    
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

@@ -1,0 +1,54 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="img-box">
+			<image src="{{item.srcurl}}!w800" mode="widthFix" wx:for="{{banner}}" wx:for-item="item" wx:for-index="index" wx:key="ad_id"></image>
+		</view>
+
+		<form bindsubmit="submitRecharge" report-submit>
+			<view class="recharge-title">请输入充值金额(元)</view>
+			<view class="recharge-input">
+				<input type="digit" value="{{recharge_price?recharge_price:''}}" placeholder="输入金额" class="recharge-input-text" bindblur="getRechargeInfo" name="money" />
+			</view>
+			<view class="recharge-plus">
+				<view class="after_price" wx:if="{{after_price > 0}}">到账余额：¥{{after_price}}</view>
+				<view class="detail">
+					<view wx:if="{{note}}">{{note}}</view>
+					<view wx:if="{{giftQuantity > 0}}">再送龙狮客栈入住体验券 x {{giftQuantity}}</view>
+				</view>
+			</view>
+			<view class="recharge-btn">
+	            <button type="primary" form-type="submit">{{after_price>0?'确认充值':'查询充值'}}</button>
+	        </view>
+	        <view class="recharge-checkbox">
+				<view class="color-link" bindtap="showRechargeRule">充值规则</view>
+			</view>
+        </form>
+
+        <view class="footer-link">
+        	<navigator class="color-link" url="/pages/index/index" open-type="switchTab">← 进入商城</navigator>
+        	<navigator class="color-link" target="miniProgram" app-id="wxd69363cb21b8bce8" url="pages/index?token={{user.sessionId}}">进入客栈 →</navigator>
+        </view>
+
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>
+
+<!-- 充值规则Modal -->
+<view class="mask {{popLayerClass}}" bindtap="hideRechargeRule"></view>
+<view class="popLayer myPopLayer {{popLayerClass}}" bindtap="hideRechargeRule">
+    <view class="myLayer">
+    	<view class="recharge-rule">
+    		<text class="recharge-rule-dt">活动规则：</text>
+    		<text>1. 充值成功后，您的充值金额及赠送金额将会实时进入您的25BOY账户。</text>
+    		<text>2. 在活动期间，不限充值次数，可累计充值，多充多送。</text>
+    		<text>3. 充值金额仅可通过您的个人账户购买25BOY商品，不可提现、退款及转赠。</text>
+    		<text>4. 使用充值金额购物的订单，按25BOY普通商品退换货规则办理退换货，退换货订单产生的退款将返回账户余额。</text>
+    		<text>5. 余额有效日期：永久有效。</text>
+    		<text>6. 分销商不参与充值赠送活动。</text>
+    	</view>
+    </view>
+</view>

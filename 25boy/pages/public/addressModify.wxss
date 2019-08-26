@@ -1,0 +1,9 @@
+page{background-color:#f2f2f2;}
+.address{padding:20rpx;}
+.address-input{padding:20rpx;margin-bottom:20rpx;font-size:32rpx;background-color:#fff;position:relative;}
+.address-area{padding:25rpx 20rpx;font-size:32rpx;display:flex;background-color:#fff;margin-bottom:20rpx;}
+.address-area-picker{width:33.33%;text-align:center;display:flex-inline;}
+.address-tips{color:#999;font-size:12px;margin-bottom:20rpx;display:flex;align-items:center;}
+.address-btn{margin-top:30rpx;}
+.icon-local{background:url(https://api.25boy.cn/Public/images/icon-local.png) no-repeat center;background-size:contain;padding-left:50px;height:20px;line-height:22px;display:block;position:absolute;right:15px;top:50%;margin-top:-10px;z-index:2;font-size:14px;color:#999;}
+.arrow::after{right:0;}

@@ -1,0 +1,65 @@
+<import src="../common/header.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <template is="header" data="{{title:titleName,icon:'filter',iconTap:'filterOrderTap'}}" />
+
+  <view class="page-body">
+  
+        <view class="orderList">
+
+          <block wx:for="{{orderList}}" wx:for-item="item" wx:key="order_id">
+            <view class="orderItem">
+              <view class="orderItem-hd jbw">
+                  <view class="orderItem-info">
+                      <text class="orderItem-sn" selectable="true">单号：{{item.order_sn}}</text>
+                      <text class="orderItem-time">{{item.date_format}}</text>
+                  </view>
+                  <view class="orderItem-status">{{item.status_name}}</view>
+              </view>
+              <navigator class="orderItem-bd" url="/pages/users/o2oOrderDetail?id={{item.order_id}}">
+                  <block wx:if="{{item.order_totalnum > 2}}">
+                    <view class="orderItem-dl">
+                        <view class="orderItem-dt orderItem-dt-more" wx:for="{{item.order_items}}" wx:for-item="val" wx:key="items_id"><image src="{{val.color_photo}}!w200"></image></view>
+                    </view>
+                  </block>
+                  <block wx:else>
+                    <view class="orderItem-dl" wx:for="{{item.order_items}}" wx:for-item="val" wx:key="items_id">
+                        <view class="orderItem-dt">
+                            <image src="{{val.color_photo}}!w200"></image>
+                        </view>
+                        <view class="orderItem-dd">
+                            <text class="orderItem-name">{{val.product_name}}</text>
+                            <text class="orderItem-prop">规格：{{val.color_prop}} {{val.size_prop}}</text>
+                            <text class="orderItem-price">单价：¥{{val.price}} x {{val.quantity}}</text>
+                        </view>
+                    </view>
+                  </block>
+              </navigator>
+              <view class="orderItem-ft">
+                  <view class="orderItem-payinfo">
+                    合计：¥{{item.pay_total}} <view class="orderItem-shipfee" wx:if="{{item.ship_price > 0}}">(含运费{{item.ship_price}}元)</view>
+                  </view>
+                  <view class="orderItem-btn">
+                    <navigator url="/pages/users/o2oOrderDetail?id={{item.order_id}}"><button size="mini" type="default">订单详情</button></navigator>
+                  </view>
+              </view>
+          </view>
+          <view class="blank10 pagegrey"></view>
+        </block>
+      </view>
+
+      <view class="loadmore {{loadmore}}">
+        <view class="loadmore-icon"></view>
+        <text>正在加载</text>
+      </view>
+
+      <view class="loadmore_line {{loadmore_line}}">
+        <text>暂无数据</text>
+      </view>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

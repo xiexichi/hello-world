@@ -1,0 +1,18 @@
+page{background-color:#f2f2f2;}
+.my_coupons{padding:0 30rpx 50px 30rpx;}
+.coupon_item{padding: 30rpx 30rpx;overflow:hidden;background:url(https://m.25boy.cn/statics/img/coupon_checkin.png) no-repeat right center;background-size:cover;margin:10px 0;display: block;border-radius:6px;}
+.coupon_title{font-size:36rpx;color:#da3335;font-weight:700;display:block;}
+.exp_date{font-size:28rpx;color:#666;padding:5px 0 0 0;display:block;}
+.footer-link{display:flex;justify-content:space-between;font-size:14px;position:absolute;bottom:40rpx;left:50rpx;width:650rpx;}
+.processing{
+	margin-top:160rpx;
+}
+.processing-image{
+	width:300rpx;
+	display:block;
+	margin:50rpx auto;
+}
+.processing-text{
+	text-align:center;
+	font-size:38rpx;
+}

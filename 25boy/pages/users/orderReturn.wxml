@@ -1,0 +1,119 @@
+<import src="../common/order_operat.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body">
+		<view class="orderReturn">
+
+			<form bindsubmit="submitForm">
+				<view class="rowBlock jbw" bindtap="showTips" data-msg="本系统只支持退货申请；换货不需要在线申请，填写售后单寄回即可。（售后单即是25BOY 发货单的背面）" >
+		            <view class="rowLeft">退换类型</view>
+		            <icon type="info" size="20" color="#ccc" />
+		        </view>
+				<view class="rowBlockItem">
+		          <radio-group class="radio-group" name="exchange">
+		              <label class="item jbw" for="exchange-back">
+		                  <text>申请退货退款</text>
+		                  <radio id="exchange-back" value="back" checked="checked" />
+		              </label>
+		            </radio-group>
+		        </view>
+		        <view class="rowTip color-red">注: 换货不需要在线申请，填写售后单寄回即可。</view>
+
+		        <view class="blank10 pagegrey"></view>
+
+		        <view class="rowBlock jbw" bindtap="showTips" data-msg="如果是错发、漏发或者质量问题，请上传图片凭证，并先垫付运费寄回。" >
+		            <view class="rowLeft">退货原因</view>
+		            <icon type="info" size="20" color="#ccc" />
+		        </view>
+				<view class="rowBlockItem">
+		          <radio-group class="radio-group" name="condition" bindchange="setParams" data-key="condition">
+		              <label class="item jbw" for="condition-1">
+		                  <text>不喜欢，七天无理由退换货</text>
+		                  <radio id="condition-1" value="1" checked="checked" />
+		              </label>
+		              <label class="item jbw" for="condition-2">
+		                  <text>错发、漏发</text>
+		                  <radio id="condition-2" value="2" />
+		              </label>
+		              <label class="item jbw" for="condition-3">
+		                  <text>质量问题</text>
+		                  <radio id="condition-3" value="3" />
+		              </label>
+		            </radio-group>
+		        </view>
+
+		        <view class="blank10 pagegrey"></view>
+
+		        <view class="rowBlock jbw" bindtap="showTips" data-msg="内裤因商品特性不支持七天无理由退货！每款商品暂时只支持全部数量退货！">
+		            <view class="rowLeft">选择退货商品</view>
+		            <icon type="info" size="20" color="#ccc" />
+		        </view>
+		        <view class="rowBlockItem">
+		        	<checkbox-group class="checkbox-group" name="items" bindchange="setParams" data-key="items">
+		        		<block wx:for="{{orderItem}}" wx:for-item="item" wx:key="items_id">
+			            	<label class="item jbw relative" for="goods-{{item.items_id}}" wx:if="{{item.free_return==1 || params.condition>1}}">
+			                	<dl class="goods-item">
+			                		<dt class="goods-item-dt">
+			                			<image src="{{item.color_photo}}!w200" mode="aspectFit" class="goods-image"></image>
+			                		</dt>
+			                		<dd class="goods-item-dd">
+				                  		<view class="goods-title">{{item.product_name}}</view>  
+				                  		<view class="goods-prop color-gray">{{item.color_prop}}，{{item.size_prop}}码</view>  
+			                  		</dd>
+			                	</dl>
+			                	<view class="goods-num color-gray">x{{item.num}}</view>
+			                	<checkbox id="goods-{{item.items_id}}" value="{{item.items_id}}" checked="" />
+			            	</label>
+		            	</block>
+		            </checkbox-group>
+		        </view>
+
+		        <view class="blank10 pagegrey"></view>
+
+		        <view class="rowBlock jbw" bindtap="showTips" data-msg="对此次退换货有其它补充或者要求，请在此留言说明。">
+		            <view class="rowLeft">留言/说明</view>
+		            <icon type="info" size="20" color="#ccc" />
+		        </view>
+				<view class="rowBlockItem">
+		        	<textarea placeholder="请输入退换原因或留言" class="return-note" name="note" />
+		        </view>
+
+		        <view class="blank10 pagegrey"></view>
+
+		        <view class="rowBlock jbw">
+		            <view class="rowLeft">上传凭证(最多3张)</view>
+		        </view>
+				<view class="rowBlockItem">
+		        	<view class="addshare-photos">
+		        		<view class="addshare-item" wx:for="{{photos}}" wx:for-index="idx" wx:key="">
+		        			<icon type="cancel" size="24" color="gray" class="addshare-item-icon" data-idx="{{idx}}" bindtap="delImg" />		        	
+		        			<image class="addshare-img" src="{{item.url}}!w200" mode="scaleToFill"></image>
+		        		</view>
+		        		<view class="addshare-upbtn" bindtap="addImg" wx:if="{{showUpbtn}}">
+		        			<image class="addshare-addImgBtn" src="/images/addImg.png"></image>
+		        		</view>
+		        	</view>
+		        </view>
+		        <view class="rowTip color-red">注: 非七天无理由退换，需要上传凭证。</view>
+
+		        <view class="blank10 pagegrey"></view>
+
+		        <view class="return-desc">
+		        	需要退款：¥{{refund_price}}
+		        </view>
+
+		        <view class="blank20 pagegrey"></view>
+
+		        <view class="btnBox">
+			        <button type="warn" form-type="submit">提交申请</button>
+			        <button class="cancel-back" bindtap="cancelBack">返回</button>
+		        </view>
+		    </form>
+
+		</view>
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

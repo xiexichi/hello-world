@@ -1,0 +1,26 @@
+/*
+适应图片尺寸
+px转rpx 750/640 = 1.171875
+图片原始尺寸x1.171875
+ */
+
+page{background-color:#f2db03;}
+.map_div{position:relative;}
+.map_div navigator{position:absolute;display:block;}
+.map_img1{width:375rpx;height:375rpx;top:217rpx;left:29rpx;}
+.map_img2{width:234rpx;height:434rpx;top:193rpx;left:410rpx;}
+.map_img3{width:369rpx;height:369rpx;top:1195rpx;left:47rpx;}
+.map_img4{width:234rpx;height:434rpx;top:1172rpx;left:422rpx;}
+.map_img5{width:468rpx;height:527rpx;top:2185rpx;left:29rpx;}
+.map_img6{width:468rpx;height:527rpx;top:2970rpx;left:258rpx;}
+.map_img7{width:293rpx;height:328rpx;top:3768rpx;left:61rpx;}
+.map_img8{width:293rpx;height:328rpx;top:3768rpx;left:423rpx;}
+
+image{display:block;}
+.map-image0{width:750rpx;height:785rpx;}
+.map-image1{width:750rpx;height:1021rpx;}
+.map-image2{width:750rpx;height:955rpx;}
+.map-image3{width:750rpx;height:792rpx;}
+.map-image4{width:750rpx;height:778rpx;}
+.map-image5{width:750rpx;height:957rpx;}
+.map-image6{width:750rpx;height:407rpx;}

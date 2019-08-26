@@ -1,0 +1,11 @@
+page{background-color:#f2f2f2;}
+.item{padding:30rpx;font-size:34rpx;font-weight:normal;background-color:#fff;margin-bottom:20rpx;}
+.local{display:block;margin-top:20rpx;}
+.opr{border-top:1px solid #ddd;margin-top:20rpx;padding-top:20rpx;}
+.default{position:relative;padding-left:25px;}
+.default.on{color:orange;}
+.default icon{position:absolute;left:0;top:0;}
+.action navigator{margin-left:30rpx;display:inline-block;}
+.action-item{margin-left:30rpx;display:inline-block;}
+
+.loadmore_line{margin-top:50px;}

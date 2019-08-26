@@ -1,0 +1,43 @@
+<import src="../common/header.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+      <template is="header" data="{{title:titleName,icon:'filter',iconTap:'filterCouponTap'}}" />
+
+      <view class="weui-tab">
+          <view class="weui-navbar">
+              <view id="0" class="weui-navbar__item weui-bar__item_on">
+                  <view class="weui-navbar__title">商城券</view>
+              </view>
+              <view id="1" class="weui-navbar__item">
+                  <navigator class="weui-navbar__title" target="miniProgram" app-id="wxd69363cb21b8bce8" path="pages/coupon?token={{user.sessionId}}">客栈券</navigator>
+              </view>
+              <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+          </view>
+      </view>
+
+      <view class="coupon-box">
+        <block wx:for="{{dataList}}" wx:for-item="voucher" wx:key="voucher_id">
+          <view class="coupon-item {{voucher.expired?'coupon-item_dis':''}}">
+            <view class="coupon-title" selectable="true">
+                ¥ {{voucher.amount}}
+                <view class="remaining_quota" wx:if="{{voucher.voucher_type_id==2}}">剩余:{{voucher.remaining_quota}}</view>
+            </view>
+            <text class="exp_date" selectable="true">有效期至 {{voucher.term_date}}</text>
+          </view>
+        </block>
+      </view>
+
+      <view class="loadmore {{loadmore}}">
+        <view class="loadmore-icon"></view>
+        <text>正在加载</text>
+      </view>
+
+  </view>
+
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

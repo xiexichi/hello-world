@@ -1,0 +1,250 @@
+<import src="../common/footer.wxml" />
+<import src="../common/promoteTips.wxml" />
+<import src="../common/activityPopup.wxml" />
+<import src="../common/searchbar.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+    <view class="index-search">
+        <image mode="aspectFit" src="/images/logo.png" class="index-search-logo"></image>
+        <template is="searchbar" data="{{inputShowed:inputShowed,inputVal:inputVal}}" />
+    </view>
+
+    <!--轮播图片-->
+    <view class="home_banner">
+        <view class="section section_gap swiper">
+            <swiper indicator-dots="true" autoplay="true" interval="3000" duration="1000">
+            <block wx:for="{{bannerList}}" wx:key="ad_id">
+                <swiper-item>
+                <navigator url="{{item.newUrl}}"><image src="{{item.srcurl}}!w800" mode="aspectFill" class="slide-image"></image></navigator>
+                </swiper-item>
+            </block>
+            </swiper>
+        </view>
+    </view>
+    <view class="weui-flex home_promise">
+        <view class="weui-flex__item">
+            <view class="promise-icon icon-reparge"></view>充200送200
+        </view>
+        <view class="weui-flex__item">
+            <view class="promise-icon icon-price"></view>线上线下同价
+        </view>
+        <view class="weui-flex__item">
+            <view class="promise-icon icon-shipping"></view>全场包邮
+        </view>
+    </view>
+
+    <!--ICON图标-->
+    <view class="iconList" wx:if="{{iconList != ''}}">
+        <block wx:for="{{iconList}}" wx:key="ad_id">
+            <view class="iconItem">
+                <view class="weui-badge icon-badge shake-slow shake-constant" wx:if="{{item.hot}}">HOT</view>
+                <navigator url="{{item.wxapp_url}}">
+                    <image src="{{item.src}}" mode="widthFix" class="icon"></image>
+                    <text>{{item.text}}</text>
+                </navigator>
+            </view>
+        </block>
+        <!-- <view class="iconItem">
+            <view bindtap="showWxCodeLayer">
+                <image src="https://m.25boy.com/statics/img/new_home/icon-public.png" mode="aspectFit" class="icon"></image>
+                <text>公众号</text>
+            </view>
+        </view> -->
+        <view class="iconItem">
+            <view class="contactTag">
+                <contact-button type="default-light" size="27" session-from="weapp"></contact-button>
+            </view>
+            <text>客服</text>
+        </view>
+    </view>
+
+    <view class="activityBody">
+
+        <!--放假公告-->
+        <!-- data:holiday, 只显示图片holiday_pic，不带链接 -->
+        <block wx:if="{{holiday != ''}}">
+            <block wx:for="{{holiday}}" wx:key="holiday_id" wx:for-index="idx">
+                <view class="blank5 pagegrey"></view>
+                <image src="{{item.holiday_pic}}!w800" mode="widthFix" class="activity_banner-img img-{{idx}}" lazy-load="true" data-type="holiday" data-idx="{{idx}}"></image>
+            </block>
+        </block>
+
+        <!--首页活动广告区-->
+        <!-- data:activity_banner, 横幅广告列表 -->
+        <block wx:if="{{activity_banner != ''}}">
+            <block wx:for="{{activity_banner}}" wx:key="ad_id" wx:for-index="idx">
+                <view class="blank5 pagegrey"></view>
+                <block wx:if="{{item.weapp}}">
+                    <navigator target="miniProgram" open-type="navigate" app-id="{{item.weapp.appid}}" path="{{item.weapp.path}}" version="trial" class="img-box">
+                        <image src="{{item.srcurl}}!w800" class="popup-image" mode="widthFix"></image>
+                    </navigator>
+                </block>
+                <block wx:else>
+                    <block wx:if="{{item.type == 'flash'}}">
+                        <video class="videoPreview" src="{{item.contxt}}" poster="{{item.srcurl}}"></video>
+                    </block>
+                    <block wx:else>
+                        <navigator url="{{item.newUrl}}" class="img-box">
+                            <image src="{{item.srcurl}}!w800" mode="widthFix" class="activity_banner-img img-{{idx}}" lazy-load="true" data-type="activity_banner" data-idx="{{idx}}"></image>
+                        </navigator>
+                    </block>
+                </block>
+            </block>
+        </block>
+
+        <!-- 合作联名区 -->
+        <block wx:if="{{joint_name != ''}}">
+            <view class="blank10 pagegrey"></view>
+            <view class="jointName">
+                <view class="joint-item joint-item{{idx}}" wx:for="{{joint_name}}" wx:key="ad_id" wx:for-index="idx">
+                    <navigator url="{{item.newUrl}}" class="joint-navigator">
+                    <image src="{{item.srcurl}}!w390" mode="scaleToFill" class="joint-img"></image>
+                    </navigator>
+                </view>
+            </view>
+        </block>
+
+    </view>
+
+    <!-- 首页新品栏目 -->
+    <block wx:if="{{product_new_list != ''}}">
+        <!-- data:new_banner，banner广告列表  -->
+        <view wx:for="{{new_banner}}" wx:key="ad_id" wx:for-index="idx" class="img-box">
+            <view class="blank10 pagegrey"></view>
+            <navigator url="{{item.newUrl}}">
+                <image src="{{item.srcurl}}!w800" mode="widthFix" class="banner-img" bindload="resetImage" lazy-load="true" data-type="new_banner" data-idx="{{idx}}"></image>
+            </navigator>
+        </view>
+        <!-- data:product_new_list，商品列表  -->
+        <view class="weui-grids">
+            <view wx:for-item="item" wx:key="product_id" class="productItem weui-grid" hover-class="weui-grid_active" wx:for="{{product_new_list}}">
+                <navigator url="/pages/products/index?id={{item.product_id}}" class="img-box productItem-navigator">
+                    <image src="{{item.product_img}}!w232" mode="aspectFill" class="productItem-img"></image>
+                </navigator>
+            </view>
+        </view>
+    </block>
+
+
+    <!-- 首页类目栏目图 -->
+    <block wx:if="{{index_categorys_items != ''}}">
+        <view class="blank10"></view>
+        <view class="block-title">[分类]</view>
+        <!-- data:category_banner， banner广告列表 -->
+        <view wx:for="{{category_banner}}" wx:key="ad_id" wx:for-index="idx" class="img-box">
+            <navigator url="{{item.newUrl}}">
+                <image src="{{item.srcurl}}!w800" mode="widthFix" class="banner-img" bindload="resetImage" lazy-load="true" data-type="category_banner" data-idx="{{idx}}" style="width:{{item.width}};height:{{item.height}};"></image>
+            </navigator>
+        </view>
+        <view class="weui-grids weui-grids-4 categoryList">
+            <!-- data:index_categorys_items，一行两列分类图片，广告形式 -->
+            <view wx:for="{{index_categorys_items}}" wx:for-item="item" wx:for-index="idx" wx:key="ad_id" class="categoryItem weui-grid" hover-class="weui-grid_active">
+                <navigator url="{{item.newUrl}}" class="img-box">
+                    <image src="{{item.srcurl}}!w390" mode="widthFix" class="categoryItem-img"></image>
+                </navigator>
+            </view>
+        </view>
+    </block>
+
+
+    <!-- 精选晒图 -->
+    <block wx:if="{{shareList != ''}}">
+        <view class="blank30 pagegrey"></view>
+        <view class="section section_gap share-section">
+            <navigator class="share-more" url="/pages/share/index">
+                <image class="share-more-icon" src="https://api.25boy.cn/Public/images/camera-icon.png" mode="widthFix"></image>
+                <text class="share-more-text">[更多晒图]</text>
+            </navigator>
+            <swiper class="share-swiper" indicator-dots="true" autoplay="true" interval="3000" duration="1000" circular="true">
+                <!-- data:shareList，精选晒图轮播 -->
+                <block wx:for="{{shareList}}" wx:key="share_id">
+                    <swiper-item>
+                        <navigator url="/pages/share/detail?id={{item.share_id}}">
+                            <image src="{{item.image}}!w800" class="share-image" mode="aspectFill"></image>
+                        </navigator>
+                        <view class="share-cont flex-wrp">
+                            <image src="{{item.userimg}}" class="share-avatar" mode="aspectFill"></image>
+                            <text class="share-username" wx:if="{{item.username}}">{{item.username}}：</text>
+                            <text class="share-content">{{item.content}}</text>
+                        </view>
+                    </swiper-item>
+                </block>
+            </swiper>
+        </view>
+    </block>
+
+    <!-- 首页品牌展示 -->
+    <block wx:if="{{brands_list != ''}}">
+        <view class="blank10 pagegrey"></view>
+        <view class="block-title">[品牌]</view>
+        <!-- data:brand_banner， banner广告列表 -->
+        <view wx:for="{{brand_banner}}" wx:key="ad_id" wx:for-index="idx" class="img-box">
+            <navigator url="{{item.newUrl}}">
+                <image src="{{item.srcurl}}!w800" mode="widthFix" class="banner-img" bindload="resetImage" lazy-load="true" data-type="brand_banner" data-idx="{{idx}}" style="width:{{item.width}};height:{{item.height}};"></image>
+            </navigator>
+        </view>
+        <view class="accessoryList">
+            <!-- data:brands_list，一行三列品牌图片，广告形式 -->
+            <view wx:for="{{brands_list}}" wx:for-item="item" wx:key="ad_id" class="accessoryItem">
+                <navigator url="{{item.newUrl}}" class="img-box">
+                    <image src="{{item.srcurl}}!w390"></image>
+                </navigator>
+            </view>
+        </view>
+    </block>
+
+
+    <!--单品广告图片-->
+    <block wx:if="{{banner_item != ''}}">
+        <view class="blank10 pagegrey"></view>
+        <view class="goodsBanner pagegrey">
+            <!-- data:banner_item，横幅广告列表 -->
+            <block wx:for="{{banner_item}}" wx:key="ad_id">
+                <navigator url="{{item.newUrl}}" class="img-box">
+                    <image src="{{item.srcurl}}!w800" mode="widthFix"></image>
+                </navigator>
+            </block>
+        </view>
+    </block>
+
+    <!--人气热卖-->
+    <block wx:if="{{hot_productList != ''}}">
+        <view class="blank10 pagegrey"></view>
+        <view class="block-title">[热卖新品]</view>
+        <scroll-view scroll-y="true" lower-threshold="20" bindscrolltolower="loadMore" style="height:550px;">
+            <view class="productList">
+                <!-- data:hot_productList，ajax商品列表 -->
+                <view wx:for="{{hot_productList}}" wx:for-item="item" class="productItem" wx:key="ad_id">
+                    <view class="innerbox">
+                        <navigator url="/pages/products/index?id={{item.product_id}}"><image mode="aspectFit" src="{{item.product_img}}!w390" class="productItem-image" lazy-load="true"></image></navigator>
+                        <text class="productItem-brand">{{item.brand_name}}</text>
+                        <text class="productItem-product_name">{{item.product_name}}</text>
+                        <text class="productItem-price">¥{{item.price}}</text>
+                        <text class="productItem-recharge_price" wx:if="{{item.recharge_price}}">充值相当于 ¥{{item.recharge_price}}</text>
+                    </view>
+                </view>
+            </view>
+
+            <view class="loadmore {{loadmore}}">
+                <view class="loadmore-icon"></view>
+                <text>正在加载</text>
+            </view>
+
+            <view class="loadmore_line {{loadmore_line}}">
+                <text>The End</text>
+            </view>
+
+        </scroll-view>
+    </block>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>
+
+<template is="promoteTips" data="{{displayPromoteTips:displayPromoteTips}}" />
+
+<template is="activityPopup" data="{{data:activityPopup}}" />

@@ -1,0 +1,11 @@
+page{background-color:#f2f2f2;}
+
+.withdrawBox{padding:1em;}
+.withdrawBox-head{text-align:center;margin:1em 0;}
+.withdrawBox-icon{display:block;width:200rpx;height:200rpx;margin:20rpx auto;}
+
+.withdrawBox-main{margin-top:2em;}
+.section{margin-bottom:20rpx;position:relative;font-size:30rpx;}
+.input-text{padding:0 20rpx;font-size:30rpx;background-color:#fff;padding-left:180rpx;height:100rpx;}
+.input-picker{padding:0 20rpx;font-size:30rpx;background-color:#fff;height:100rpx;padding-left:180rpx;line-height:100rpx;}
+.input-label{position:absolute;left:20rpx;top:0;line-height:100rpx;}

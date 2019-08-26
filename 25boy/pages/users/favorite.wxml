@@ -1,0 +1,37 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+        <view class="cartList">
+            <block wx:for="{{dataList}}" wx:key="cart_id">
+              <view class="cartItem">
+                  <navigator url="/pages/products/index?id={{item.product_id}}" open-type="navigate" class="dl">
+                    <view class="dt"><image src="{{item.url}}" mode="aspectFit"></image></view>
+                    <view class="dd">
+                        <text class="title">{{item.product_name}}</text>
+                        <text class="price">¥{{item.price}}</text>
+                        <text class="prop" wx:if="{{type=='history'}}">看了{{item.click}}次</text>
+                        <text class="prop" wx:if="{{item.stock==0}}">已下架</text>
+                        <text class="prop">{{item.date_format}}</text>
+                    </view>
+                  </navigator>
+              </view>
+            </block>
+        </view>
+
+        <view class="loadmore {{loadmore}}">
+          <view class="loadmore-icon"></view>
+          <text>正在加载</text>
+        </view>
+
+        <view class="loadmore_line {{loadmore_line}}">
+          <text>暂无数据</text>
+        </view>
+
+  </view>
+
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

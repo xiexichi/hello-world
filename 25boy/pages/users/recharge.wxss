@@ -1,0 +1,18 @@
+page{background-color:#fff;}
+.recharge-title{font-size:42rpx;text-align:center;margin-top:50rpx;}
+.recharge-input{padding:20rpx;border:1px solid #ddd;margin:30rpx 50rpx 0 50rpx;}
+.recharge-input-text{text-align:center;font-weight:700;}
+.recharge-set{padding:0 40rpx;display:flex;flex-wrap:wrap;margin-top:20rpx;}
+.recharge-item{text-align:center;line-height:1.2em;width:50%;font-weight:700;}
+.recharge-item-box{background-color:#FBFBFB;border:1px solid #ccc;margin:15rpx;padding:20rpx 0;}
+.recharge-item-selected{border-color:#b01f23;color:#b01f23;}
+.t1{display:block;font-size:30rpx;}
+.t2{display:block;font-size:40rpx;}
+.recharge-plus{text-align:center;margin:30rpx 50rpx 0 50rpx;border:1px solid #b01f23;color:#b01f23;padding:20rpx;font-weight:700;font-size:40rpx;}
+.recharge-checkbox{padding:30rpx;font-size:26rpx;color:#999;text-align:center;}
+.recharge-checkbox-obj{position:relative;top:1px;left:-3px;}
+.recharge-btn{padding:30rpx;}
+.recharge-rule{padding:30rpx 50rpx;font-size:30rpx;line-height:1.5em;padding-left:100rpx;color:#999;}
+.recharge-rule text{display:block;text-indent:-50rpx;margin-bottom:5px;}
+.recharge-rule-dt{font-size:36rpx;color:#5b5b5b;font-weight:700;}
+.business_name{font-size:26rpx;color:#ccc;text-align:right;display:block;margin-top:10rpx;}

@@ -1,0 +1,31 @@
+<import src="../common/header.wxml" />
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<template is="header" data="{{title:'绑定包邮',icon:'search',iconTap:''}}" />
+
+	<view class="page-body">
+	
+		<view class="message">
+            <text class="message-title">关注官方公众微信号</text>
+            <text class="p_txt">如果您未关注，请长按下方二维码，在弹出菜单里选择"识别二维码"，关注25BOY(hardly-evers)官方微信，方可获取更多优惠</text>
+
+	        <view class="blank20"></view>
+
+	        <text class="message-title">25BOY</text>
+	        <image class="QR_code" src="https://www.25boy.cn/images/v2/wchat_qcode.jpg"></image>
+
+	        <view class="blank20"></view>
+
+	        <text class="message-title" style="text-align:left;">绑定微信号包邮方法：</text>
+	        <text class="p_txt" style="text-align:left;">1. 关注25BOY(hardly-evers)官方微信；\n2. 点击右下角“进入官网”，注册/登录即可自动绑定包邮。</text>
+	        <view class="blank10"></view>
+	        <image src="https://img.25miao.com/115/1469865907.jpg!w640" style="width:680rpx;height:1300rpx;"></image>
+        </view>
+
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+
+</view>

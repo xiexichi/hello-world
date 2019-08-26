@@ -1,0 +1,200 @@
+<import src="../common/footer.wxml" />
+<import src="../common/get_promote.wxml" />
+
+<view class="container">
+
+  <view class="page-body">
+
+    <!--轮播图片-->
+    <view class="photosList" id="photosList">
+        <view class="section section_gap swiper">
+            <swiper indicator-dots="true" autoplay="true" interval="3000" duration="1000" style="height:750rpx;">
+            <block wx:for-items="{{product.images}}" wx:key="">
+                <swiper-item>
+                <image src="{{item}}!w640" class="slide-image" style="height:750rpx;" bindtap="previewImage" data-type="swiper" data-img="{{item}}"></image>
+                </swiper-item>
+            </block>
+            </swiper>
+        </view>
+    </view>
+
+    <!--标题价格-->
+    <view class="baseInfo">
+        <image src="https://api.25boy.cn/Public/images/icon-tui.png" mod="aspectFit" class="share-tui-icon" bindtap="showPromoteLayer"></image>
+        <text class="product_name" selectable="true">【{{product.brand_name}}】{{product.product_name}}</text>
+        <block wx:if="{{product.stock==0}}">
+            <view class="blank10"></view>
+            <view class="priceView"><text class="product_price">产品已经下架。</text></view>
+        </block>
+        <block wx:else>
+            <view class="priceView">
+                <block wx:if="{{product.seller_price}}">
+                    <text class="discount_tag">供货价</text><text class="product_price">¥{{product.seller_price}}</text>
+                    <text class="market_price">¥{{product.market_price}}</text>
+                </block>
+                <block wx:else>
+                    <block wx:if="{{product.miao_price > 0}}">
+                        <text class="discount_tag">限时抢购</text><text class="product_price">¥{{product.miao_price}}</text>
+                        <text class="market_price">¥{{product.market_price}}</text>
+                        <view class="miao_end_date"><icon type="waiting" size="12" color="#b01f23" class="delivery_desc-icon" /> {{product.miao_end_date}} 结束</view>
+                    </block>
+                    <block wx:else>
+                        <text class="product_price">¥{{product.price}}</text>
+                        <text class="market_price" wx:if="{{product.market_price > product.price}}">¥{{product.market_price}}</text>
+                    </block>
+                    <navigator class="recharge_price color-fb" url="/pages/users/recharge" wx:if="{{product.recharge_price}}">充值后相当于 ¥{{product.recharge_price}}，点击充值</navigator>
+                </block>
+            </view>
+            <view class="delivery_desc">{{product.delivery_desc}}</view>
+            <view class="delivery_desc"><icon type="warn" size="12" color="#999" class="delivery_desc-icon" /> 加入购物车，查询更多优惠。</view>
+            <view class="delivery_desc color-red" wx:if="{{presale_date != ''}}">预售发货时间：{{presale_date}}</view>
+        </block>
+    </view>
+
+    <!-- 选择颜色尺码 -->
+    <view class="selectProp arrow" bindtap="showLayer" wx:if="{{product.stock==1}}">{{param.tiptext}}</view>
+
+
+    <!-- 套餐 -->
+    <view wx:if="{{product.is_combomeal}}" class="combomeal-view">
+         <view class="blank10 pagegrey"></view>
+        <view class="combomeal-hd">搭配优惠套餐</view>
+        <scroll-view scroll-x="true" class="scroll-view">
+            <block wx:for="{{product.combomeals}}" wx:key="*this">
+                <view class="scroll-view-item_H flex-wrp">
+                    <view class="combomeal-item-left flex-item">
+                        <navigator url="/pages/combomeal/index?combomeal_id={{item.combomeal_id}}" class="combomeal-item-left-navigator" open-type="redirect">
+                            <image src="{{item.img}}" class="croll-view-item_H-image" data-img="{{item}}"></image>
+                        </navigator>
+                    </view>
+                    <view class="combomeal-item-right flex-item">
+                        <navigator url="/pages/combomeal/index?combomeal_id={{item.combomeal_id}}" class="combomeal-item-right-navigator flex-item" open-type="redirect">
+                             <view class="combomeal-item-right-dt">{{item.combomeal_title}}</view>
+                             <view class="combomeal-item-right-dd">可省 <text class="combomeal-item-right-price">¥{{item.discount}}</text></view>
+                             <view class="combomeal-item-right-dd">活动至 {{item.end_date}}</view>
+                        </navigator>
+                    </view>
+                </view>
+            </block>
+        </scroll-view>
+    </view>
+
+    <view class="blank10 pagegrey"></view>
+
+    <view class="blank10"></view>
+    <view class="goLink">
+        <navigator open-type="switchTab" url="/pages/categorys/index" class="goLink-item">全部商品</navigator>
+        <navigator open-type="switchTab" url="/pages/index/index" class="goLink-item">进入首页</navigator>
+    </view>
+
+    <block wx:if="{{product.stock==1}}">
+        <view class="blank10 pagegrey"></view>
+
+        <!-- 基本信息 -->
+        <view class="specification" wx:if="{{product.attribute != ''}}">
+            <view class="title">商品参数</view>
+            <view class="weui-grids weui-grids-2">
+                <view class="weui-grid"><text selectable="true">编号：{{product.sku_sn}}</text></view>
+                <block wx:for="{{product.attribute}}" wx:key="attr_id">
+                <view class="weui-grid"><text selectable="true">{{item.attr_name}}：{{item.attr_value}}</text></view>
+                </block>
+            </view>
+            <view class="flex-wrp flex-col-4 weui-grids">
+                <view class="flex-item img-box weui-grid"><image src="https://www.25boy.cn/images/tips_01.png" mode="aspectFit" /></view>
+                <view class="flex-item img-box weui-grid"><image src="https://www.25boy.cn/images/tips_02.png" mode="aspectFit" /></view>
+                <view class="flex-item img-box weui-grid"><image src="https://www.25boy.cn/images/tips_03.png" mode="aspectFit" /></view>
+                <view class="flex-item img-box weui-grid"><image src="https://www.25boy.cn/images/tips_04.png" mode="aspectFit" /></view>
+            </view>
+        </view>
+
+        <view class="blank10 pagegrey"></view>
+
+        <!-- 产品详情 -->
+        <view class="productdetail img-box">
+            <block wx:for="{{productdetail}}" wx:for-index="idx" wx:key="">
+                <image src="{{item}}" bindtap="previewImage" data-type="detail" mode="widthFix"></image>
+            </block>
+        </view>
+
+    </block>
+
+  </view>
+
+  <template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>
+
+<view class="productBottom jbw">
+    <view class="productBottom-nav">
+        <view class="productBottom-item">
+            <!-- <button class="productBottom-contact" plain="true" open-type="contact" session-from="product" send-message-title="{{product.product_name}}" show-message-card="false" send-message-path="" send-message-img=""><image src="/images/icon-kefu.png" mode="aspectFit"></image>客服</button> -->
+            <navigator class="productBottom-contact" url="/pages/index/contact"><image src="/images/icon-kefu.png" mode="aspectFit"></image>客服</navigator>
+        </view>
+        <view class="productBottom-item" bindtap="addFavoritesTap" wx:if="{{is_favorites==0}}">
+            <image src="/images/icon-collect.png" mode="aspectFit"></image>
+            喜欢
+        </view>
+        <view bindtap="cancelFavoritesTap" wx:if="{{is_favorites==1}}">
+            <image src="/images/icon-collect_red.png" mode="aspectFit"></image>
+            已关注
+        </view>
+        <view class="productBottom-item">
+            <navigator open-type="switchTab" url="/pages/cart/index">
+                <view class="weui-badge cart-badge" wx:if="{{cartTotal && cartTotal > 0}}">{{cartTotal}}</view>
+                <image src="/images/icon-cart.png" mode="aspectFit"></image>
+                购物车
+            </navigator>
+        </view>
+    </view>
+    <view class="productBottom-btn">
+        <block wx:if="{{product.stock==0}}">
+        <button type="warn" disabled="true">已售罄</button>
+        </block>
+        <block wx:else>
+        <button type="warn" bindtap="showLayer">加入购物车</button>
+        </block>
+    </view>
+</view>
+
+<!-- 隐藏的选择尺码modal -->
+<view class="mask {{popLayerClass}}" bindtouchstart="hideLayer"></view>
+<view class="popLayer {{popLayerClass}}" wx:if="{{product.stock>0}}">
+    <view class="propModal">
+        <view class="propInfo">
+            <image class="colorImg" src="{{defaultimg}}"></image>
+            <text class="propPrice">¥{{product.price}}</text>
+            <text class="propStock">库存：{{sotcknum}}件</text>
+            <text class="propSelected">{{param.tiptext}}</text>
+        </view>
+        <view class="dl">
+            <view class="dt">颜色</view>
+            <view class="dd">
+                <block wx:for="{{stockprops}}" wx:for-index="idx" wx:key="">
+                <text class="{{item.class}}" data-val="{{item.name}}" data-idx="{{idx}}" bindtap="selectColor">{{item.name}}</text>
+                </block>
+            </view>
+        </view>
+        <view class="dl">
+            <view class="dt">尺码</view>
+            <view class="dd">
+                <block wx:for="{{size}}" wx:key="sku">
+                <text class="{{item.class}}" data-val="{{item.sku}}" data-num="{{item.num}}" bindtap="selectSize">{{item.sku}}<block wx:if="{{item.sync==0}}">[预售]</block></text>
+                </block>
+            </view>
+        </view>
+        <view class="quantityBox dl">
+          <view class="quantityBox-dt">数量</view>
+          <view class="quantityBox-dd">
+              <button type="default" size="mini" bindtap="setNember" data-act="cut" class="quantityBox-cut">-</button>
+              <input value="{{param.quantity}}" type="number" bindchange="setNember" data-act="input" class="quantityBox-num" />
+              <button type="default" size="mini" bindtap="setNember" data-act="plus" class="quantityBox-plus">+</button>
+          </view>
+        </view>
+        <view class="btnBox">
+            <button type="warn" bindtap="addCart">确定</button>
+        </view>
+    </view>
+    <icon type="cancel" size="26" color="#999" class="close" bindtap="hideLayer" />
+</view>
+
+
+<template is="get_promote" data="{{displayPromote:displayPromote,data:promoteInfo,sessionId:user.sessionId}}" />

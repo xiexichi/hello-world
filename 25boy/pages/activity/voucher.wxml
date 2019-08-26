@@ -1,0 +1,69 @@
+<import src="../common/footer.wxml" />
+
+<view class="container">
+
+	<view class="page-body" wx:if="{{invalid}}">
+		<view class="coupon-box">
+      <view class="coupon-item invalid">
+          <text class="coupon-title" selectable="true">已经失效</text>
+          <text class="exp_date" selectable="true">此券已经过期或不存在，不可领取</text>
+      </view>
+		</view>
+
+		<view class="coupon-base">
+			<navigator url="/pages/index/index" open-type="switchTab" class="coupon-panel">
+				<button type="primary">查看更多活动</button>
+			</navigator>
+		</view>
+	</view>
+
+	<view class="page-body" wx:else>
+		<view class="coupon-box">
+      <view class="coupon-item coupon-item_victory" bindtap="getVoucher">
+          <text class="coupon-title" selectable="true">¥ {{voucher.amount}}</text>
+          <text class="exp_date" selectable="true" wx:if="{{voucher.term_type == 1}}">有效期至 {{voucher.term_date}}</text>
+          <text class="exp_date" selectable="true" wx:if="{{voucher.term_type == 2}}">自领取日起 {{voucher.term_day}} 天内有效</text>
+      </view>
+		</view>
+
+		<view class="coupon-base">
+			<view class="coupon-title">{{voucher.title}}</view>
+			<view class="coupon-desc">{{voucher.end_date}} 前可领取</view>
+			<view class="coupon-limit" wx:if="{{voucher.quantity > 0 && voucher.voucher_type_id==1}}">
+				<view class="coupon-limit-count">{{lave_quantity}}张</view>
+				剩余
+			</view>
+		</view>
+
+		<view class="blank10 pagegrey"></view>
+		<view class="coupon-panel">
+			<view class="coupon-panel-title">使用范围</view>
+			<view class="coupon-panel-desc">
+				<view class="coupon-panel-desc-item" wx:if="{{voucher.scenes == 1}}">25BOY线上商城可用。</view>
+				<view class="coupon-panel-desc-item" wx:if="{{voucher.scenes == 2}}">25BOY线下门店可用。</view>
+				<view class="coupon-panel-desc-item" wx:if="{{voucher.scenes == 3}}">25BOY线上商城、线下门店可用。</view>
+				<navigator class="coupon-panel-desc-item" url="/pages/o2o/store" wx:if="{{voucher.scenes > 1}}">
+					<view class="findstore">查找门店</view>
+				</navigator>
+			</view>
+		</view>
+
+		<view class="coupon-panel">
+			<view class="coupon-panel-title">使用规则</view>
+			<view class="coupon-panel-desc">
+				<view class="coupon-panel-desc-item" wx:for="{{voucher.rules}}" wx:key="*this">
+					• 满{{item.full_amount}}元，使用 {{item.max_quantity}}张。
+				</view>
+				<view class="coupon-panel-desc-item" wx:if="{{voucher.usable.sellers.length==0}}">
+					• 仅限25BOY注册会员可用，分销商帐户除外。
+				</view>
+			</view>
+		</view>
+
+		<view class="coupon-action">
+			<button type="primary" bindtap="getVoucher">立即领取</button>
+		</view>
+	</view>
+
+	<template is="footer" data="{{data:footerData,showHomeBtn:showHomeBtn}}" />
+</view>

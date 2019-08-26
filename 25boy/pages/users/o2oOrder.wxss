@@ -1,0 +1,36 @@
+page{background-color:#f2f2f2;}
+.orderList{padding-bottom:50px;}
+.orderItem-item{border-top:1px solid #ddd;}
+.orderItem-item:first-child{border-top:none;}
+.orderItem-hd{background-color:#fff;border-bottom:1px solid #ddd;}
+.orderItem-hd{padding:20rpx 20rpx;}
+.orderItem-sn{font-size:32rpx;display:block;margin-bottom:5rpx;}
+.orderItem-time{display:block;font-size:26rpx;color:#999;}
+.orderItem-status{font-size:26rpx;padding:10rpx;color:#b01f23;-webkit-align-self:center;align-self:center;}
+.orderItem-bd{background-color:#f9f9f9;padding:10rpx 20rpx;}
+.orderItem-dl{border-bottom:1px dotted #ddd;padding:10rpx 0; -webkit-display:flex;display:-webkit-box;display:flex;-webkit-flex-flow:row wrap;webkit-flex-flow:row wrap;-webkit-align-items: flex-start;align-items:flex-start;}
+.orderItem-dl:last-child{border-bottom:none;}
+.orderItem-dt{width:120rpx;height:120rpx;padding-right:20rpx;}
+.orderItem-dt-more{margin-bottom:20rpx;}
+.orderItem-dt image{width:100%;height:100%;}
+.orderItem-dd{width:550rpx;line-height:40rpx;}
+.orderItem-name{display:block;font-size:30rpx;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.orderItem-prop{display:block;font-size:26rpx;}
+.orderItem-price{display:block;font-size:26rpx;}
+.orderItem-ft{border-top:1px solid #ddd;padding:20rpx;font-size:30rpx;border-bottom:1px solid #ddd;background-color:#fff;display:flex;justify-content:space-between;align-items:center;}
+.orderItem-btn{text-align:right;}
+.orderItem-shipfee{font-size:26rpx;color:#666;display:inline-block;}
+
+.ordering{text-align:center;position:fixed;width:100%;height:100%;top:0;background-color:#fff;z-index:99;}
+.ordering-text{font-size:32rpx;color:#999;margin-bottom:200rpx;}
+.ordering-image{width:250rpx;margin-top:120rpx;margin-bottom:80rpx;}
+.silde-up{width:80rpx;position:absolute;bottom:80rpx;left:50%;margin-left:-40rpx;}
+.silde-uptxt{position:absolute;bottom:40rpx;left:0;font-size:32rpx;text-align:center;color:#ccc;width:100%;}
+.loadmore_line{margin-top:-20px;}
+
+.notorder_tips{padding:30px 60px;font-size:36rpx;}
+.notorder_text{margin-bottom:10px;}
+.notorder_btn{margin-bottom:10px;}
+
+/* 关注公众号组件 */
+.official-account{width:680rpx;margin:auto;border:1px solid #ddd;text-align:left;}

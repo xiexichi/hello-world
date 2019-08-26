@@ -1,0 +1,27 @@
+<view class="page-body">
+
+	<block wx:if="{{errorMsg}}">
+		<view class="errorMsg">
+			<view class="icon"><icon type="warn" size="68"/></view>
+			<view class="text">{{errorMsg}}</view>
+		</view>
+	</block>
+	<block wx:else>
+		<view class="base-info">
+			<view class="pay-name" wx:if="{{info.name}}">{{info.name}}</view>
+			<view class="pay-total">¥ {{info.total}}</view>
+		</view>
+
+		<view class="detail-info" wx:if="{{info.list}}">
+			<view class="rows" wx:for="{{info.list}}" wx:for-item="item" wx:for-index="index" wx:key="*this">
+				<view class="item-left">{{item.title}}</view>
+				<view class="item-right">{{item.desc}}</view>
+			</view>
+		</view>
+
+		<view class="btns">
+			<button type="primary" bindtap="payment">使用微信支付</button>
+		</view>
+	</block>
+
+</view>
